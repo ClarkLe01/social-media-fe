@@ -34,14 +34,18 @@ jobs:
             - ./node_modules
       - run:
           name: Install JUnit coverage reporter
-          command: yarn add --dev jest-junit
+          command: |
+            npm install mocha-junit-reporter --save-dev
+            npm install -g mocha-junit-reporter
+            mkdir junit
       - run:
-          name: Run tests with JUnit as reporter
-          command: jest-junit --ci --runInBand --reporters=default --reporters=jest-junit
+          name: Run tests with Mocha as reporter
+          command: mocha test --reporter mocha-junit-reporter
           environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/
+            MOCHA_FILE: /junit/test-results.xml
+          when: always
       - store_test_results:
-          path: ./reports/
+          path: junit
 
   build-and-push-frontend:
     executor: docker/docker
