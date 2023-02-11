@@ -10,5 +10,6 @@ RUN npm ci
 
 # copy project
 COPY . /app/frontend/
+EXPOSE 3000
 
 CMD ["npm", "start"]

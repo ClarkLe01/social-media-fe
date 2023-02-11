@@ -1,2 +1,2 @@
 docker run --env-file <path-env> -it -d --name <containername> -p <port>:<port> <image>:<tag>
-docker run --env-file .env.prod -it -d --name social-media-api -p 8000:8000 waflol/social-media-api:lastest
+docker run -it -d --name social-media-fe -p 3000:3000 waflol/social-media-fe:lastest
