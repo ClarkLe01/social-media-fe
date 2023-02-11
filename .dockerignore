@@ -5,3 +5,7 @@ yarn-error.log
 .env
 .env.*
 coverage
+__snapshots__
+*/__snapshots__/
+*/*/__snapshots__/
+*/*/*/__snapshots__/
