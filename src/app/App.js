@@ -1,6 +1,6 @@
 import logo from '../logo.svg';
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
     const [ data, setData ] = useState(null);
@@ -18,7 +18,7 @@ function App() {
                 <h1>An Awesome Blog </h1>
                 <h3>On Django, React, Postgres, and Docker </h3>
 
-                <p>{data} </p>
+                <p>{data}</p>
             </header>
         </div>
     );
