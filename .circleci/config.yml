@@ -1,7 +1,6 @@
 # CircleCI configuration file
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.4.1
   docker: circleci/docker@2.2.0
   aws-ecr: circleci/aws-ecr@8.1.2 # use the AWS ECR orb
   aws-ecs: circleci/aws-ecs@3.2.0 # use the AWS ECS orb
@@ -21,20 +20,28 @@ jobs:
       API_HOST: localhost
     steps:
       - checkout
-      - browser-tools/install-browser-tools
       - run:
-          name: Run unit test
-          command: |
-            pip install -r requirements.txt
-            pip install coverage
-            pip install pytest-django
-            python manage.py migrate
-            coverage run -m pytest --junitxml=test-results/junit.xml
-            coverage html
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: npm-install
+          command: npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Install JUnit coverage reporter
+          command: yarn add --dev jest-junit
+      - run:
+          name: Run tests with JUnit as reporter
+          command: jest --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/
       - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: htmlcov
+          path: ./reports/
 
   build-and-push-frontend:
     executor: docker/docker
@@ -46,11 +53,6 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run:
-          name: Waiting for Postgres to be ready
-          command: |
-            chmod +x ./entrypoint.prod.sh
-            ./entrypoint.prod.sh
       - docker/check:
           docker-username: DOCKER_USER
           docker-password: DOCKER_PASSWORD
@@ -86,11 +88,11 @@ workflows:
           #   branches:
           #     only:
           #       - main
-      - aws-ecr/build-and-push-image: # Use the pre-defined `build-and-push-image` job
-          requires:
-            - test-frontend
-          dockerfile: Dockerfile
-          path: .
-          profile-name: waflol
-          repo: social-web-api
-          tag: latest # default - latest
+      # - aws-ecr/build-and-push-image: 
+      #     requires:
+      #       - test-frontend
+      #     dockerfile: Dockerfile
+      #     path: .
+      #     profile-name: waflol
+      #     repo: social-web-api
+      #     tag: latest
