@@ -33,19 +33,12 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: Install JUnit coverage reporter
-          command: |
-            npm install mocha-junit-reporter --save-dev
-            npm install -g mocha-junit-reporter
-            mkdir junit
-      - run:
-          name: Run tests with Mocha as reporter
-          command: mocha test --reporter mocha-junit-reporter
-          environment:
-            MOCHA_FILE: /junit/test-results.xml
-          when: always
+          name: Run tests
+          command: npm run test -- --coverage --watchAll=false
       - store_test_results:
-          path: junit
+          path: coverage
+      - store_artifacts:
+          path: coverage/lcov-report
 
   build-and-push-frontend:
     executor: docker/docker

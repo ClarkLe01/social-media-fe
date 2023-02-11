@@ -4,3 +4,4 @@ Dockerfile
 yarn-error.log
 .env
 .env.*
+coverage
