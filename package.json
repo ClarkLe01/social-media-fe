@@ -10,7 +10,7 @@
 		"lint": "eslint \"src/**/*.js\" --fix",
 		"format": "prettier --write \"src/**/*.js\"",
 		"i18n": "extract-react-intl-messages -l=en -d en -o src/app/locales --flat 'src/**/*.js'",
-		"prepare": "cd .. && husky install source/.husky"
+		"prepare": "husky install source/.husky"
 	},
 	"dependencies": {
 		"@commitlint/cli": "^17.0.0",
