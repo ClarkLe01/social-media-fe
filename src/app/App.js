@@ -5,8 +5,9 @@ import React from 'react';
 
 function App() {
     const [ data, setData ] = useState(null);
+    const host = process.env.HOST_API;
     useEffect(() => {
-        fetch(`${process.env.HOST_API}/test/`)
+        fetch(`${host}/test/`)
             .then((res) => res.json())
             .then((data) => setData(data.data));
     });
