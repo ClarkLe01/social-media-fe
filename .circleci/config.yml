@@ -91,5 +91,5 @@ workflows:
           dockerfile: Dockerfile
           path: .
           profile-name: waflol
-          repo: social-web-api
+          repo: social-media-fe
           tag: latest
