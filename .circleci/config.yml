@@ -1,26 +1,96 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
+# CircleCI configuration file
 version: 2.1
+orbs:
+  browser-tools: circleci/browser-tools@1.4.1
+  docker: circleci/docker@2.2.0
+  aws-ecr: circleci/aws-ecr@8.1.2 # use the AWS ECR orb
+  aws-ecs: circleci/aws-ecs@3.2.0 # use the AWS ECS orb
+  aws-cli: circleci/aws-cli@3.1.1 # use the AWS CLI orb
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+executors:
+  frontend-executor:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: cimg/node:18.5
+
+jobs:
+  # Job one with a unique name
+  test-frontend:
+    executor: frontend-executor
+    environment:
+      DEBUG: 1
+      API_HOST: localhost
     steps:
       - checkout
+      - browser-tools/install-browser-tools
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Run unit test
+          command: |
+            pip install -r requirements.txt
+            pip install coverage
+            pip install pytest-django
+            python manage.py migrate
+            coverage run -m pytest --junitxml=test-results/junit.xml
+            coverage html
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: htmlcov
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  build-and-push-frontend:
+    executor: docker/docker
+    environment:
+      DEBUG: 1
+      API_HOST: localhost
+      DOCKER_IMAGE: waflol/social-media-fe
+      DOCKER_TAG: lastest
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            chmod +x ./entrypoint.prod.sh
+            ./entrypoint.prod.sh
+      - docker/check:
+          docker-username: DOCKER_USER
+          docker-password: DOCKER_PASSWORD
+      - run:
+          name: docker/build
+          command: |
+            docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+  build-and-push-ecr:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/install
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: AWS_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
 workflows:
-  say-hello-workflow:
+  # Name of workflow
+  pipeline:
+    # List of jobs that will run
     jobs:
-      - say-hello
+      - test-frontend
+      - build-and-push-frontend:
+          requires:
+            - test-frontend
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
+      - aws-ecr/build-and-push-image: # Use the pre-defined `build-and-push-image` job
+          requires:
+            - test-frontend
+          dockerfile: Dockerfile
+          path: .
+          profile-name: waflol
+          repo: social-web-api
+          tag: latest # default - latest
