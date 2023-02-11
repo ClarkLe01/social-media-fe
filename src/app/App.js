@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 function App() {
     const [ data, setData ] = useState(null);
-    const bac = null;
+    const bac = 2;
     useEffect(() => {
         fetch('http://localhost:8000/test/')
             .then((res) => res.json())
