@@ -5,7 +5,7 @@ import React from 'react';
 
 function App() {
     const [ data, setData ] = useState(null);
-    const host = process.env.HOST_API;
+    const host = process.env.REACT_APP_HOST_API;
     useEffect(() => {
         fetch(`${host}/test/`)
             .then((res) => res.json())

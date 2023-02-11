@@ -1,2 +1,2 @@
 docker run --env-file <path-env> -it -d --name <containername> -p <port>:<port> <image>:<tag>
-docker run -it -d --name social-media-fe -p 3000:3000 waflol/social-media-fe:lastest
+docker run --build-arg HOST_API=http://localhost:8000 -it -d --name social-media-fe -p 3000:3000 939464096012.dkr.ecr.us-east-1.amazonaws.com/social-media-fe:lastest
