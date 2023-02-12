@@ -74,9 +74,9 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
 workflows:
   # Name of workflow
-  pipeline:
+  frontend-pipeline:
     # List of jobs that will run
-    frontend-pipeline:
+    jobs:
       - test-frontend:
           post-steps:
             - jira/notify:
