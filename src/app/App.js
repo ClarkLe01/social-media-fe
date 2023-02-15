@@ -1,7 +1,7 @@
-import Register from '../pages/Register';
+import Register from '@features/register/Register';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import '../main.scss';
+import '@assets/scss/main.scss';
 
 function App() {
     return (
