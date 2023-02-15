@@ -19,6 +19,7 @@
         "@jackwilsdon/craco-use-babelrc": "^1.0.0",
         "@sentry/react": "^7.37.1",
         "@sentry/tracing": "^7.37.1",
+        "@tabler/icons-react": "^2.4.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
@@ -27,7 +28,6 @@
         "babel-plugin-react-intl-auto": "^3.3.0",
         "bootstrap": "^5.2.3",
         "classnames": "^2.3.2",
-        "dayjs": "^1.11.7",
         "eslint-plugin-prettier": "^4.2.1",
         "extract-react-intl-messages": "^4.1.1",
         "google-map-react": "^2.2.0",
@@ -41,11 +41,13 @@
         "react-apexcharts": "^1.4.0",
         "react-bootstrap": "^2.7.2",
         "react-dom": "^18.2.0",
+        "react-flatpickr": "^3.10.13",
         "react-intl": "^6.0.3",
         "react-player": "^2.11.2",
         "react-redux": "^8.0.5",
         "react-router-dom": "^6.5.0",
         "react-scripts": "5.0.1",
+        "react-select": "^5.7.0",
         "react-slick": "^0.29.0",
         "sass": "^1.57.1",
         "slick-carousel": "^1.8.1"
@@ -69,11 +71,11 @@
         ]
     },
     "lint-staged": {
-        "*.js": [
+        "!(public/assets/**/*)*.js": [
             "npm run lint",
             "git add ."
         ]
-    },
+      },
     "jest": {
         "snapshotSerializers": [
             "enzyme-to-json/serializer"

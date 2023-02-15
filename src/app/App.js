@@ -1,27 +1,15 @@
-import logo from '../logo.svg';
-import './App.css';
-import { useState, useEffect } from 'react';
+import Register from '../pages/Register';
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import '../main.scss';
 
 function App() {
-    const [ data, setData ] = useState(null);
-    const host = process.env.REACT_APP_HOST_API;
-    useEffect(() => {
-        fetch(`${host}/test/`)
-            .then((res) => res.json())
-            .then((data) => setData(data.data));
-    });
-
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <h1>An Awesome Blog </h1>
-                <h3>On Django, React, Postgres, and Docker </h3>
-
-                <p>{data}</p>
-            </header>
-        </div>
+        <Router basename='/'>
+            <Routes>
+                <Route exact path="/register" element={<Register />} />
+            </Routes>
+        </Router>
     );
 }
 
