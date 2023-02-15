@@ -23,22 +23,14 @@ jobs:
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
-      # - restore_cache:
-      #     key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: npm-install
           command: npm ci
-      # - save_cache:
-      #     key: dependency-cache-{{ checksum "package.json" }}
-      #     paths:
-      #       - ./node_modules
       - run:
           name: Run tests
           command: npm run test -- --coverage --watchAll=false
-      - store_test_results:
-          path: coverage
       - store_artifacts:
-          path: coverage/lcov-report
+          path: coverage
 
   build-and-push-frontend:
     executor: docker/docker
