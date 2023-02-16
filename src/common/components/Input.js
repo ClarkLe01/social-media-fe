@@ -3,7 +3,8 @@ import { TextInput } from '@mantine/core';
 import PasswordInput from "./PasswordInput";
 
 function Input(props) {
-    const { name, type, icon, placeHolder, handleInputChange } = props;
+    const { name, type, icon, placeHolder, handleInputChange, ...other } = props;
+    console.log({ ...other });
     return (
         <div className="form-group icon-input mb-3">
             {type === 'password' ? (
@@ -26,6 +27,7 @@ function Input(props) {
                     placeholder={placeHolder}
                     onChange={handleInputChange}
                     name={name}
+                    {...other}
                 />
             )}
         </div>

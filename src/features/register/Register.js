@@ -5,6 +5,7 @@ import DateTimePicker from "@common/components/DatetimePicker";
 import Selector from "@common/components/Selector";
 import { Link } from 'react-router-dom';
 import UnAuthenticatedCallApi from '@services/axios';
+import { useForm } from '@mantine/form';
 
 
 function Register() {
@@ -52,6 +53,16 @@ function Register() {
         setAcceptTerms(checked);
     };
 
+    const form = useForm({
+        initialValues: { name: '', email: '' },
+
+        // functions will be used to validate values at corresponding key
+        validate: {
+            name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+        },
+    });
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsSubmitting(true);
@@ -67,7 +78,7 @@ function Register() {
         try {
             const resp = await UnAuthenticatedCallApi.post('/user/register/', data);
             setIsSubmitting(false);
-            if(resp.status!=201){
+            if (resp.status != 201) {
                 setSubmitError(true);
             }
         }
@@ -96,7 +107,7 @@ function Register() {
                         <div className="card shadow-none border-0 ms-auto me-auto login-card">
                             <div className="card-body rounded-0 text-left">
                                 <h2 className="fw-700 display1-size display2-md-size mb-4">New Account</h2>
-                                <form onSubmit={handleSubmit}>
+                                <form onSubmit={form.onSubmit(console.log)}>
                                     <div style={{ display: 'flex', gap: '16px' }}>
                                         <Input
                                             icon={<IconUser />}
@@ -104,6 +115,7 @@ function Register() {
                                             name="firstName"
                                             placeHolder="First Name"
                                             handleInputChange={handleInputChange}
+                                            {...form.getInputProps('name')}
                                         />
                                         <Input
                                             icon={<IconUser />}
@@ -111,6 +123,7 @@ function Register() {
                                             name="lastName"
                                             placeHolder="Last Name"
                                             handleInputChange={handleInputChange}
+                                            {...form.getInputProps('name')}
                                         />
                                     </div>
                                     <Input
@@ -119,6 +132,7 @@ function Register() {
                                         name="email"
                                         placeHolder="Your Email Address"
                                         handleInputChange={handleInputChange}
+                                        {...form.getInputProps('email')}
                                     />
                                     <Input
                                         icon={<IconLock />}
