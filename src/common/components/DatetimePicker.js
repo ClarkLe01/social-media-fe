@@ -20,20 +20,19 @@ import { DatePicker } from '@mantine/dates';
 // }
 
 function DateTimePicker(props) {
-    const { name, icon, handleInputChange } = props;
+    const { icon, placeHolder, handleInputChange } = props;
 
     return (
         <div className="form-group icon-input mb-3">
             <DatePicker
                 icon={icon}
-                placeholder="Pick date"
+                placeholder={placeHolder}
                 classNames={{
                     input: 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
                 }}
                 styles={{ input: { backgroundColor: '#fff!important' } }}
                 inputFormat="DD-MM-YYYY"
                 onChange={handleInputChange}
-                name={name}
             />
         </div>
     );

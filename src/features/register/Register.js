@@ -4,6 +4,7 @@ import Input from "@common/components/Input";
 import DateTimePicker from "@common/components/DatetimePicker";
 import Selector from "@common/components/Selector";
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 
 function Register() {
@@ -22,7 +23,6 @@ function Register() {
     const handleInputChange = (event) => {
         const name = event.currentTarget.name;
         const value = event.currentTarget.value;
-        console.log(event.target.name);
         switch (name) {
                         case 'firstName':
                             setFirstName(value);
@@ -46,29 +46,37 @@ function Register() {
                             break;
         }
     };
-    const handleDatePickerChange = (event) => {
-        setDate(event);
-        console.log(event);
-        console.log(date);
-    };
-    const handleSelectorChange = (event) => {
-        setGender(event);
-        console.log(event);
-        console.log(gender);
-    };
 
     const handleCheckboxChange = (event) => {
         const { checked } = event.target;
         setAcceptTerms(checked);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsSubmitting(false);
-        setSubmitError(false);
-        console.log({ firstName, lastName, date, email, password, confirmPassword, acceptTerms, gender });
+        setIsSubmitting(true);
+        const data = {
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            password: password,
+            confirm_password: confirmPassword,
+            gender: gender,
+            birthday: date,
+        };
+        try {
+            const resp = await axios.post(`${process.env.REACT_APP_HOST_API}/user/register/`, data);
+            setIsSubmitting(false);
+            if(resp.status!=201){
+                setSubmitError(true);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            setIsSubmitting(false);
+        }
     };
-    
+
     return (
         <Fragment>
             <div className="main-wrap">
@@ -94,7 +102,6 @@ function Register() {
                                             icon={<IconUser />}
                                             type="text"
                                             name="firstName"
-                                            value={firstName}
                                             placeHolder="First Name"
                                             handleInputChange={handleInputChange}
                                         />
@@ -102,7 +109,6 @@ function Register() {
                                             icon={<IconUser />}
                                             type="text"
                                             name="lastName"
-                                            value={lastName}
                                             placeHolder="Last Name"
                                             handleInputChange={handleInputChange}
                                         />
@@ -111,7 +117,6 @@ function Register() {
                                         icon={<IconMail />}
                                         type="text"
                                         name="email"
-                                        value={email}
                                         placeHolder="Your Email Address"
                                         handleInputChange={handleInputChange}
                                     />
@@ -119,7 +124,6 @@ function Register() {
                                         icon={<IconLock />}
                                         type="password"
                                         name="password"
-                                        value={password}
                                         placeHolder="Password"
                                         handleInputChange={handleInputChange}
                                     />
@@ -127,23 +131,19 @@ function Register() {
                                         icon={<IconLock />}
                                         type="password"
                                         name="confirmPassword"
-                                        value={confirmPassword}
                                         placeHolder="Confirm Password"
                                         handleInputChange={handleInputChange}
                                     />
                                     <DateTimePicker
                                         icon={<IconCake />}
-                                        name="datetime"
-                                        value={date}
-                                        placeholder="YYYY-MM-DD"
-                                        handleInputChange={handleDatePickerChange}
+                                        placeHolder="Pick your birthday"
+                                        handleInputChange={event => setDate(event)}
                                     />
                                     <Selector
                                         icon={<IconGenderMale />}
-                                        name="gender"
-                                        value={gender}
+                                        placeHolder="Choose your gender"
                                         options={genderOptions}
-                                        handleInputChange={handleSelectorChange}
+                                        handleInputChange={event => setGender(event)}
                                     />
                                     <div className="form-check text-left mb-3">
                                         <input
