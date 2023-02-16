@@ -1,8 +1,10 @@
 import React, { Component, Fragment } from "react";
+import { IconUser, IconLock, IconCake, IconGenderMale, IconMail } from '@tabler/icons-react';
 import Input from "@common/components/Input";
 import DateTimePicker from "@common/components/DatetimePicker";
-import { Link } from 'react-router-dom';
 import Selector from "@common/components/Selector";
+import { Link } from 'react-router-dom';
+
 
 class Register extends Component {
     constructor() {
@@ -71,7 +73,7 @@ class Register extends Component {
                                     <form onSubmit={this.handleSubmit}>
                                         <div style={{ display: 'flex', gap: '16px' }}>
                                             <Input
-                                                icon="ti-user"
+                                                icon={<IconUser/>}
                                                 type="text"
                                                 name="firstName"
                                                 value={firstName}
@@ -79,7 +81,7 @@ class Register extends Component {
                                                 handleInputChange={this.handleInputChange}
                                             />
                                             <Input
-                                                icon="ti-user"
+                                                icon={<IconUser/>}
                                                 type="text"
                                                 name="lastName"
                                                 value={lastName}
@@ -88,7 +90,7 @@ class Register extends Component {
                                             />
                                         </div>
                                         <Input
-                                            icon="ti-email"
+                                            icon={<IconMail/>}
                                             type="text"
                                             name="email"
                                             value={email}
@@ -96,7 +98,7 @@ class Register extends Component {
                                             handleInputChange={this.handleInputChange}
                                         />
                                         <Input
-                                            icon="ti-lock"
+                                            icon={<IconLock/>}
                                             type="password"
                                             name="password"
                                             value={password}
@@ -104,7 +106,7 @@ class Register extends Component {
                                             handleInputChange={this.handleInputChange}
                                         />
                                         <Input
-                                            icon="ti-lock"
+                                            icon={<IconLock/>}
                                             type="password"
                                             name="confirmPassword"
                                             value={confirmPassword}
@@ -112,12 +114,14 @@ class Register extends Component {
                                             handleInputChange={this.handleInputChange}
                                         />
                                         <DateTimePicker
+                                            icon={<IconCake/>}
                                             name="datetime"
                                             value={date}
                                             placeholder="YYYY-MM-DD"
                                             onChange={(date) => this.setState({ date })}
                                         />
                                         <Selector
+                                            icon={<IconGenderMale/>}
                                             name="gender"
                                             value={gender}
                                             options={[
