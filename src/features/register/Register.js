@@ -4,7 +4,7 @@ import Input from "@common/components/Input";
 import DateTimePicker from "@common/components/DatetimePicker";
 import Selector from "@common/components/Selector";
 import { Link } from 'react-router-dom';
-import axios from "axios";
+import UnAuthenticatedCallApi from '@services/axios';
 
 
 function Register() {
@@ -65,7 +65,7 @@ function Register() {
             birthday: date,
         };
         try {
-            const resp = await axios.post(`${process.env.REACT_APP_HOST_API}/user/register/`, data);
+            const resp = await UnAuthenticatedCallApi.post('/user/register/', data);
             setIsSubmitting(false);
             if(resp.status!=201){
                 setSubmitError(true);
