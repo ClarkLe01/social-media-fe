@@ -12,7 +12,7 @@ function createDeepRoute(routes) {
     return deepRoute;
 }
 
-function AppRoute() {
+function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>{createDeepRoute(routes)}</Routes>
@@ -20,4 +20,4 @@ function AppRoute() {
     );
 }
 
-export default AppRoute;
+export default AppRoutes;
