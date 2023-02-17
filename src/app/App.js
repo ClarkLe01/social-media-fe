@@ -1,15 +1,17 @@
-import Register from '@features/register/Register';
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import '@assets/scss/main.scss';
+
+import React from 'react';
+
+import { LoadingOverlay } from '@mantine/core';
+import AppRoute from './routes/AppRoute';
+import AppLoading from './loading';
 
 function App() {
     return (
-        <Router basename='/'>
-            <Routes>
-                <Route exact path="/register" element={<Register />} />
-            </Routes>
-        </Router>
+        <React.Suspense fallback={<LoadingOverlay visible loaderProps={{ variant: 'dots' }} />}>
+            <AppLoading />
+            <AppRoute />
+        </React.Suspense>
     );
 }
 
