@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react';
 import Header from './common/Header';
-import ImageCover from '@common/components/ImageCover';
 import MainLogo from '@common/components/MainLogo';
 import NavButton from '@common/components/NavMenuButton';
-import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+
 const AuthLayout = () => {
     return (
-        <Fragment>
+        <>
             <div className="main-wrap">
                 <Header>
                     <MainLogo />
@@ -26,20 +25,9 @@ const AuthLayout = () => {
                     </Link>
                 </Header>
                 <div className="row">
-                    <ImageCover
-                        className="col-xl-5 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat"
-                        url="http://sociala.uitheme.net/assets/images/login-bg-2.jpg"
-                    />
-                    <div className="col-xl-7 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden">
-                        <div className="card shadow-none border-0 ms-auto me-auto login-card">
-                            <div className="card-body rounded-0 text-left">
-                                <Outlet/>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 };
 export default AuthLayout;
