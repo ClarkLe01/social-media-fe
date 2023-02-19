@@ -15,9 +15,6 @@ function AccessControl({ requireAuth, children }) {
     }
 
     if (requireAuth === AUTH.REQUIRE && !profile) {
-        removeItem(storageKeyAccessToken);
-        removeItem(storageKeyRefreshToken);
-
         return <Navigate to={navigatePath.login} state={{ from: location }} replace />;
     }
 
