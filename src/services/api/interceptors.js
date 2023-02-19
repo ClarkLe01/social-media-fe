@@ -43,7 +43,7 @@ instance.interceptors.response.use(
                 Authorization: `Bearer ${accessToken}`,
             };
 
-            // return instance.request(config);
+            return instance.request(config);
         }
 
         return Promise.reject(error);
