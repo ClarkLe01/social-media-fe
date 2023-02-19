@@ -1,4 +1,4 @@
-export { default as appLoadingReduder, selectAppLoading, setAppLoading } from './appLoadingSlice';
+export { default as appLoadingReduder } from './appLoadingSlice';
 
 export { default as useAppLoading } from './useAppLoading';
 

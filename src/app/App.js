@@ -1,17 +1,23 @@
 import '@assets/scss/main.scss';
 
 import React from 'react';
+import ThemeProvider from './theme/ThemeProvider';
 
-import { LoadingOverlay } from '@mantine/core';
-import AppRoute from './routes/AppRoute';
+import AppRoutes from './routes/AppRoutes';
 import AppLoading from './loading';
+import { LanguageProvider } from './locales';
+import Loading from '@common/components/Loading';
 
 function App() {
     return (
-        <React.Suspense fallback={<LoadingOverlay visible loaderProps={{ variant: 'dots' }} />}>
+        <ThemeProvider>
             <AppLoading />
-            <AppRoute />
-        </React.Suspense>
+            <LanguageProvider>
+                <React.Suspense fallback={<Loading />}>
+                    <AppRoutes />
+                </React.Suspense>
+            </LanguageProvider>
+        </ThemeProvider>
     );
 }
 
