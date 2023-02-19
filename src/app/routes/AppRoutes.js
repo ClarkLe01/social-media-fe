@@ -1,10 +1,7 @@
-import { AUTH } from '@constants';
-import React, { lazy } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AccessControl from './AccessControl';
 import routes from './config';
-import RequireAuth from './RequireAuth';
-import UnRequireAuth from './UnRequireAuth';
 
 function createRoute(routes) {
     const route = routes.map((route, index) => (
@@ -15,13 +12,6 @@ function createRoute(routes) {
                 <AccessControl requireAuth={route.requireAuth}>
                     <route.element />
                 </AccessControl>
-                // route.requireAuth ? (
-                //     <RequireAuth>
-                //         <route.element />
-                //     </RequireAuth>
-                // ) : (
-                //     <route.element />
-                // )
             }
             {...route.props}
         >

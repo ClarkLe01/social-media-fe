@@ -42,7 +42,8 @@ function useAuth() {
         profile,
         login,
         logout,
-        loading: profileLoading || loginLoading,
+        profileLoading,
+        loginLoading,
         error: loginError,
     };
 }
