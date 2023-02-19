@@ -3,8 +3,8 @@ import Header from './common/Header';
 import ImageCover from '@common/components/ImageCover';
 import MainLogo from '@common/components/MainLogo';
 import NavButton from '@common/components/NavMenuButton';
-import { Outlet } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
+
 const AuthLayout = () => {
     return (
         <Fragment>

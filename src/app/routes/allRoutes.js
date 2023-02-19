@@ -28,11 +28,11 @@ const authRoutes = [
         element: MainLayout,
         childrens: [
             {
-                path: '/test',
+                path: '/home',
                 element: Register,
             },
             {
-                path: '/anc',
+                path: '/profile',
                 element: Login,
             },
         ],
