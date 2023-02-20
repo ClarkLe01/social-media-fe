@@ -4,7 +4,7 @@ import { API_URL, storageKeyAccessToken, storageKeyRefreshToken } from '@constan
 import endPoints from './endPoints';
 import axios from 'axios';
 
-const instance = axios.create({
+export const publishInstance = axios.create({
     baseURL: API_URL,
 });
 
@@ -16,7 +16,7 @@ async function refreshToken() {
     }
 
     try {
-        const { data } = await instance.request({
+        const { data } = await publishInstance.request({
             ...endPoints.token.refresh,
             data: {
                 refresh: token,

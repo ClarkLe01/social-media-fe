@@ -20,20 +20,24 @@ const Login = lazy(() => import('@features/login/Login'));
 
 const routes = [
     {
+        name: 'News Feed',
         path: navigatePath.newsFeed,
         element: NewsFeed,
         requireAuth: AUTH.REQUIRE,
     },
 
     {
+        name: 'App Layout',
         element: AppLayout,
         requireAuth: AUTH.NOT_REQUIRE,
         children: [
             {
+                name: 'Register',
                 path: navigatePath.register,
                 element: Register,
             },
             {
+                name: 'Login',
                 path: navigatePath.login,
                 element: Login,
             },

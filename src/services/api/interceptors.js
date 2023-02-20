@@ -3,13 +3,15 @@ import { API_URL, storageKeyAccessToken } from '@constants';
 import axios from 'axios';
 import refreshToken from './refreshToken';
 
-const instance = axios.create({
+const privateInstance = axios.create({
     baseURL: API_URL,
 });
 
-instance.interceptors.request.use(
+privateInstance.interceptors.request.use(
     async (config) => {
         const accessToken = getData(storageKeyAccessToken);
+
+        if (!accessToken) return Promise.reject('Authentification not found');
 
         if (accessToken) {
             config.headers = {
@@ -23,7 +25,7 @@ instance.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-instance.interceptors.response.use(
+privateInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const config = error?.config;
@@ -43,11 +45,11 @@ instance.interceptors.response.use(
                 Authorization: `Bearer ${accessToken}`,
             };
 
-            return instance.request(config);
+            return privateInstance.request(config);
         }
 
         return Promise.reject(error);
     },
 );
 
-export default instance;
+export default privateInstance;

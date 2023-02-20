@@ -1,13 +1,16 @@
-import React from 'react';
-import { getData, removeItem, setData } from '@common/utils/localStorage';
+import { removeItem, setData } from '@common/utils/localStorage';
 import { storageKeyAccessToken, storageKeyRefreshToken } from '@constants';
-import api, { endPoints } from '@services/api';
+import api, { endPoints, publicApi } from '@services/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 function useAuth() {
     const queryClient = useQueryClient();
 
-    const { data: profile, isLoading: profileLoading } = useQuery({
+    const {
+        data: profile,
+        isLoading: profileLoading,
+        error: profileError,
+    } = useQuery({
         queryKey: [ 'profile/me' ],
         queryFn: ({ signal }) => {
             return api(endPoints.user.profile, { signal });
@@ -21,7 +24,7 @@ function useAuth() {
         mutate: login,
     } = useMutation({
         mutationFn: (variables) => {
-            return api(endPoints.user.login, variables);
+            return publicApi(endPoints.user.login, variables);
         },
         onSuccess: ({ data }) => {
             setData(storageKeyAccessToken, data.access);
@@ -44,7 +47,8 @@ function useAuth() {
         logout,
         profileLoading,
         loginLoading,
-        error: loginError,
+        loginError,
+        profileError,
     };
 }
 

@@ -4,9 +4,9 @@ import AccessControl from './AccessControl';
 import routes from './config';
 
 function createRoute(routes) {
-    const route = routes.map((route, index) => (
+    const route = routes.map((route) => (
         <Route
-            key={index}
+            key={route.name}
             path={route.path}
             element={
                 <AccessControl requireAuth={route.requireAuth}>
