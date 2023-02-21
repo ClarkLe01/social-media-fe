@@ -12,9 +12,7 @@ function useAuth() {
         error: profileError,
     } = useQuery({
         queryKey: [ 'profile/me' ],
-        queryFn: ({ signal }) => {
-            return api(endPoints.user.profile, { signal });
-        },
+        queryFn: () => api(endPoints.user.profile),
         retryOnMount: false,
     });
 
