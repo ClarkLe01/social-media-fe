@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react';
 import { IconMail } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
-// import UnAuthenticatedCallApi from '@services/axios';
 import { useForm } from '@mantine/form';
 
 function ForgotPassword() {
@@ -46,27 +45,6 @@ function ForgotPassword() {
             setSubmitError(true);
             setIsSubmitting(false);
         }
-        // setIsSubmitting(true);
-        // const data = {
-        //     first_name: firstName,
-        //     last_name: lastName,
-        //     email: email,
-        //     password: password,
-        //     confirm_password: confirmPassword,
-        //     gender: gender,
-        //     birthday: date,
-        // };
-        // try {
-        //     const resp = await UnAuthenticatedCallApi.post('/user/register/', data);
-        //     setIsSubmitting(false);
-        //     if (resp.status != 201) {
-        //         setSubmitError(true);
-        //     }
-        // }
-        // catch (error) {
-        //     console.log(error);
-        //     setIsSubmitting(false);
-        // }
     };
 
     return (
