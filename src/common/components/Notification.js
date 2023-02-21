@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 function Notification() {
     const [ isNoti, setIsNoti ] = useState(false);
-    const [ notiClass, setNotiClass ] = useState("");
+    const [ notiClass, setNotiClass ] = useState('');
+    const [ key, setKey ] = useState('home');
     const toggleisNoti = () => {
         setIsNoti(!isNoti);
     };
     useEffect(() => {
-        setNotiClass(`${isNoti ? " show" : ""}`);
-    },[ isNoti ]);
+        setNotiClass(`${isNoti ? ' show' : ''}`);
+    }, [ isNoti ]);
 
     return (
         <React.Fragment>
@@ -25,8 +28,27 @@ function Notification() {
             <div
                 className={`dropdown-menu p-4 right-0 rounded-xxl border-0 shadow-lg ${notiClass}`}
                 aria-labelledby="dropdownMenu3"
+                style={{ maxHeight: '400px', overflowY: 'auto' }}
             >
-                <h4 className="fw-700 font-xss mb-4">Notification</h4>
+                <div className="d-flex flex-column bgi-no-repeat rounded-top">
+                    <h4 className="fw-700 font-xss mb-4">Notification</h4>
+                    <Tabs
+                        id="controlled-tab-example"
+                        activeKey={key}
+                        onSelect={(k) => setKey(k)}
+                        className="mb-3"
+                    >
+                        <Tab eventKey="home" title="Home">
+                            <p>a</p>
+                        </Tab>
+                        <Tab eventKey="profile" title="Profile">
+                            <p>b</p>
+                        </Tab>
+                        <Tab eventKey="contact" title="Contact" disabled>
+                            <p>c</p>
+                        </Tab>
+                    </Tabs>
+                </div>
                 <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img
                         src="assets/images/user.png"
@@ -79,7 +101,7 @@ function Notification() {
                         Mobile Apps UI Designer is require..
                     </h6>
                 </div>
-                <div className="card bg-transparent-card w-100 border-0 ps-5">
+                <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img
                         src="assets/images/user.png"
                         alt="user"
@@ -96,7 +118,7 @@ function Notification() {
                         Mobile Apps UI Designer is require..
                     </h6>
                 </div>
-                <div className="card bg-transparent-card w-100 border-0 ps-5">
+                <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img
                         src="assets/images/user.png"
                         alt="user"
@@ -113,7 +135,7 @@ function Notification() {
                         Mobile Apps UI Designer is require..
                     </h6>
                 </div>
-                <div className="card bg-transparent-card w-100 border-0 ps-5">
+                <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img
                         src="assets/images/user.png"
                         alt="user"
@@ -130,7 +152,7 @@ function Notification() {
                         Mobile Apps UI Designer is require..
                     </h6>
                 </div>
-                <div className="card bg-transparent-card w-100 border-0 ps-5">
+                <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img
                         src="assets/images/user.png"
                         alt="user"
