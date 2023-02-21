@@ -1,17 +1,14 @@
 import { LoadingOverlay } from '@mantine/core';
 import React from 'react';
-import useAppLoading from './useAppLoading';
 
-function AppLoading({ overlayBlur = 2 }) {
-    const { loading } = useAppLoading();
-
+function Loading({ visible = true, overlayBlur = 4 }) {
     return (
         <LoadingOverlay
-            visible={loading}
             overlayBlur={overlayBlur}
+            visible={visible}
             loaderProps={{ variant: 'dots' }}
         />
     );
 }
 
-export default AppLoading;
+export default Loading;

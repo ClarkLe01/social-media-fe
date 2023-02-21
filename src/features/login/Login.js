@@ -3,10 +3,16 @@ import { IconLock, IconMail } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@features/auth';
+import { navigatePath } from '@app/routes/config';
 // import UnAuthenticatedCallApi from '@services/axios';
 
 function Login() {
     const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const form = useForm({
         initialValues: { password: '', email: '' },
@@ -18,25 +24,26 @@ function Login() {
         },
     });
 
-    const handleSubmit = async (values) => {
-        // const isValid = await form.validate();  // it will raise dict {'hasError':false,...}
-        const isValid = await form.isValid(); // validate form
-        console.log(isValid);
-        if (isValid) {
-            const data = {
-                email: values.email,
-                password: values.password,
-            };
-            console.log(data);
-        }
+    const handleLogin = (values) => {
+        setIsSubmitting(true);
+        login(
+            {
+                data: values,
+            },
+            {
+                onSuccess: () => {
+                    const from = location.state?.from || navigatePath.newsFeed;
+                    navigate(from, { state: { from: undefined } });
+                },
+            },
+        );
+        setIsSubmitting(false);
     };
 
     return (
         <Fragment>
-            <h2 className="fw-700 display1-size display2-md-size mb-3">
-                Login your account
-            </h2>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
+            <form onSubmit={form.onSubmit(handleLogin)}>
                 <Input
                     icon={<IconMail />}
                     type="text"
