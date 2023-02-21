@@ -2,11 +2,11 @@ import React from 'react';
 /** Add Route Component */
 // Layout Section
 const AuthLayout = React.lazy(() => import('../layouts/AuthLayout'));
-const MainLayout = React.lazy(() => import('../layouts/MainLayout'));
 
 //Home Section
 const Register = React.lazy(() => import('../../features/register/Register'));
 const Login = React.lazy(() => import('../../features/login/Login'));
+const ForgotPassword = React.lazy(() => import('../../features/forgotpassword/ForgotPassword'));
 
 const authRoutes = [
     {
@@ -21,19 +21,9 @@ const authRoutes = [
                 path: '/login',
                 element: Login,
             },
-        ],
-    },
-    {
-        path: '/',
-        element: MainLayout,
-        childrens: [
             {
-                path: '/test',
-                element: Register,
-            },
-            {
-                path: '/anc',
-                element: Login,
+                path: '/forgot',
+                element: ForgotPassword,
             },
         ],
     },
