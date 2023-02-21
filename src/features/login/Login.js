@@ -1,21 +1,33 @@
 import React from 'react';
-import loginBg from '@assets/images/login-bg.jpg';
+import { IconLock, IconMail } from '@tabler/icons-react';
+import Input from '@common/components/Input';
+import { Link } from 'react-router-dom';
+import { useForm } from '@mantine/form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@features/auth';
 import { navigatePath } from '@app/routes/config';
+import { Button, Overlay } from '@mantine/core';
+// import UnAuthenticatedCallApi from '@services/axios';
 
 function Login() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, loginLoading } = useAuth();
 
-    const handleLogin = () => {
+    const form = useForm({
+        initialValues: { password: '', email: '' },
+
+        // functions will be used to validate values at corresponding key
+        validate: {
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            password: (value) => (value === '' ? 'This field is required' : null),
+        },
+    });
+
+    const handleLogin = (values) => {
         login(
             {
-                data: {
-                    email: 'admin@gmail.com',
-                    password: 'admin',
-                },
+                data: values,
             },
             {
                 onSuccess: () => {
@@ -27,133 +39,80 @@ function Login() {
     };
 
     return (
-        <div className="main-wrap">
-            <div className="nav-header bg-transparent shadow-none border-0">
-                <div className="nav-top w-100">
-                    <a href="/">
-                        <i className="feather-zap text-success display1-size me-2 ms-0"></i>
-                        <span className="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">
-                            Sociala.{' '}
-                        </span>{' '}
-                    </a>
-                    <button className="nav-menu me-0 ms-auto"></button>
-
-                    <a
-                        href="/login"
-                        className="header-btn d-none d-lg-block bg-dark fw-500 text-white font-xsss p-3 ms-auto w100 text-center lh-20 rounded-xl"
-                    >
-                        Login
-                    </a>
-                    <a
-                        href="/register"
-                        className="header-btn d-none d-lg-block bg-current fw-500 text-white font-xsss p-3 ms-2 w100 text-center lh-20 rounded-xl"
-                    >
-                        Register
+        <>
+            <Overlay hidden={!loginLoading} color="transparent" />
+            <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
+            <form onSubmit={form.onSubmit(handleLogin)}>
+                <Input
+                    icon={<IconMail />}
+                    type="text"
+                    name="email"
+                    placeHolder="Your Email Address"
+                    {...form.getInputProps('email')}
+                />
+                <Input
+                    icon={<IconLock />}
+                    type="password"
+                    name="password"
+                    placeHolder="Password"
+                    {...form.getInputProps('password')}
+                />
+                <div className="form-check text-left mb-3">
+                    <input type="checkbox" className="form-check-input mt-2" id="exampleCheck5" />
+                    <label className="form-check-label font-xsss text-grey-500">Remember me</label>
+                    <a href="/forgot" className="fw-600 font-xsss text-grey-700 mt-1 float-right">
+                        Forgot your Password?
                     </a>
                 </div>
-            </div>
-            <div className="row">
-                <div
-                    className="col-xl-5 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat"
-                    style={{
-                        backgroundImage: `url(${loginBg})`,
-                    }}
-                ></div>
-                <div className="col-xl-7 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden">
-                    <div className="card shadow-none border-0 ms-auto me-auto login-card">
-                        <div className="card-body rounded-0 text-left">
-                            <h2 className="fw-700 display1-size display2-md-size mb-3">
-                                Login into <br />
-                                your account
-                            </h2>
-                            <form>
-                                <div className="form-group icon-input mb-3">
-                                    <i className="font-sm ti-email text-grey-500 pe-0"></i>
-                                    <input
-                                        type="text"
-                                        className="style2-input ps-5 form-control text-grey-900 font-xsss fw-600"
-                                        placeholder="Your Email Address"
-                                    />
-                                </div>
-                                <div className="form-group icon-input mb-1">
-                                    <input
-                                        type="Password"
-                                        className="style2-input ps-5 form-control text-grey-900 font-xss ls-3"
-                                        placeholder="Password"
-                                    />
-                                    <i className="font-sm ti-lock text-grey-500 pe-0"></i>
-                                </div>
-                                <div className="form-check text-left mb-3">
-                                    <input
-                                        type="checkbox"
-                                        className="form-check-input mt-2"
-                                        id="exampleCheck5"
-                                    />
-                                    <label className="form-check-label font-xsss text-grey-500">
-                                        Remember me
-                                    </label>
-                                    <a
-                                        href="/forgot"
-                                        className="fw-600 font-xsss text-grey-700 mt-1 float-right"
-                                    >
-                                        Forgot your Password?
-                                    </a>
-                                </div>
-                            </form>
+                <div className="col-sm-12 p-0 text-left">
+                    <Button
+                        type="submit"
+                        className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
+                        loading={loginLoading}
+                    >
+                        {loginLoading ? 'Login...' : 'Login'}
+                    </Button>
+                </div>
+            </form>
+            <h6 className="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">
+                Dont have account{' '}
+                <Link to="/register" className="fw-700 ms-1">
+                    Register
+                </Link>
+            </h6>
 
-                            <div className="col-sm-12 p-0 text-left">
-                                <div className="form-group mb-1">
-                                    <button
-                                        onClick={handleLogin}
-                                        // href="/login"
-                                        className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0 "
-                                    >
-                                        Login
-                                    </button>
-                                </div>
-                                <h6 className="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">
-                                    Don&apos;t have account{' '}
-                                    <a href="/register" className="fw-700 ms-1">
-                                        Register
-                                    </a>
-                                </h6>
-                            </div>
-                            <div className="col-sm-12 p-0 text-center mt-2">
-                                <h6 className="mb-0 d-inline-block bg-white fw-500 font-xsss text-grey-500 mb-3">
-                                    Or, Sign in with your social account{' '}
-                                </h6>
-                                <div className="form-group mb-1">
-                                    <a
-                                        href="/register"
-                                        className="form-control text-left style2-input text-white fw-600 bg-facebook border-0 p-0 mb-2"
-                                    >
-                                        <img
-                                            src="assets/images/icon-1.png"
-                                            alt="icon"
-                                            className="ms-2 w40 mb-1 me-5"
-                                        />{' '}
-                                        Sign in with Google
-                                    </a>
-                                </div>
-                                <div className="form-group mb-1">
-                                    <a
-                                        href="/register"
-                                        className="form-control text-left style2-input text-white fw-600 bg-twiiter border-0 p-0 "
-                                    >
-                                        <img
-                                            src="assets/images/icon-3.png"
-                                            alt="icon"
-                                            className="ms-2 w40 mb-1 me-5"
-                                        />{' '}
-                                        Sign in with Facebook
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div className="col-sm-12 p-0 text-center mt-2">
+                <h6 className="mb-0 d-inline-block bg-white fw-500 font-xsss text-grey-500 mb-3">
+                    Or, Sign in with your social account{' '}
+                </h6>
+                <div className="form-group mb-1">
+                    <Link
+                        to="/register"
+                        className="form-control text-left style2-input text-white fw-600 bg-facebook border-0 p-0 mb-2"
+                    >
+                        <img
+                            src="assets/images/icon-1.png"
+                            alt="icon"
+                            className="ms-2 w40 mb-1 me-5"
+                        />{' '}
+                        Sign in with Google
+                    </Link>
+                </div>
+                <div className="form-group mb-1">
+                    <Link
+                        to="/register"
+                        className="form-control text-left style2-input text-white fw-600 bg-twiiter border-0 p-0 "
+                    >
+                        <img
+                            src="assets/images/icon-3.png"
+                            alt="icon"
+                            className="ms-2 w40 mb-1 me-5"
+                        />{' '}
+                        Sign in with Facebook
+                    </Link>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

@@ -5,12 +5,14 @@ export const navigatePath = {
     newsFeed: '/',
     login: '/login',
     register: '/register',
+    forgetPassword: '/forgot',
 };
 
 const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
-const AppLayout = lazy(() => import('@app/layouts/AppLayout'));
+const AuthLayout = lazy(() => import('@app/layouts/AuthLayout'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
+const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 
 /*
     AUTH.REQUIRE: user must be logged in to access the route
@@ -27,8 +29,8 @@ const routes = [
     },
 
     {
-        name: 'App Layout',
-        element: AppLayout,
+        name: 'Auth Layout',
+        element: AuthLayout,
         requireAuth: AUTH.NOT_REQUIRE,
         children: [
             {
@@ -40,6 +42,11 @@ const routes = [
                 name: 'Login',
                 path: navigatePath.login,
                 element: Login,
+            },
+            {
+                name: 'ForgetPassword',
+                path: navigatePath.forgetPassword,
+                element: ForgetPassword,
             },
         ],
     },
