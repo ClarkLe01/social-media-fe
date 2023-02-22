@@ -76,9 +76,9 @@ function Login() {
                 <div className="form-check text-left mb-3">
                     <input type="checkbox" className="form-check-input mt-2" id="exampleCheck5" />
                     <label className="form-check-label font-xsss text-grey-500">Remember me</label>
-                    <a href="/forgot" className="fw-600 font-xsss text-grey-700 mt-1 float-right">
+                    <Link to="/forgot" className="fw-600 font-xsss text-grey-700 mt-1 float-right">
                         Forgot your Password?
-                    </a>
+                    </Link>
                 </div>
                 <div className="col-sm-12 p-0 text-left">
                     <Button
