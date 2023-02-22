@@ -54,7 +54,7 @@ function Login() {
                 title="Login failed"
                 classNames={{ root: 'mb-3 shadow-none' }}
                 hidden = {isHide}
-                onClose = {() => {setIsHide(true);}}
+                onClose = {() => {setIsHide(true), setFailedContent('');}}
             >
                 {failedContent}
             </Notification>
