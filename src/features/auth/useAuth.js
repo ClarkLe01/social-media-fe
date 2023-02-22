@@ -1,4 +1,4 @@
-import { removeItem, setData } from '@common/utils/localStorage';
+import { getData, removeItem, setData } from '@common/utils/localStorage';
 import { storageKeyAccessToken, storageKeyRefreshToken } from '@constants';
 import api, { endPoints, publicApi } from '@services/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,9 +12,7 @@ function useAuth() {
         error: profileError,
     } = useQuery({
         queryKey: [ 'profile/me' ],
-        queryFn: ({ signal }) => {
-            return api(endPoints.user.profile, { signal });
-        },
+        queryFn: () => api(endPoints.user.profile),
         retryOnMount: false,
     });
 

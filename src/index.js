@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import store from '@app/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import '@assets/scss/main.scss';
 
 Sentry.init({
     dsn: `https://cc963eba32a14664a03504f59b1aa454@o4504649765158912.ingest.sentry.io/4504668852060160`,

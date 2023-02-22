@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconLock, IconMail, IconX } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
@@ -7,14 +7,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@features/auth';
 import { navigatePath } from '@app/routes/config';
 import { Notification } from '@mantine/core';
+import { Button, Overlay } from '@mantine/core';
 
 function Login() {
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
-    const [ isFailed, setIsFailed ] = useState(false);
     const [ failedContent, setFailedContent ] = useState('');
+    const [ isHide, setIsHide ] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, loginLoading } = useAuth();
 
     const form = useForm({
         initialValues: { password: '', email: '' },
@@ -26,8 +26,7 @@ function Login() {
         },
     });
 
-    const handleLogin = async (values) => {
-        setIsSubmitting(true);
+    const handleLogin = (values) => {
         login(
             {
                 data: values,
@@ -36,29 +35,26 @@ function Login() {
                 onSuccess: () => {
                     const from = location.state?.from || navigatePath.newsFeed;
                     navigate(from, { state: { from: undefined } });
-                    setIsFailed(false);
                 },
                 onError: (error) => {
-                    setIsFailed(true);
                     setFailedContent(error.response.data.detail);
-                },
-                onSettled: () => {
-                    setIsSubmitting(false);
+                    setIsHide(false);
                 },
             },
         );
     };
 
     return (
-        <Fragment>
+        <>
+            <Overlay hidden={!loginLoading} color="transparent" />
             <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
             <Notification
                 icon={<IconX size={18} />}
                 color="red"
                 title="Login failed"
                 classNames={{ root: 'mb-3 shadow-none' }}
-                hidden = {!isFailed}
-                onClose = {() => setIsFailed(false)}
+                hidden = {isHide}
+                onClose = {() => {setIsHide(true);}}
             >
                 {failedContent}
             </Notification>
@@ -85,13 +81,13 @@ function Login() {
                     </a>
                 </div>
                 <div className="col-sm-12 p-0 text-left">
-                    <button
+                    <Button
                         type="submit"
                         className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
-                        disabled={isSubmitting}
+                        loading={loginLoading}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Login'}
-                    </button>
+                        {loginLoading ? 'Login...' : 'Login'}
+                    </Button>
                 </div>
             </form>
             <h6 className="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">
@@ -132,7 +128,7 @@ function Login() {
                     </Link>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 }
 
