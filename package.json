@@ -16,28 +16,50 @@
         "@commitlint/cli": "^17.0.0",
         "@commitlint/config-conventional": "^17.3.0",
         "@craco/craco": "^7.0.0",
+        "@emotion/react": "^11.10.5",
         "@jackwilsdon/craco-use-babelrc": "^1.0.0",
         "@sentry/react": "^7.37.1",
         "@sentry/tracing": "^7.37.1",
+        "@mantine/core": "^5.10.4",
+        "@mantine/dates": "^5.10.4",
+        "@mantine/form": "^5.10.4",
+        "@mantine/hooks": "^5.10.4",
+        "@mantine/notifications": "^5.10.4",
+        "@reduxjs/toolkit": "^1.9.2",
+        "@tabler/icons-react": "^2.4.0",
+        "@tanstack/react-query": "^4.24.9",
+        "@tanstack/react-query-devtools": "^4.24.9",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
+        "apexcharts": "^3.37.0",
         "axios": "^1.2.1",
         "babel-plugin-react-intl-auto": "^3.3.0",
+        "bootstrap": "^5.2.3",
         "classnames": "^2.3.2",
         "dayjs": "^1.11.7",
         "eslint-plugin-prettier": "^4.2.1",
         "extract-react-intl-messages": "^4.1.1",
+        "google-map-react": "^2.2.0",
         "husky": "^8.0.3",
         "immer": "^9.0.16",
         "lint-staged": "^13.1.0",
+        "mem": "^9.0.2",
+        "node-sass": "^7.0.3",
         "react": "^18.2.0",
+        "react-18-image-lightbox": "^5.1.4",
+        "react-accessible-accordion": "^5.0.0",
+        "react-apexcharts": "^1.4.0",
+        "react-bootstrap": "^2.7.2",
         "react-dom": "^18.2.0",
         "react-intl": "^6.0.3",
+        "react-player": "^2.11.2",
         "react-redux": "^8.0.5",
         "react-router-dom": "^6.5.0",
         "react-scripts": "5.0.1",
-        "sass": "^1.57.1"
+        "react-slick": "^0.29.0",
+        "sass": "^1.57.1",
+        "slick-carousel": "^1.8.1"
     },
     "eslintConfig": {
         "extends": [
@@ -58,7 +80,7 @@
         ]
     },
     "lint-staged": {
-        "*.js": [
+        "!(public/assets/**/*)*.js": [
             "npm run lint",
             "git add ."
         ]

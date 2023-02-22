@@ -24,3 +24,5 @@ __snapshots__
 */__snapshots__/
 */*/__snapshots__/
 */*/*/__snapshots__/
+
+package-lock.json
