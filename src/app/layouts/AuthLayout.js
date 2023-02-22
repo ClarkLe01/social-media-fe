@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Header from './common/Header';
 import ImageCover from '@common/components/ImageCover';
 import MainLogo from '@common/components/MainLogo';
-import NavButton from '@common/components/NavMenuButton';
+import NavMenuButton from '@common/components/NavMenuButton';
 import { Outlet, Link } from 'react-router-dom';
 
 const AuthLayout = () => {
@@ -11,7 +11,13 @@ const AuthLayout = () => {
             <div className="main-wrap">
                 <Header>
                     <MainLogo />
-                    <NavButton />
+                    <NavMenuButton />
+                    <Link
+                        to="/home"
+                        className="header-btn d-none d-lg-block bg-current fw-500 text-white font-xsss p-3 ms-2 w100 text-center lh-20 rounded-xl"
+                    >
+                        Test
+                    </Link>
                     <Link
                         to="/login"
                         className="header-btn d-none d-lg-block bg-dark fw-500 text-white font-xsss p-3 ms-auto w100 text-center lh-20 rounded-xl"
