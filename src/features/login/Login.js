@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React from 'react';
 import { IconLock, IconMail } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
@@ -6,13 +6,13 @@ import { useForm } from '@mantine/form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@features/auth';
 import { navigatePath } from '@app/routes/config';
+import { Button, Overlay } from '@mantine/core';
 // import UnAuthenticatedCallApi from '@services/axios';
 
 function Login() {
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, loginLoading } = useAuth();
 
     const form = useForm({
         initialValues: { password: '', email: '' },
@@ -25,7 +25,6 @@ function Login() {
     });
 
     const handleLogin = (values) => {
-        setIsSubmitting(true);
         login(
             {
                 data: values,
@@ -37,11 +36,11 @@ function Login() {
                 },
             },
         );
-        setIsSubmitting(false);
     };
 
     return (
-        <Fragment>
+        <>
+            <Overlay hidden={!loginLoading} color="transparent" />
             <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
             <form onSubmit={form.onSubmit(handleLogin)}>
                 <Input
@@ -66,13 +65,13 @@ function Login() {
                     </a>
                 </div>
                 <div className="col-sm-12 p-0 text-left">
-                    <button
+                    <Button
                         type="submit"
                         className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
-                        disabled={isSubmitting}
+                        loading={loginLoading}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Login'}
-                    </button>
+                        {loginLoading ? 'Login...' : 'Login'}
+                    </Button>
                 </div>
             </form>
             <h6 className="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">
@@ -113,7 +112,7 @@ function Login() {
                     </Link>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 }
 
