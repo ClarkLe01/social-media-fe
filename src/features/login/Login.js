@@ -1,15 +1,17 @@
-import React, { Fragment, useState } from 'react';
-import { IconLock, IconMail } from '@tabler/icons-react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { IconLock, IconMail, IconX } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@features/auth';
 import { navigatePath } from '@app/routes/config';
-// import UnAuthenticatedCallApi from '@services/axios';
+import { Notification } from '@mantine/core';
 
 function Login() {
     const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const [ isFailed, setIsFailed ] = useState(false);
+    const [ failedContent, setFailedContent ] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -24,7 +26,7 @@ function Login() {
         },
     });
 
-    const handleLogin = (values) => {
+    const handleLogin = async (values) => {
         setIsSubmitting(true);
         login(
             {
@@ -34,15 +36,32 @@ function Login() {
                 onSuccess: () => {
                     const from = location.state?.from || navigatePath.newsFeed;
                     navigate(from, { state: { from: undefined } });
+                    setIsFailed(false);
+                },
+                onError: (error) => {
+                    setIsFailed(true);
+                    setFailedContent(error.response.data.detail);
+                },
+                onSettled: () => {
+                    setIsSubmitting(false);
                 },
             },
         );
-        setIsSubmitting(false);
     };
 
     return (
         <Fragment>
             <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
+            <Notification
+                icon={<IconX size={18} />}
+                color="red"
+                title="Login failed"
+                classNames={{ root: 'mb-3 shadow-none' }}
+                hidden = {!isFailed}
+                onClose = {() => setIsFailed(false)}
+            >
+                {failedContent}
+            </Notification>
             <form onSubmit={form.onSubmit(handleLogin)}>
                 <Input
                     icon={<IconMail />}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-
+import Notification from '@common/components/Notification';
 import Darkbutton from './Darkbutton';
 
 class Header extends Component {
@@ -90,7 +90,7 @@ class Header extends Component {
                     <i className="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i>
                 </NavLink>
 
-                <span
+                {/* <span
                     className={`p-2 pointer text-center ms-auto menu-icon ${notiClass}`}
                     id="dropdownMenu3"
                     data-bs-toggle="dropdown"
@@ -174,7 +174,9 @@ class Header extends Component {
                             Mobile Apps UI Designer is require..
                         </h6>
                     </div>
-                </div>
+                </div> */}
+                <Notification/>    
+
                 <Link
                     to="/defaultmessage"
                     className="p-2 text-center ms-3 menu-icon chat-active-btn"
