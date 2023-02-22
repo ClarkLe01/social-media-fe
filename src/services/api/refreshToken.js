@@ -29,7 +29,6 @@ async function refreshToken() {
     } catch {
         removeItem(storageKeyAccessToken);
         removeItem(storageKeyRefreshToken);
-
         return null;
     }
 }
