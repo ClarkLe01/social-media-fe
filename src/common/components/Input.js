@@ -3,10 +3,10 @@ import { TextInput } from '@mantine/core';
 import PasswordInput from "./PasswordInput";
 
 function Input(props) {
-    const { name, type, icon, placeHolder, handleInputChange, ...other } = props;
+    const { name, type, icon, placeHolder, handleInputChange, className, ...other } = props;
     return (
         <div className="form-group icon-input mb-3">
-            {type === 'password' ? (
+            {(type === 'password') ? (
                 <PasswordInput
                     name={name}
                     icon={icon}
@@ -23,7 +23,7 @@ function Input(props) {
                     icon={icon}
                     type={type}
                     classNames={{
-                        input: 'form-control text-grey-900 font-xsss fw-600',
+                        input: className?className:'form-control text-grey-900 font-xsss fw-600',
                     }}
                     placeholder={placeHolder}
                     onChange={handleInputChange}

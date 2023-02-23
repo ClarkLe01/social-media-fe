@@ -9,7 +9,8 @@ export const navigatePath = {
 };
 
 const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
-const AuthLayout = lazy(() => import('@app/layouts/AuthLayout'));
+const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
+// const MainLayout = lazy(() => import('../layouts/MainLayout'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
@@ -30,7 +31,7 @@ const routes = [
 
     {
         name: 'Auth Layout',
-        element: AuthLayout,
+        element: NoAuthLayout,
         requireAuth: AUTH.NOT_REQUIRE,
         children: [
             {
