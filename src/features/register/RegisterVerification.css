@@ -1,0 +1,65 @@
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f4f5;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+h4 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #212b36;
+}
+
+input {
+    width: 18rem;
+    border: 2px solid #f4f6f8;
+    padding: 0.7rem 1rem;
+    border-radius: 0.3rem;
+}
+
+input:focus {
+    border-color: #84A9FF;
+}
+
+.countdown-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+}
+
+.countdown-text>p {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #637381;
+}
+
+.countdown-text>button {
+    background-color: #fff;
+    border: none;
+    color: #FF5630;
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: #3366FF;
+    border: none;
+    color: #fff;
+    border-radius: 0.3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem;
+}

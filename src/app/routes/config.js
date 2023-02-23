@@ -5,12 +5,14 @@ export const navigatePath = {
     newsFeed: '/',
     login: '/login',
     register: '/register',
+    registerVerification: '/register-verification',
     forgetPassword: '/forgot',
 };
 
 const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
 const AuthLayout = lazy(() => import('@app/layouts/AuthLayout'));
 const Register = lazy(() => import('@features/register/Register'));
+const RegisterVerification = lazy(() => import('@features/register/RegisterVerification'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 
@@ -47,6 +49,11 @@ const routes = [
                 name: 'ForgetPassword',
                 path: navigatePath.forgetPassword,
                 element: ForgetPassword,
+            },
+            {
+                name: 'RegisterVerification',
+                path: navigatePath.registerVerification,
+                element: RegisterVerification,
             },
         ],
     },

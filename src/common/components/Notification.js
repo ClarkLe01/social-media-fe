@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import { ScrollArea } from '@mantine/core';
 
 function Notification() {
     const [ isNoti, setIsNoti ] = useState(false);
     const [ notiClass, setNotiClass ] = useState('');
     const [ key, setKey ] = useState('home');
+    const [ backgroundColoer, setBackgroundColoer ] = useState('#5FCCDB');
     const toggleisNoti = () => {
         setIsNoti(!isNoti);
     };
@@ -28,12 +30,11 @@ function Notification() {
             <div
                 className={`dropdown-menu p-4 right-0 rounded-xxl border-0 shadow-lg ${notiClass}`}
                 aria-labelledby="dropdownMenu2"
-                
             >
-                <div className="d-flex flex-column bgi-no-repeat rounded-top sticky-top">
-                    <h4 className="fw-700 font-xss mb-4">Notification</h4>
-                </div>
-                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <h4 className="fw-700 font-xss mb-4">Notification</h4>
+                <ScrollArea 
+                    style={{ height: 250 }} 
+                >
                     <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                         <img
                             src="assets/images/user.png"
@@ -154,7 +155,7 @@ function Notification() {
                             Mobile Apps UI Designer is require..
                         </h6>
                     </div>
-                </div>
+                </ScrollArea>
             </div>
         </React.Fragment>
     );
