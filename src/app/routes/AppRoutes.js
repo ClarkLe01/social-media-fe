@@ -1,25 +1,33 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import routes from '.';
+import AccessControl from './AccessControl';
+import routes from './config';
 
-function createDeepRoute(routes) {
-    const deepRoute = routes.map((route) => (
-        <Route key={route.path} path={route.path} element={route.element} {...route.props}>
-            {route.children && createDeepRoute(route.children)}
+function createRoute(routes) {
+    const route = routes.map((route) => (
+        <Route
+            key={route.name}
+            path={route.path}
+            element={
+                <AccessControl requireAuth={route.requireAuth}>
+                    <route.element />
+                </AccessControl>
+            }
+            {...route.props}
+        >
+            {route.children && createRoute(route.children)}
         </Route>
     ));
 
-    return deepRoute;
+    return route;
 }
 
 function AppRoutes() {
     return (
         <BrowserRouter>
-            <Routes>{createDeepRoute(routes)}</Routes>
+            <Routes>{createRoute(routes)}</Routes>
         </BrowserRouter>
     );
 }
 
 export default AppRoutes;
-
-

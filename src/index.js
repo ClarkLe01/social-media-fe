@@ -3,11 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
-import { MantineProvider } from '@mantine/core';
 import { Provider } from 'react-redux';
 import store from '@app/store';
-import { LanguageProvider } from '@app/locales';
-import { NotificationsProvider } from '@mantine/notifications';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import '@assets/scss/main.scss';
 
 Sentry.init({
     dsn: `https://cc963eba32a14664a03504f59b1aa454@o4504649765158912.ingest.sentry.io/4504668852060160`,
@@ -20,21 +20,23 @@ Sentry.init({
 
 Sentry.captureMessage('this is a debug message', 'debug');
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false, // default: true
+            retry: 1, // default: true
+        },
+    },
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <MantineProvider
-                theme={{
-                    fontFamily: '"Montserrat", sans-serif',
-                }}
-            >
-                <NotificationsProvider>
-                    <LanguageProvider>
-                        <App />
-                    </LanguageProvider>
-                </NotificationsProvider>
-            </MantineProvider>
+            <QueryClientProvider client={queryClient}>
+                <App />
+                <ReactQueryDevtools initialIsOpen />
+            </QueryClientProvider>
         </Provider>
     </React.StrictMode>,
 );

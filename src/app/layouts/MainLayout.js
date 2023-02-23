@@ -1,20 +1,16 @@
 import React, { Fragment } from 'react';
 import MainHeader from './common/MainHeader';
-import MainLogo from '@common/components/MainLogo';
-import NavButton from '@common/components/NavMenuButton';
-import { Link } from 'react-router-dom';
-
-const AuthLayout = () => {
+import { Outlet } from 'react-router-dom';
+const MainLayout = () => {
     return (
         <>
             <div className="main-wrap">
-                <MainHeader>
-                    
-                </MainHeader>
+                <MainHeader />
                 <div className="row">
+                    <Outlet/>
                 </div>
             </div>
         </>
     );
 };
-export default AuthLayout;
+export default MainLayout;

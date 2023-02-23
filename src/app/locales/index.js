@@ -1,9 +1,4 @@
-export {
-    default as localeReducer,
-    changeCurrentLocale,
-    selectCurrentLocale,
-    selectLocales,
-} from './localeSlice';
+export { default as localeReducer } from './localeSlice';
 
 export { default as useLocale } from './useLocale';
 

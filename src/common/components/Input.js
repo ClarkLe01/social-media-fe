@@ -8,39 +8,27 @@ function Input(props) {
         <div className="form-group icon-input mb-3">
             {(type === 'password') ? (
                 <PasswordInput
+                    name={name}
                     icon={icon}
                     placeholder={placeHolder}
                     classNames={{
-                        input: 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
+                        input: 'form-control text-grey-900 font-xsss fw-600',
                     }}
                     onChange={handleInputChange}
-                    name={name}
                     {...other}
                 />
             ) : (
-                className ? (
-                    <TextInput
-                        icon={icon}
-                        type={type}
-                        classNames={{
-                            input: `${className}`,
-                        }}
-                        placeholder={placeHolder}
-                        onChange={handleInputChange}
-                        name={name}
-                        {...other}
-                    />) :
-                    (<TextInput
-                        icon={icon}
-                        type={type}
-                        classNames={{
-                            input: 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
-                        }}
-                        placeholder={placeHolder}
-                        onChange={handleInputChange}
-                        name={name}
-                        {...other}
-                    />)
+                <TextInput
+                    name={name}
+                    icon={icon}
+                    type={type}
+                    classNames={{
+                        input: className?className:'form-control text-grey-900 font-xsss fw-600',
+                    }}
+                    placeholder={placeHolder}
+                    onChange={handleInputChange}
+                    {...other}
+                />
             )}
         </div>
     );
