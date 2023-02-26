@@ -9,7 +9,7 @@ orbs:
 executors:
   frontend-executor:
     docker:
-      - image: cimg/node:18.5
+      - image: cimg/node:17.5
 
 jobs:
   # Job one with a unique name
