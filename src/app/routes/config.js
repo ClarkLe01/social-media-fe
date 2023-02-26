@@ -6,11 +6,13 @@ export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
+    profile: '/profile',
 };
 
-const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
+// const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
+const Profile = lazy(() => import('@app/layouts/MainLayout'));
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
-// const MainLayout = lazy(() => import('../layouts/MainLayout'));
+const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
@@ -25,8 +27,24 @@ const routes = [
     {
         name: 'News Feed',
         path: navigatePath.newsFeed,
-        element: NewsFeed,
-        requireAuth: AUTH.REQUIRE,
+        element: MainLayout,
+        requireAuth: AUTH.NOT_REQUIRE,
+        // children: [
+        //     {
+        //         name: 'Profile',
+        //         path: navigatePath.profile,
+        //         element: Profile,
+        //     },
+        // ],
+    },
+
+
+    // SECTION BELOW TO TEST (SHOULD REMOVE)
+    {
+        name: 'Profile',
+        path: navigatePath.profile,
+        element: Profile,
+        requireAuth: AUTH.NOT_REQUIRE,
     },
 
     {
