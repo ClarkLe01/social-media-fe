@@ -5,7 +5,7 @@ import PasswordInput from "./PasswordInput";
 function Input(props) {
     const { name, type, icon, placeHolder, handleInputChange, className, ...other } = props;
     return (
-        <div className="form-group icon-input mb-3">
+        <div className="form-group icon-input mb-3 h-100">
             {(type === 'password') ? (
                 <PasswordInput
                     name={name}

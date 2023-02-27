@@ -14,7 +14,9 @@ function MainLogo() {
                 </Link>
             </MediaQuery>
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-                <i className="feather-zap text-success display1-size me-2 ms-0"></i>
+                <Link to="/">
+                    <i className="feather-zap text-success display1-size me-2 ms-0"></i>
+                </Link>
             </MediaQuery>
         </>
     );
