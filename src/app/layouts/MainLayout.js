@@ -35,7 +35,7 @@ export default function MainLayout() {
             navbarOffsetBreakpoint="sm"
             asideOffsetBreakpoint="sm"
             navbar={
-                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 190, lg: 300 }}>
+                <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 70, md: 220 }}>
                     <NavLink component={Link} to="/profile" label="Profile" icon={<IconUser size={16} stroke={1.5} />} />
                     <NavLink component={Link} to="/" label="Newfeed" icon={<IconHome size={16} stroke={1.5} />} />
                     <NavLink component={Link} to="/friend" label="Friend" icon={<IconFriends size={16} stroke={1.5} />} />
@@ -45,7 +45,7 @@ export default function MainLayout() {
             }
             aside={
                 <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-                    <Aside className='me-0' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 220, lg: 320 }}>
+                    <Aside className='me-0' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 320 }}>
                         <SideBar/>
                     </Aside>
                 </MediaQuery>
@@ -121,9 +121,10 @@ export default function MainLayout() {
             }
         >
             <div className='middle-sidebar-left'>
-                <Text>Here is for Outlet</Text>
+                
                 <Outlet />
             </div>
+            <Text>Here is for Outlet</Text>
         </AppShell>
     );
 }
