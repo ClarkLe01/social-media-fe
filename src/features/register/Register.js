@@ -1,21 +1,25 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import { IconUser, IconLock, IconCake, IconGenderMale, IconMail } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import DateTimePicker from '@common/components/DatetimePicker';
 import Selector from '@common/components/Selector';
 import { Link } from 'react-router-dom';
-import UnAuthenticatedCallApi from '@services/axios';
 import { useForm } from '@mantine/form';
+import { useAuth } from '@features/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { navigatePath } from '@app/routes/config';
+import { Button, Overlay } from '@mantine/core';
 
 function Register() {
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const { register, registerLoading } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const genderOptions = [
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
         { value: 'nonbinary', label: 'Non-binary' },
     ];
-
 
     const form = useForm({
         initialValues: {
@@ -41,36 +45,37 @@ function Register() {
         },
     });
 
-    const handleSubmit = async (values) => {
-        // const isValid = form.validate(); // it will raise dict {'hasError':false,...}
-        // setIsSubmitting(true);
-        const isValid = await form.isValid(); // validate form        
-        if (isValid) {
-            const data = {
-                first_name: values.firstName,
-                last_name: values.lastName,
-                email: values.email,
-                password: values.password,
-                confirm_password: values.confirmPassword,
-                gender: values.gender,
-                birthday: values.birthday,
-            };
-            try {
-                setIsSubmitting(true);
-                await UnAuthenticatedCallApi.post('/user/register', data);
-                setIsSubmitting(false);
-            } catch (error) {
-                const response = error.response;
-                form.setFieldError('email', response.data);
-                setIsSubmitting(false);
-            }
-        }
+    const handleRegister = (values) => {
+        register(
+            {
+                data: {
+                    first_name: values.firstName,
+                    last_name: values.lastName,
+                    email: values.email,
+                    password: values.password,
+                    confirm_password: values.confirmPassword,
+                    gender: values.gender,
+                    birthday: values.birthday,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    const from = location.state?.from || navigatePath.login;
+                    navigate(from, { state: { from: undefined } });
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                    form.setFieldError('email', error.response.data);
+                },
+            },
+        );
     };
 
     return (
         <Fragment>
+            <Overlay hidden={!registerLoading} color="transparent" />
             <h2 className="fw-700 display1-size display2-md-size mb-3">New Account</h2>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={form.onSubmit(handleRegister)}>
                 <div style={{ display: 'flex', gap: '5px' }}>
                     <Input
                         name="firstName"
@@ -121,13 +126,13 @@ function Register() {
                     options={genderOptions}
                     {...form.getInputProps('gender')}
                 />
-                <button
+                <Button
                     type="submit"
                     className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
-                    disabled={isSubmitting}
+                    loading={registerLoading}
                 >
-                    {isSubmitting ? 'Submitting...' : 'Register'}
-                </button>
+                    {registerLoading ? 'Submitting...' : 'Register'}
+                </Button>
             </form>
             <h6 className="text-grey-500 font-xsss fw-500 mt-1 mb-0 lh-32">
                 Already have an account?{' '}
