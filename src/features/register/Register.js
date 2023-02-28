@@ -60,9 +60,7 @@ function Register() {
             },
             {
                 onSuccess: (data) => {
-                    sessionStorage.setItem('tokenRoomOtp', data.data.token);
-                    console.log(data.data);
-                    const from = location.state?.from || navigatePath.registerVerification;
+                    const from = location.state?.from || navigatePath.login;
                     navigate(from, { state: { from: undefined } });
                 },
                 onError: (error) => {
