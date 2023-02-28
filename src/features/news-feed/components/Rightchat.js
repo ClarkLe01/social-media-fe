@@ -93,7 +93,7 @@ class Rightchat extends Component {
             <div
                 id="main-content-wrap"
                 className={`right-chat nav-wrap mt-2 right-scroll-bar ${
-                    this.state.width > 1500 ? 'active-sidebar' : ' '
+                    this.state.width > 900 ? 'active-sidebar' : ' '
                 }`}
             >
                 <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
