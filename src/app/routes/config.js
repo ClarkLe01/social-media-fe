@@ -2,17 +2,19 @@ import { AUTH } from '@constants';
 import { lazy } from 'react';
 
 export const navigatePath = {
-    newsFeed: '/',
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
     profile: '/profile',
+    home: '/',
 };
 
-// const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
-const Profile = lazy(() => import('@app/layouts/MainLayout'));
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
+
+// const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
+const Home = lazy(() => import('@features/home/Home'));
+const Profile = lazy(() => import('@features/profile/Profile'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
@@ -25,30 +27,19 @@ const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPasswor
 
 const routes = [
     {
-        name: 'News Feed',
-        path: navigatePath.newsFeed,
-        element: MainLayout,
-        requireAuth: AUTH.NOT_REQUIRE,
-        // children: [
-        //     {
-        //         name: 'Profile',
-        //         path: navigatePath.profile,
-        //         element: Profile,
-        //     },
-        // ],
-    },
-
-
-    // SECTION BELOW TO TEST (SHOULD REMOVE)
-    {
-        name: 'Profile',
-        path: navigatePath.profile,
-        element: Profile,
-        requireAuth: AUTH.NOT_REQUIRE,
-    },
-
-    {
         name: 'Auth Layout',
+        element: MainLayout,
+        requireAuth: AUTH.REQUIRE,
+        children: [
+            {
+                name: 'Home',
+                path: navigatePath.home,
+                element: Home,
+            },
+        ],
+    },
+    {
+        name: 'No Auth Layout',
         element: NoAuthLayout,
         requireAuth: AUTH.NOT_REQUIRE,
         children: [

@@ -30,11 +30,9 @@ import { useClickOutside } from '@mantine/hooks';
 
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
-import SideBar from '@app/layouts/common/SideBar';
 import Notification from '@common/components/Notification';
 
 import RightChat from '@common/components/RightChat';
-import Storyslider from '@common/components/StorySlider';
 export default function MainLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
@@ -197,20 +195,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <div className="d-flex align-items-center justify-content-start">
-                <div className="col-12 col-xl-10 col-lg-9 col-md-12 px-3">
-                    <div className="middle-sidebar-bottom">
-                        <div className="middle-sidebar-left">
-                            <div className="row feed-body">
-                                <Storyslider />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* <div className="col col-xl-4 col-xxl-3 col-lg-4">
-                    <RightChat />
-                </div> */}
-            </div>
+            <Outlet />
         </AppShell>
     );
 }
