@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IconLock, IconMail, IconX } from '@tabler/icons-react';
 import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';

@@ -32,6 +32,16 @@ function useAuth() {
         },
     });
 
+    const {
+        isLoading: registerLoading,
+        error: registerError,
+        mutate: register,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return publicApi(endPoints.user.register, variables);
+        },
+    });
+
     const logout = () => {
         removeItem(storageKeyAccessToken);
         removeItem(storageKeyRefreshToken);
@@ -43,10 +53,13 @@ function useAuth() {
         profile,
         login,
         logout,
+        register,
+        registerLoading,
         profileLoading,
         loginLoading,
         loginError,
         profileError,
+        registerError,
     };
 }
 

@@ -2,14 +2,12 @@ import { IconBellFilled } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
 
 import React, { useState, useEffect } from 'react';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import { ScrollArea } from '@mantine/core';
 
 function Notification() {
     
     const [ isNoti, setIsNoti ] = useState(false);
     const [ notiClass, setNotiClass ] = useState('');
-    const [ key, setKey ] = useState('home');
     const clickOutsideRef = useClickOutside(() => setIsNoti(false));
     const toggleisNoti = () => {
         setIsNoti(!isNoti);
@@ -35,10 +33,10 @@ function Notification() {
                 aria-labelledby="dropdownMenu2"
                 ref={clickOutsideRef}
             >
-                <div className="d-flex flex-column bgi-no-repeat rounded-top sticky-top">
-                    <h4 className="fw-700 font-xss mb-4">Notification</h4>
-                </div>
-                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <h4 className="fw-700 font-xss mb-4">Notification</h4>
+                <ScrollArea 
+                    style={{ height: 250 }} 
+                >
                     <div className="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                         <img
                             src="assets/images/user.png"
@@ -159,7 +157,7 @@ function Notification() {
                             Mobile Apps UI Designer is require..
                         </h6>
                     </div>
-                </div>
+                </ScrollArea>
             </div>
         </React.Fragment>
     );
