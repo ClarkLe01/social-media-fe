@@ -1,13 +1,14 @@
+import { IconBellFilled } from '@tabler/icons-react';
+import { useClickOutside } from '@mantine/hooks';
+
 import React, { useState, useEffect } from 'react';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
 import { ScrollArea } from '@mantine/core';
 
 function Notification() {
+    
     const [ isNoti, setIsNoti ] = useState(false);
     const [ notiClass, setNotiClass ] = useState('');
-    const [ key, setKey ] = useState('home');
-    const [ backgroundColoer, setBackgroundColoer ] = useState('#5FCCDB');
+    const clickOutsideRef = useClickOutside(() => setIsNoti(false));
     const toggleisNoti = () => {
         setIsNoti(!isNoti);
     };
@@ -18,18 +19,19 @@ function Notification() {
     return (
         <React.Fragment>
             <span
-                className={`p-2 pointer text-center ms-auto menu-icon ${notiClass}`}
+                className={`p-1 pointer text-center ms-auto menu-icon ${notiClass}`}
                 id="dropdownMenu3"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 onClick={toggleisNoti}
             >
                 <span className="dot-count bg-warning"></span>
-                <i className="feather-bell font-xl text-current"></i>
+                <IconBellFilled/>
             </span>
             <div
                 className={`dropdown-menu p-4 right-0 rounded-xxl border-0 shadow-lg ${notiClass}`}
                 aria-labelledby="dropdownMenu2"
+                ref={clickOutsideRef}
             >
                 <h4 className="fw-700 font-xss mb-4">Notification</h4>
                 <ScrollArea 

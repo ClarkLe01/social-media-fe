@@ -10,7 +10,8 @@
         "lint": "eslint \"src/**/*.js\" --fix",
         "format": "prettier --write \"src/**/*.js\"",
         "i18n": "extract-react-intl-messages -l=en -d en -o src/app/locales --flat 'src/**/*.js'",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "build-css": "node-sass -w public/assets/scss -o public/assets/css"
     },
     "dependencies": {
         "@commitlint/cli": "^17.0.0",

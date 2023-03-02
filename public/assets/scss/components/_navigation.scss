@@ -227,7 +227,7 @@
         height: 100vh;
         padding-top: 0;
         transition: all 0.4s ease;
-        box-shadow: 0 1rem 3rem rgb(0 0 0 / 18%) !important;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 18%) !important;
         &.nav-active {
             left:0;
             right: 0;
@@ -467,7 +467,7 @@
     background: #fff;
     border-bottom: 1px solid #FFF;
     position: fixed;
-    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 10%), 0 1px 3px 0 rgba(0, 0, 0, 8%);
     left: 0;
     top: -50%;
     right: 0;
