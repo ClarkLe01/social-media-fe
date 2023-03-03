@@ -50,7 +50,7 @@ function ProfileCard() {
                         support@gmail.com
                     </span>
                 </h4>
-                <div className="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2 mb-">
+                <div className="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2 mb-1">
                     <Button
                         leftIcon={<IconUserPlus size={18} />}
                         classNames={{

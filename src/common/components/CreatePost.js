@@ -20,7 +20,17 @@ function CreatePost() {
                     </Modal.Title>
                     <CloseButton size="xl" iconSize={20} onClick={handleClose} />
                 </Modal.Header>
-                <Modal.Body>Woohoo, you&apos;re reading this text in a modal!</Modal.Body>
+                <Modal.Body>
+                    <div className=''>
+
+                    </div>
+                    <div className='text-content'>
+
+                    </div>
+                    <div className='image-video-content'>
+
+                    </div>
+                </Modal.Body>
                 <Modal.Footer></Modal.Footer>
             </Modal>
             {/* <Modal
