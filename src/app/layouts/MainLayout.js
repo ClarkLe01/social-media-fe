@@ -5,7 +5,6 @@ import {
     Header,
     Footer,
     Aside,
-    Text,
     MediaQuery,
     Burger,
     useMantineTheme,
@@ -54,64 +53,76 @@ export default function MainLayout() {
                     background:
                         theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
+
                 
             }}
-            // navbarOffsetBreakpoint="sm"
-            // asideOffsetBreakpoint="sm"
             navbar={
-                <Navbar p="sm" hiddenBreakpoint="md" hidden={!opened} width={{ sm: 65, lg: 300 }}>
+                <Navbar 
+                    p="sm" 
+                    hiddenBreakpoint="md" 
+                    hidden={!opened} 
+                    width={{ sm: 65, xl:240 }}
+                    height = {{ sm:500 }}
+                >
                     <NavLink
                         component={Link}
                         to="/profile"
                         label="Profile"
                         icon={<IconUser size={16} stroke={1.5} />}
+                        classNames={{
+                            root: 'nav-content-bttn open-font fw-600',
+                        }}
                     />
                     <NavLink
                         component={Link}
                         to="/"
                         label="Newfeed"
                         icon={<IconHome size={16} stroke={1.5} />}
+                        classNames={{
+                            root: 'nav-content-bttn open-font fw-600',
+                        }}
                     />
                     <NavLink
                         component={Link}
                         to="/friend"
                         label="Friend"
                         icon={<IconFriends size={16} stroke={1.5} />}
+                        classNames={{
+                            root: 'nav-content-bttn open-font fw-600',
+                        }}
                     />
-                    <NavLink label="Light/Dark" icon={<IconMoon size={16} stroke={1.5} />} />
+                    <NavLink 
+                        label="Light/Dark" 
+                        icon={<IconMoon size={16} stroke={1.5} />} 
+                        classNames={{
+                            root: 'nav-content-bttn open-font fw-600',
+                        }}
+                    />
                     <NavLink
                         component={Link}
                         to="/setting"
                         label="Setting"
                         icon={<IconSettings size={16} stroke={1.5} />}
+                        classNames={{
+                            root: 'nav-content-bttn open-font fw-600',
+                        }}
                     />
                 </Navbar>
             }
             // aside={
-            //     <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-            // <Aside className='me-0' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 320 }}>
-            //     <Aside/>
-            // </Aside>
+            //     <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
+            //         <Aside
+            //             grow="true"
+            //             component={ScrollArea}
+            //             hiddenBreakpoint="md"
+            //             width={{ sm: 50 }}
+                        
+            //         >
+            //             <RightChat />
+            //         </Aside>
+                    
             //     </MediaQuery>
             // }
-            aside={
-                <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-                    <Aside
-                        grow="true"
-                        component={ScrollArea}
-                        hiddenBreakpoint="md"
-                        width={{ sm: 50 }}
-                    >
-                        <RightChat />
-                    </Aside>
-                    
-                </MediaQuery>
-            }
-            footer={
-                <Footer height={60} p="md">
-                    This footer may not use (remove if not).
-                </Footer>
-            }
             header={
                 <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -181,7 +192,7 @@ export default function MainLayout() {
                             <IconMessageCircle />
                         </Link>
 
-                        <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+                        <MediaQuery largerThan="md" styles={{ display: 'none' }}>
                             <Burger
                                 opened={opened}
                                 onClick={() => setOpened((o) => !o)}
@@ -195,6 +206,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
+            <RightChat />
             <Outlet />
         </AppShell>
     );

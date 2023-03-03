@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@mantine/core';
+import PopupChat from './PopupChat';
+import { useHover } from '@mantine/hooks';
 function FriendRequest() {
     return (
         <div className="section full pe-3 ps-4 pt-4 position-relative feed-body">
@@ -83,133 +85,139 @@ const RightChat = () => {
     const menuClass = `${isOpen ? ' d-block' : ''}`;
 
     return (
-        <div
-            id="main-content-wrap"
-            className={`right-chat px-0 nav-wrap right-scroll-bar ${
-                dimensions.width > 900 ? 'active-sidebar' : ' '
-            }`}
-        >
-            
-            <div className="middle-sidebar-right-content bg-white rounded-xxl">
-                <FriendRequest />
-                <hr />
-                <div className="section full pe-3 ps-4 pt-4 position-relative feed-body">
-                    <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
-                        CONTACTS
-                    </h4>
-                    <ul className="list-group list-group-flush">
-                        {chatMember.map((value, index) => (
-                            // Start Single Demo
-                            <li
-                                key={index}
-                                className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-                            >
-                                <figure className="avatar float-left mb-0 me-2">
-                                    <img
-                                        src={`assets/images/${value.imageUrl}`}
-                                        alt="avater"
-                                        className="w35"
-                                    />
-                                </figure>
+        <>
+            <div
+                id="main-content-wrap"
+                className={`right-chat px-0 nav-wrap right-scroll-bar ${
+                    dimensions.width > 900 ? 'active-sidebar' : ' '
+                }`}
+            >
+                <div className="middle-sidebar-right-content bg-white rounded-xxl">
+                    <FriendRequest />
+                    <hr />
+                    <div className="section full pe-3 ps-4 pt-4 position-relative feed-body">
+                        <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+                            CONTACTS
+                        </h4>
+                        <ul className="list-group list-group-flush">
+                            {chatMember.map((value, index) => (
+                                // Start Single Demo
+                                <li
+                                    key={index}
+                                    className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
+                                >
+                                    <figure className="avatar float-left mb-0 me-2">
+                                        <img
+                                            src={`assets/images/${value.imageUrl}`}
+                                            alt="avater"
+                                            className="w35"
+                                        />
+                                    </figure>
+                                    <h3 className="fw-700 mb-0 mt-0">
+                                        <span
+                                            className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                            onClick={toggleOpen}
+                                        >
+                                            {value.name}
+                                        </span>
+                                    </h3>
+                                    <span
+                                        className={`${value.status} ms-auto btn-round-xss`}
+                                    ></span>
+                                </li>
+                                // End Single Demo
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="section full pe-3 ps-4 pt-4 pb-4 position-relative feed-body">
+                        <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+                            GROUPS
+                        </h4>
+                        <ul className="list-group list-group-flush">
+                            <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <span className="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">
+                                    UD
+                                </span>
                                 <h3 className="fw-700 mb-0 mt-0">
                                     <span
                                         className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
                                         onClick={toggleOpen}
                                     >
-                                        {value.name}
+                                        Studio Express
                                     </span>
                                 </h3>
-                                <span className={`${value.status} ms-auto btn-round-xss`}></span>
+                                <span className="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss">
+                                    2 min
+                                </span>
                             </li>
-                            // End Single Demo
-                        ))}
-                    </ul>
-                </div>
-                <div className="section full pe-3 ps-4 pt-4 pb-4 position-relative feed-body">
-                    <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">GROUPS</h4>
-                    <ul className="list-group list-group-flush">
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                UD
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Studio Express
+                            <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <span className="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">
+                                    AR
                                 </span>
-                            </h3>
-                            <span className="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss">
-                                2 min
-                            </span>
-                        </li>
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                AR
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Armany Design
+                                <h3 className="fw-700 mb-0 mt-0">
+                                    <span
+                                        className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                        onClick={toggleOpen}
+                                    >
+                                        Armany Design
+                                    </span>
+                                </h3>
+                                <span className="bg-warning ms-auto btn-round-xss"></span>
+                            </li>
+                            <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <span className="btn-round-sm bg-mini-gradiant me-3 ls-3 text-white font-xssss fw-700">
+                                    UD
                                 </span>
-                            </h3>
-                            <span className="bg-warning ms-auto btn-round-xss"></span>
-                        </li>
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-mini-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                UD
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    De fabous
-                                </span>
-                            </h3>
-                            <span className="bg-success ms-auto btn-round-xss"></span>
-                        </li>
-                    </ul>
-                </div>
+                                <h3 className="fw-700 mb-0 mt-0">
+                                    <span
+                                        className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                        onClick={toggleOpen}
+                                    >
+                                        De fabous
+                                    </span>
+                                </h3>
+                                <span className="bg-success ms-auto btn-round-xss"></span>
+                            </li>
+                        </ul>
+                    </div>
 
-                <div className="section full pe-3 ps-4 pt-0 pb-4 position-relative feed-body">
-                    <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">Pages</h4>
-                    <ul className="list-group list-group-flush">
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                AB
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Armany Seary
+                    <div className="section full pe-3 ps-4 pt-0 pb-4 position-relative feed-body">
+                        <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+                            Pages
+                        </h4>
+                        <ul className="list-group list-group-flush">
+                            <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <span className="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">
+                                    AB
                                 </span>
-                            </h3>
-                            <span className="bg-success ms-auto btn-round-xss"></span>
-                        </li>
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                SD
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Entropio Inc
+                                <h3 className="fw-700 mb-0 mt-0">
+                                    <span
+                                        className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                        onClick={toggleOpen}
+                                    >
+                                        Armany Seary
+                                    </span>
+                                </h3>
+                                <span className="bg-success ms-auto btn-round-xss"></span>
+                            </li>
+                            <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <span className="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">
+                                    SD
                                 </span>
-                            </h3>
-                            <span className="bg-success ms-auto btn-round-xss"></span>
-                        </li>
-                    </ul>
+                                <h3 className="fw-700 mb-0 mt-0">
+                                    <span
+                                        className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                        onClick={toggleOpen}
+                                    >
+                                        Entropio Inc
+                                    </span>
+                                </h3>
+                                <span className="bg-success ms-auto btn-round-xss"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-
             <div className={`modal-popup-chat ${menuClass}`}>
                 <div className="modal-popup-wrap bg-white p-0 shadow-lg rounded-3">
                     <div className="modal-popup-header w-100 border-bottom">
@@ -275,7 +283,7 @@ const RightChat = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 export default RightChat;
