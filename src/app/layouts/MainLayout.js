@@ -45,7 +45,7 @@ export default function MainLayout() {
             }
             aside={
                 <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-                    <Aside className='me-0' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 220, lg: 320 }}>
+                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 220, lg: 320 }}>
                         <SideBar/>
                     </Aside>
                 </MediaQuery>
@@ -120,10 +120,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <div className='middle-sidebar-left'>
-                <Text>Here is for Outlet</Text>
-                <Outlet />
-            </div>
+            <Outlet />
         </AppShell>
     );
 }
