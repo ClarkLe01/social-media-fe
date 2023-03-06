@@ -29,7 +29,7 @@ const routes = [
     {
         name: 'Auth Layout',
         element: MainLayout,
-        requireAuth: AUTH.REQUIRE,
+        requireAuth: AUTH.NOT_REQUIRE,
         children: [
             {
                 name: 'Home',

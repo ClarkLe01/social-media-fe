@@ -32,6 +32,7 @@ import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 
 import RightChat from '@common/components/RightChat';
+import SideBar from '@app/layouts/common/SideBar';
 export default function MainLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
@@ -48,13 +49,15 @@ export default function MainLayout() {
 
     return (
         <AppShell
+            classNames={{
+                main: 'w-100',
+            }}
             styles={{
+                
                 main: {
                     background:
                         theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
-
-                
             }}
             navbar={
                 <Navbar 
@@ -109,20 +112,13 @@ export default function MainLayout() {
                     />
                 </Navbar>
             }
-            // aside={
-            //     <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-            //         <Aside
-            //             grow="true"
-            //             component={ScrollArea}
-            //             hiddenBreakpoint="md"
-            //             width={{ sm: 50 }}
-                        
-            //         >
-            //             <RightChat />
-            //         </Aside>
-                    
-            //     </MediaQuery>
-            // }
+            aside={
+                <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 220, lg: 310 }}>
+                        <SideBar/>
+                    </Aside>
+                </MediaQuery>
+            }
             header={
                 <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -206,8 +202,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <RightChat />
-            <Outlet />
+            <Outlet classNames=''/>
         </AppShell>
     );
 }
