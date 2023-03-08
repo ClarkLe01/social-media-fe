@@ -36,6 +36,11 @@ const routes = [
                 path: navigatePath.home,
                 element: Home,
             },
+            {
+                name: 'Profile',
+                path: navigatePath.profile,
+                element: Profile,
+            },
         ],
     },
     {
