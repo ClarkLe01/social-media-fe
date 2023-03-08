@@ -7,6 +7,7 @@ export const navigatePath = {
     forgetPassword: '/forgot',
     profile: '/profile',
     home: '/',
+    findpeople: '/people',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
@@ -18,6 +19,7 @@ const Profile = lazy(() => import('@features/profile/Profile'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
+const FindPeople = lazy(() => import('@features/search/FindPeople'));
 
 /*
     AUTH.REQUIRE: user must be logged in to access the route
@@ -40,6 +42,11 @@ const routes = [
                 name: 'Profile',
                 path: navigatePath.profile,
                 element: Profile,
+            },
+            {
+                name: 'Find People',
+                path: navigatePath.findpeople,
+                element: FindPeople,
             },
         ],
     },
