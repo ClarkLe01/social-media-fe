@@ -5,13 +5,13 @@ import PostView from '@common/components/Postview';
 import FriendSlider from '@common/components/FriendSlider';
 import Load from '@common/components/Load';
 
-function Profile() {
+function Home() {
     return (
         <div className="main-content p-0">
             <div className="middle-sidebar-bottom mx-2">
                 <div className="middle-sidebar-left pe-0">
                     <div className="row">
-                        <div className="col-xl-12 col-xxl-9 col-lg-8">
+                        <div className="col-xl-11 col-xxl-11 col-lg-8">
                             <Storyslider />
                             <CreatePost />
                             <FriendSlider />
@@ -27,4 +27,4 @@ function Profile() {
     );
 }
 
-export default Profile;
+export default Home;

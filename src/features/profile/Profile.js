@@ -12,14 +12,14 @@ function Profile() {
             <div className="middle-sidebar-bottom mx-2">
                 <div className="middle-sidebar-left pe-0">
                     <div className="row">
-                        <div className="col-xxl-12 col-xl-12 col-lg-9 col-md-12">
+                        <div className="col-xxl-11 col-xl-11 col-lg-9 col-md-12">
                             <ProfileCard />
                         </div>
                         <div className="col-xxl-4 col-xl-4 col-lg-9 col-md-12 py-3">
                             <ProfileDetail />
                             <ProfilePhoto />
                         </div>
-                        <div className="col-xxl-8 col-xl-8 col-lg-9 py-3">
+                        <div className="col-xxl-7 col-xl-7 col-lg-9 py-3">
                             <CreatePost />
                             <PostView
                                 id="32"
