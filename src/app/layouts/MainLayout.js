@@ -103,8 +103,8 @@ export default function MainLayout() {
                     />
                     <NavLink
                         component={Link}
-                        to="/setting"
-                        label="Setting"
+                        to="/settings"
+                        label="Settings"
                         icon={<IconSettings size={16} stroke={1.5} />}
                         classNames={{
                             root: 'nav-content-bttn open-font fw-600',
@@ -114,7 +114,7 @@ export default function MainLayout() {
             }
             aside={
                 <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 220, lg: 310 }}>
+                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 270, lg: 310 }}>
                         <SideBar/>
                     </Aside>
                 </MediaQuery>

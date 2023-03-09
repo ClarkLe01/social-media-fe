@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@mantine/core';
 function FriendRequest() {
     return (
-        <div className="section full pe-3 ps-4 pt-4 position-relative feed-body">
+        <div className="section full  pt-4 position-relative feed-body">
             <div className="card-body d-flex align-items-center p-1">
                 <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
                     Friend Request
