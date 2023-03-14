@@ -5,7 +5,7 @@ import PostView from '@common/components/Postview';
 import FriendSlider from '@common/components/FriendSlider';
 import Load from '@common/components/Load';
 
-function Profile() {
+function Home() {
     return (
         <>
             <Storyslider />
@@ -19,4 +19,4 @@ function Profile() {
     );
 }
 
-export default Profile;
+export default Home;
