@@ -3,7 +3,6 @@ import {
     AppShell,
     Navbar,
     Header,
-    Footer,
     Aside,
     MediaQuery,
     Burger,
@@ -31,8 +30,7 @@ import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 
-import RightChat from '@common/components/RightChat';
-import SideBar from '@app/layouts/common/SideBar';
+import RightChat from '@app/layouts/common/RightChat';
 export default function MainLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
@@ -115,7 +113,7 @@ export default function MainLayout() {
             aside={
                 <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
                     <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 270, lg: 310 }}>
-                        <SideBar/>
+                        <RightChat/>
                     </Aside>
                 </MediaQuery>
             }
