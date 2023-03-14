@@ -34,12 +34,10 @@ function CreatePost() {
     const handleClose = () => setShowCreatePost(false);
     const handleShow = () => {
         setShowCreatePost(true);
-        console.log('click');
     };
     const handleToggle = () => {
         setShowCreatePost(!showCreatePost);
         setShowPostAudienc(!showPostAudience);
-        console.log('toggle');
     };
     // Modal 1 status
     function handleMediaTool() {

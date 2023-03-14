@@ -1,11 +1,42 @@
 import React, { useState } from 'react';
 import PostMenuTool from './PostMenuTool';
+import FacebookEmoji from './react-facebook-emoji';
+import { Button } from '@mantine/core';
 
 function PostView(props) {
     const [ isOpen, setIsOpen ] = useState(false);
     const [ isActive, setIsActive ] = useState(false);
 
     const { user, time, des, avater, postimage, postvideo, id } = props;
+    let timeout;
+    const [ reactType, setReactType ] = useState('Unlike');
+
+    const handleReactClick = (data) => {
+        setReactType(data);
+    };
+
+    const handleLikeButtonClick = () => {
+        clearTimeout(timeout);
+        setIsActive(false);
+        reactType == 'Unlike' ? setReactType('Like') : setReactType('Unlike');
+    };
+
+    const handleMoveEnter = () => {
+        timeout = setTimeout(() => {
+            setIsActive(true);
+        }, 500);
+    };
+
+    const handleMoveOut = () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            setIsActive(false);
+        }, 500);
+    };
+    const handleMouseMove = () => {
+        clearTimeout(timeout);
+        setIsActive(true);
+    };
 
     const menuClass = `${isOpen ? ' show' : ''}`;
     const emojiClass = `${isActive ? ' active' : ''}`;
@@ -65,41 +96,10 @@ function PostView(props) {
                 ''
             )}
             <div className="card-body d-flex p-0">
-                <div
-                    className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"
-                    onClick={() => setIsActive(!isActive)}
-                >
+                <div className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
                     <i className="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>{' '}
                     <i className="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>
                     2.8K Like
-                </div>
-                <div className={`emoji-wrap pointer ${emojiClass}`}>
-                    <ul className="emojis list-inline mb-0">
-                        <li className="emoji list-inline-item">
-                            <i className="em em---1"></i>{' '}
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-angry"></i>
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-anguished"></i>{' '}
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-astonished"></i>{' '}
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-blush"></i>
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-clap"></i>
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-cry"></i>
-                        </li>
-                        <li className="emoji list-inline-item">
-                            <i className="em em-full_moon_with_face"></i>
-                        </li>
-                    </ul>
                 </div>
                 <a
                     href="/defaultvideo"
@@ -194,6 +194,55 @@ function PostView(props) {
                         className="bg-grey text-grey-500 font-xssss border-0 lh-32 p-2 font-xssss fw-600 rounded-3 w-100 theme-dark-bg"
                     />
                 </div>
+            </div>
+            <div className="card-body d-grid gap-2 d-md-flex justify-content-between px-0 py-0">
+                <div
+                    className={`emoji-wrap pointer ${emojiClass}`}
+                    style={{ backgroundColor: 'transparent', padding: '3px' }}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMoveOut}
+                >
+                    <div className="d-flex">
+                        <FacebookEmoji type="like"  size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="love"  size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="yay"   size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="haha"  size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="wow"   size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="sad"   size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="angry" size="sm" onChildData={handleReactClick} />
+                    </div>
+                </div>
+                <Button
+                    fullWidth
+                    variant="outline"
+                    leftIcon
+                    classNames={{
+                        root: 'flex-fill border-0',
+                    }}
+                    onClick={handleLikeButtonClick}
+                    onMouseEnter={handleMoveEnter}
+                    onMouseLeave={handleMoveOut}
+                >
+                    {reactType}
+                </Button>
+                <Button
+                    fullWidth
+                    variant="outline"
+                    classNames={{
+                        root: 'flex-fill border-0',
+                    }}
+                >
+                    Comment
+                </Button>
+                <Button
+                    fullWidth
+                    variant="outline"
+                    classNames={{
+                        root: 'flex-fill border-0',
+                    }}
+                >
+                    Share
+                </Button>
             </div>
         </div>
     );

@@ -1,12 +1,57 @@
 import React, { useState, useRef } from 'react';
 import { Modal, Button } from '@mantine/core';
+import FacebookEmoji from '@common/components/react-facebook-emoji';
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
+import { init } from 'emoji-mart';
+init({ data });
+
+const custom = [
+    {
+        id: 'github',
+        name: 'GitHub',
+        emojis: [
+            {
+                id: 'octocat',
+                name: 'Octocat',
+                keywords: [ 'github' ],
+                skins: [ { src: './octocat.png' } ],
+            },
+            {
+                id: 'shipit',
+                name: 'Squirrel',
+                keywords: [ 'github' ],
+                skins: [
+                    { src: './shipit-1.png' },
+                    { src: './shipit-2.png' },
+                    { src: './shipit-3.png' },
+                    { src: './shipit-4.png' },
+                    { src: './shipit-5.png' },
+                    { src: './shipit-6.png' },
+                ],
+            },
+        ],
+    },
+    {
+        id: 'gifs',
+        name: 'GIFs',
+        emojis: [
+            {
+                id: 'party_parrot',
+                name: 'Party Parrot',
+                keywords: [ 'dance', 'dancing' ],
+                skins: [ { src: './party_parrot.gif' } ],
+            },
+        ],
+    },
+];
 
 function TestPage() {
     const [ isOpen, setIsOpen ] = useState(false);
     const [ activeModal, setActiveModal ] = useState('modal1');
     const [ modal1State, setModal1State ] = useState({
         textareaContent: '',
-        checkboxChecked: false, 
+        checkboxChecked: false,
     });
     const textareaRef = useRef(null);
 
@@ -41,7 +86,11 @@ function TestPage() {
         return (
             <div>
                 <h2>Modal 1</h2>
-                <textarea value={modal1State.textareaContent} onChange={handleTextareaChange} ref={textareaRef} />
+                <textarea
+                    value={modal1State.textareaContent}
+                    onChange={handleTextareaChange}
+                    ref={textareaRef}
+                />
                 <label>
                     <input
                         type="checkbox"
@@ -67,7 +116,7 @@ function TestPage() {
 
     return (
         <div>
-            <Button onClick={openModal}>Open Modal</Button>
+            {/* <Button onClick={openModal}>Open Modal</Button>
 
             <Modal
                 opened={isOpen}
@@ -90,7 +139,21 @@ function TestPage() {
                     </Button>
                     <Button onClick={closeModal}>Close Modal</Button>
                 </div>
-            </Modal>
+            </Modal> */}
+            <div className="d-flex">
+                <FacebookEmoji type="like" size="sm" />
+                <FacebookEmoji type="love" size="sm" />
+                <FacebookEmoji type="yay" size="sm" />
+                <FacebookEmoji type="haha" size="sm" />
+                <FacebookEmoji type="wow" size="sm" />
+                <FacebookEmoji type="sad" size="sm" />
+                <FacebookEmoji type="angry" size="sm" />
+            </div>
+            <Picker data={data} custom={custom} />
+            <em-emoji id="+1" size="2em"></em-emoji>
+            <em-emoji id="+1" skin="2"></em-emoji>
+            <em-emoji shortcodes=":+1::skin-tone-1:"></em-emoji>
+            <em-emoji shortcodes=":+1::skin-tone-2:"></em-emoji>
         </div>
     );
 }
