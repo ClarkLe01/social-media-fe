@@ -17,7 +17,7 @@ function Profile() {
                 <ProfilePhoto />
             </div>
             <div className="col-xxl-8 col-xl-8 col-lg-12 py-3">
-                <CreatePost />
+                <CreatePost defaultAudience='public' />
                 <PostView
                     id="32"
                     postvideo=""

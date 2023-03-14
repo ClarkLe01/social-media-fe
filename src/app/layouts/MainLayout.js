@@ -29,7 +29,6 @@ import { useClickOutside } from '@mantine/hooks';
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
-
 import RightChat from '@app/layouts/common/RightChat';
 export default function MainLayout() {
     const scaleY = {
@@ -111,8 +110,8 @@ export default function MainLayout() {
                 </Navbar>
             }
             aside={
-                <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 270, lg: 310 }}>
+                <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
+                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 50, md: 270, lg: 310 }}>
                         <RightChat/>
                     </Aside>
                 </MediaQuery>
@@ -200,7 +199,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <Outlet classNames=''/>
+            <Outlet/>
         </AppShell>
     );
 }
