@@ -9,6 +9,7 @@ export const navigatePath = {
     home: '/',
     findpeople: '/people',
     testpage: '/test',
+    settings: '/settings',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
@@ -17,6 +18,8 @@ const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 // const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
+const Settings = lazy(() => import('@features/settings/Settings'));
+
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
@@ -50,6 +53,11 @@ const routes = [
                 name: 'Find People',
                 path: navigatePath.findpeople,
                 element: FindPeople,
+            },
+            {
+                name: 'Settings',
+                path: navigatePath.settings,
+                element: Settings,
             },
             {
                 name: 'Test Page',
