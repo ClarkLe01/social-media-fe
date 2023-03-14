@@ -195,7 +195,7 @@ function PostView(props) {
                     />
                 </div>
             </div>
-            <div className="card-body d-grid gap-2 d-md-flex justify-content-between px-0 py-0">
+            <div className="card-body d-grid gap-2 d-flex justify-content-between px-0 py-0">
                 <div
                     className={`emoji-wrap pointer ${emojiClass}`}
                     style={{ backgroundColor: 'transparent', padding: '3px' }}
@@ -214,7 +214,7 @@ function PostView(props) {
                 </div>
                 <Button
                     fullWidth
-                    variant="outline"
+                    variant='outline'
                     leftIcon
                     classNames={{
                         root: 'flex-fill border-0',
@@ -227,7 +227,7 @@ function PostView(props) {
                 </Button>
                 <Button
                     fullWidth
-                    variant="outline"
+                    variant='outline'
                     classNames={{
                         root: 'flex-fill border-0',
                     }}
@@ -236,7 +236,7 @@ function PostView(props) {
                 </Button>
                 <Button
                     fullWidth
-                    variant="outline"
+                    variant='outline'
                     classNames={{
                         root: 'flex-fill border-0',
                     }}

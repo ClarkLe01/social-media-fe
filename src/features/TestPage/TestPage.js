@@ -114,6 +114,42 @@ function TestPage() {
         );
     }
 
+    function SliderModal(props) {
+        const [ currentSlide, setCurrentSlide ] = useState(0);
+        const totalSlides = props.slides.length;
+
+        const goToNextSlide = () => {
+            setCurrentSlide((currentSlide + 1) % totalSlides);
+        };
+
+        const goToPrevSlide = () => {
+            setCurrentSlide((currentSlide - 1 + totalSlides) % totalSlides);
+        };
+
+        return (
+            <div className="slider-modal">
+                <div className="slider">
+                    {props.slides.map((slide, index) => (
+                        <div
+                            key={index}
+                            className={`slide${index === currentSlide ? ' active' : ''}`}
+                        >
+                            <img src={slide.image} alt={slide.title} />
+                            <h2>{slide.title}</h2>
+                            <p>{slide.description}</p>
+                        </div>
+                    ))}
+                </div>
+                <button className="prev" onClick={goToPrevSlide}>
+                    &lt;
+                </button>
+                <button className="next" onClick={goToNextSlide}>
+                    &gt;
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div>
             {/* <Button onClick={openModal}>Open Modal</Button>
@@ -154,6 +190,26 @@ function TestPage() {
             <em-emoji id="+1" skin="2"></em-emoji>
             <em-emoji shortcodes=":+1::skin-tone-1:"></em-emoji>
             <em-emoji shortcodes=":+1::skin-tone-2:"></em-emoji>
+            <SliderModal
+                slides={[
+                    {
+                        image: 'slide1.jpg',
+                        title: 'Slide 1',
+                        description: 'This is slide 1',
+                    },
+                    {
+                        image: 'slide2.jpg',
+                        title: 'Slide 2',
+                        description: 'This is slide 2',
+                    },
+                    {
+                        image: 'slide3.jpg',
+                        title: 'Slide 3',
+                        description: 'This is slide 3',
+                    },
+                ]}
+            />
+            ,
         </div>
     );
 }

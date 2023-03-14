@@ -64,7 +64,7 @@ const chatMember = [
     { imageUrl: 'user.png', name: 'Ana Seary', status: 'bg-success' },
 ];
 
-const RightChat = () => {
+const SideBar = () => {
 
     const [ isOpen, setIsOpen ] = useState(false);
 
@@ -229,4 +229,4 @@ const RightChat = () => {
     );
 };
 
-export default RightChat;
+export default SideBar;
