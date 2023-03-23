@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Radio, Group } from '@mantine/core';
-import MediaFileSection from './MediaFileSection';
-import { ActionIcon } from '@mantine/core';
-import { Button } from '@mantine/core';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+    Modal,
+    Radio,
+    Group,
+    SimpleGrid,
+    Textarea,
+    ScrollArea,
+    Button,
+    ActionIcon,
+} from '@mantine/core';
+
 import {
     IconLock,
     IconTriangleInvertedFilled,
@@ -12,8 +19,9 @@ import {
     IconMoodHappy,
     IconArrowLeft,
 } from '@tabler/icons-react';
-import { Textarea } from '@mantine/core';
-import { ScrollArea } from '@mantine/core';
+import MediaFileSection from './MediaFileSection';
+import MultiMemberSelector from './MultiMemberSelector';
+import MediaEditCard from './MediaEditCard';
 
 const user = {
     imageUrl: 'user.png',
@@ -21,11 +29,17 @@ const user = {
     user: '@macale343',
 };
 
-function CreatePost(props) {
-    const [ content, setContent ] = useState('');
-    const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
-    const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
 
+
+function CreatePost(props) {
+    const openMediaFileRef = useRef(null);
+    // Variable for submiting modal
+    const [ content, setContent ] = useState('');
+    const [ files, setFiles ] = useState([]);
+    const [ lastSelectedFriend, setLastSelectedFriend ] = useState([]);
+    const [ selectedFriend, setSelectedFriend ] = useState([]);
+    const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
+    const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
     const radioButtons = [
         {
             value: 'public',
@@ -40,8 +54,8 @@ function CreatePost(props) {
             icon: <IconLock />,
         },
         {
-            value: 'friendsExcept',
-            label: 'Friends Except',
+            value: 'friendExcepts',
+            label: 'Friend Excepts',
             description: "Don't show to some friends",
             icon: <IconLock />,
         },
@@ -59,6 +73,35 @@ function CreatePost(props) {
         },
     ];
 
+    const memberList = [
+        {
+            imageUrl: 'user.png',
+            name: 'Victor Exrixon ',
+            user: '@macale1',
+        },
+        {
+            imageUrl: 'user.png',
+            name: 'Surfiya Zakir ',
+            user: '@macale2',
+        },
+        {
+            imageUrl: 'user.png',
+            name: 'Goria Coast ',
+            user: '@macale3',
+        },
+        {
+            imageUrl: 'user.png',
+            name: 'Hurin Seary ',
+            user: '@macale4',
+        },
+        {
+            imageUrl: 'user.png',
+            name: 'Aliqa Macale',
+            user: '@macale12',
+        },
+    ];
+
+    // Variable for managing modal create post tool
     const [ createPostState, setCreatePostState ] = useState({
         isShowDropzone: false,
         isShowTagPeople: false,
@@ -66,25 +109,56 @@ function CreatePost(props) {
         isCheckIn: false,
         // add more properties as needed
     });
-    const [ showModal, setShowModal ] = useState(false);
-    const [ showCreatePost, setShowCreatePost ] = useState(false);
-    const [ showPostAudience, setShowPostAudience ] = useState(false);
+
+    // Variables for managing modal type
+    const createPostModalType = {
+        default: {
+            type: '',
+            name: '',
+            withCloseButton: false,
+            size: 'md',
+        },
+        createPost: {
+            type: 'createPost',
+            name: 'Create post',
+            withCloseButton: true,
+            size: 'lg',
+        },
+        postAudience: {
+            type: 'postAudience',
+            name: 'Post audience',
+            withCloseButton: false,
+            size: 'md',
+        },
+        friendExcepts: {
+            type: 'friendExcepts',
+            name: 'Friend excepts',
+            withCloseButton: false,
+            size: 'md',
+        },
+        specificFriends: {
+            type: 'specificFriends',
+            name: 'Specific friends',
+            withCloseButton: false,
+            size: 'md',
+        },
+        editMedia: {
+            type: 'editMedia',
+            name: 'Photos/Videos',
+            withCloseButton: false,
+            size: '80%',
+        },
+    };
+    const [ showModalType, setShowModalType ] = useState(createPostModalType.default);
     const [ canPost, setcanPost ] = useState(false);
-    // General Action
+
+    // Close modal
     const handleClose = () => {
-        setShowModal(false);
-        setShowCreatePost(false);
-        setShowPostAudience(false);
+        setShowModalType(createPostModalType.default);
+        setSelectedFriend([]);
+        setFiles([]);
     };
-    const handleShow = () => {
-        setShowModal(true);
-        setShowCreatePost(true);
-    };
-    const handleToggle = () => {
-        setShowCreatePost(!showCreatePost);
-        setShowPostAudience(!showPostAudience);
-    };
-    // Modal 1 status
+    // Modal 1 status create post
     function handleMediaTool() {
         setCreatePostState((prevState) => ({
             ...prevState,
@@ -109,46 +183,103 @@ function CreatePost(props) {
             isCheckIn: !createPostState.isCheckIn,
         }));
     }
-    
 
-    // Modal 2 status
-
+    // button click handled Modal for choosing friendExcepts and specificFriends modal
     function handleRadioButtonClick(value) {
-        // console.log(radioButtons[key]);
         setChoosedValueRadio(value);
+        if (value == 'friendExcepts') {
+            setShowModalType(createPostModalType.friendExcepts);
+        } else if (value == 'specificFriends') {
+            setShowModalType(createPostModalType.specificFriends);
+        }
     }
 
     useEffect(() => {
-        content.length > 0 ? setcanPost(true) : setcanPost(false);
-    }, [ content ]);
+        content.length > 0 || files.length > 0 ? setcanPost(true) : setcanPost(false);
+    }, [ content, files ]);
+
+    // Variable on Photos/Videos modal
+    const [ widthGrid, setWidthGrid ] = useState(window.innerWidth);
+    useEffect(() => {
+        const handleResize = () => {
+            setWidthGrid(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [ window.innerWidth ]);
+
+    function removeFile(index) {
+        setFiles((files) => {
+            const newFiles = [ ...files ];
+            newFiles.splice(index, 1);
+            return newFiles;
+        });
+    }
+    function updateCaption(index, value) {
+        setFiles(prevState => {
+            const newState = prevState.map((obj,id) => {
+                return id === index ? { ...obj, caption: value } : obj;
+            });
+    
+            return newState;
+        });
+    }
 
     return (
         <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
             <Modal
-                name={showCreatePost ? 'Create post' : 'Post audience'}
-                size={showCreatePost ? 'lg' : 'md'}
-                opened={showModal}
+                name={showModalType.name}
+                size={showModalType.size}
+                opened={showModalType.type != ''}
                 title={
                     <div className="d-flex justify-content-center">
-                        {showPostAudience && (
-                            <ActionIcon onClick={handleToggle}>
+                        { (showModalType.type == 'postAudience' || showModalType.type == 'editMedia') && (
+                            <ActionIcon
+                                onClick={() => setShowModalType(createPostModalType.createPost)}
+                            >
                                 <IconArrowLeft />
                             </ActionIcon>
                         )}
-                        <h1 className="fw-bold mx-auto">
-                            {showCreatePost ? 'Create post' : 'Post audience'}
-                        </h1>
+                        {showModalType.type == 'friendExcepts' && (
+                            <ActionIcon
+                                onClick={() => {
+                                    setShowModalType(createPostModalType.postAudience),
+                                    setSelectedFriend([]);
+                                }}
+                            >
+                                <IconArrowLeft />
+                            </ActionIcon>
+                        )}
+                        {showModalType.type == 'specificFriends' && (
+                            <ActionIcon
+                                onClick={() => {
+                                    setShowModalType(createPostModalType.postAudience),
+                                    setSelectedFriend([]);
+                                }}
+                            >
+                                <IconArrowLeft />
+                            </ActionIcon>
+                        )}
+                        <h1 className="fw-bold mx-auto">{showModalType.name}</h1>
                     </div>
                 }
                 classNames={{
                     header: 'd-flex justify-content-between',
-                    title: 'flex-fill mx-auto',
+                    title: 'flex-fill mx-auto pe-3',
                 }}
                 onClose={handleClose}
-                withCloseButton={showCreatePost ? true : false}
+                withCloseButton={showModalType.withCloseButton}
                 centered
             >
-                <div className={`${!showCreatePost && 'd-none'}`} id="createPost">
+                {/* createPost Modal */}
+                <div
+                    className={`${showModalType.type != 'createPost' && 'd-none'}`}
+                    id="createPost"
+                >
                     <div className="card-body p-0 d-flex">
                         <figure className="avatar me-3">
                             <img
@@ -171,35 +302,49 @@ function CreatePost(props) {
                                         rightSection: 'd-flex align-items-center',
                                     }}
                                     size="xs"
-                                    onClick={() => {setChoosedValueRadio(lastChoosedValueRadio),handleToggle(); }}
+                                    onClick={() => {
+                                        setChoosedValueRadio(lastChoosedValueRadio),
+                                        setShowModalType(createPostModalType.postAudience);
+                                    }}
                                     compact
                                 >
-                                    {radioButtons.map(obj => (
-                                        obj.value == lastChoosedValueRadio && obj.label
-                                    ))}
+                                    {radioButtons.map(
+                                        (obj) => obj.value == lastChoosedValueRadio && obj.label,
+                                    )}
                                 </Button>
                             </span>
                         </h4>
                     </div>
-                    <ScrollArea style={{ height: createPostState.isShowDropzone ? 350 : 200 }}>
-                        <div className="text-content">
+                    <ScrollArea
+                        style={{ height: createPostState.isShowDropzone ? 350 : 200 }}
+                        offsetScrollbars
+                        scrollbarSize={6}
+                    >
+                        <div className="text-content px-1">
                             <Textarea
                                 variant="unstyled"
                                 classNames={{
                                     root: 'border-0',
                                 }}
                                 autosize
-                                minRows={6}
+                                minRows={3}
                                 value={content}
                                 onChange={(event) => setContent(event.currentTarget.value)}
+                                onResize={(event) => console.log(event.currentTarget)}
                             />
                         </div>
                         {createPostState.isShowDropzone && (
-                            <div className="image-video-content pb-3">
-                                <MediaFileSection />
+                            <div className="image-video-content pb-3 px-1">
+                                <MediaFileSection
+                                    files={files}
+                                    setFiles={setFiles}
+                                    onEdit={() => setShowModalType(createPostModalType.editMedia)}
+                                    openMediaFileRef={openMediaFileRef}
+                                />
                             </div>
                         )}
                     </ScrollArea>
+
                     <div className="post-tool d-flex bd-highlight mb-3 border border-1 mt-3">
                         <div className="me-auto p-2 bd-highlight">Add to your post</div>
                         <div className="p-2 bd-highlight">
@@ -239,17 +384,30 @@ function CreatePost(props) {
                         </div>
                     </div>
                     <div className="d-grid gap-2 mx-auto">
-                        <Button fullWidth disabled={canPost ? false : true}>
+                        <Button 
+                            fullWidth 
+                            disabled={canPost ? false : true}
+                            onClick={
+                                () => console.log({
+                                    content: content, 
+                                    files: files, 
+                                    status: lastChoosedValueRadio, 
+                                    selectedFriend: selectedFriend,
+                                })
+                            }
+                        >
                             Post
                         </Button>
                     </div>
                 </div>
-                <div className={`${!showPostAudience && 'd-none'}`} id="postAudience">
+                {/* postAudience Modal */}
+                <div
+                    className={`${showModalType.type != 'postAudience' && 'd-none'}`}
+                    id="postAudience"
+                >
                     <ScrollArea style={{ height: 270 }}>
-                        <p></p>
                         <Radio.Group
                             value={choosedValueRadio}
-                            onChange={setChoosedValueRadio}
                             name="Post audience"
                             label="Who can see your post?"
                             description="This is anonymous"
@@ -267,13 +425,21 @@ function CreatePost(props) {
                                             root: 'px-0 ps-1',
                                             label: 'flex-fill',
                                         }}
-                                        onClick={() => handleRadioButtonClick(radio.value)}
+                                        onClick={() => {
+                                            handleRadioButtonClick(radio.value);
+                                            setSelectedFriend([]);
+                                        }}
                                     >
                                         <Radio
                                             labelPosition="left"
                                             value={radio.value}
                                             label={radio.label}
-                                            description={radio.description}
+                                            description={
+                                                choosedValueRadio == radio.value &&
+                                                selectedFriend.length > 0
+                                                    ? selectedFriend.length
+                                                    : radio.description
+                                            }
                                             classNames={{
                                                 inner: 'mt-2',
                                                 root: 'flex-fill',
@@ -287,16 +453,126 @@ function CreatePost(props) {
                         </Radio.Group>
                     </ScrollArea>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
-                        <Button variant="outline" onClick={() => {setChoosedValueRadio(lastChoosedValueRadio),handleToggle(); }}>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setChoosedValueRadio(lastChoosedValueRadio),
+                                setShowModalType(createPostModalType.createPost);
+                            }}
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={() => {setLastChoosedValueRadio(choosedValueRadio),handleToggle(); }}>
+                        {(choosedValueRadio == 'friendExcepts' ||
+                            choosedValueRadio == 'specificFriends') &&
+                        selectedFriend.length == 0 ? (
+                                <Button
+                                    onClick={() => {
+                                        setShowModalType(createPostModalType[choosedValueRadio]);
+                                    }}
+                                >
+                                Next
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={() => {
+                                        setLastChoosedValueRadio(choosedValueRadio),
+                                        setShowModalType(createPostModalType.createPost);
+                                    }}
+                                >
+                                Done
+                                </Button>
+                            )}
+                    </div>
+                </div>
+                {/* friendExcepts Modal */}
+                <div
+                    className={`${showModalType.type != 'friendExcepts' && 'd-none'}`}
+                    id="friendExcepts"
+                >
+                    <MultiMemberSelector
+                        isIndeterminate={true}
+                        radius="xl"
+                        color="red"
+                        data={memberList}
+                        onDataSelect={setSelectedFriend}
+                        selectedFriend={selectedFriend}
+                    />
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setShowModalType(createPostModalType.postAudience),
+                                setSelectedFriend([]);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => setShowModalType(createPostModalType.postAudience)}
+                            disabled={selectedFriend.length < 1}
+                        >
+                            Save changes
+                        </Button>
+                    </div>
+                </div>
+                {/* specificFriends Modal */}
+                <div
+                    className={`${showModalType.type != 'specificFriends' && 'd-none'}`}
+                    id="specificFriends"
+                >
+                    <MultiMemberSelector
+                        isIndeterminate={false}
+                        radius="xl"
+                        data={memberList}
+                        selectedFriend={selectedFriend}
+                        onDataSelect={setSelectedFriend}
+                    />
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setShowModalType(createPostModalType.postAudience),
+                                setSelectedFriend([]);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => setShowModalType(createPostModalType.postAudience)}
+                            disabled={selectedFriend.length < 1}
+                        >
+                            Save changes
+                        </Button>
+                    </div>
+                </div>
+                {/* editMedia Modal */}
+                <div className={`${showModalType.type != 'editMedia' && 'd-none'}`} id="editMedia">
+                    <SimpleGrid cols={widthGrid > 1100 ? 3 : widthGrid > 700 ? 2 : 1 }>
+                        {files.map((objFile, index) => {
+                            return (
+                                <MediaEditCard
+                                    key={index}
+                                    objFile={objFile}
+                                    onRemove={() => removeFile(index)}
+                                    onChange={(value) => updateCaption(index, value)}
+                                />
+                            );
+                        })}
+                    </SimpleGrid>
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
+                        <Button variant="outline" onClick={() => openMediaFileRef.current()}>
+                            Add Photos/Videos
+                        </Button>
+                        <Button onClick={() => setShowModalType(createPostModalType.createPost)}>
                             Done
                         </Button>
                     </div>
                 </div>
             </Modal>
-            <div className="card-body p-0 mt-3 position-relative" onClick={handleShow}>
+            <div
+                className="card-body p-0 mt-3 position-relative"
+                onClick={() => setShowModalType(createPostModalType.createPost)}
+            >
                 <figure className="avatar position-absolute ms-2 mt-1 top-5">
                     <img
                         src="assets/images/user.png"
