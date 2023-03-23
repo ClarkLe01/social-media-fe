@@ -1,10 +1,50 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Button } from '@mantine/core';
-import FacebookEmoji from '@common/components/react-facebook-emoji';
-import data from '@emoji-mart/data';
-import Picker from '@emoji-mart/react';
+import {
+    UnstyledButton,
+    Group,
+    Avatar,
+    Text,
+    Button,
+    ActionIcon,
+    Input,
+    Container,
+    ScrollArea,
+    Checkbox,
+    Badge,
+} from '@mantine/core';
+import { IconX, IconSearch } from '@tabler/icons-react';
 import { init } from 'emoji-mart';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 init({ data });
+
+const memberList = [
+    {
+        imageUrl: 'user.png',
+        name: 'Victor Exrixon ',
+        user: '@macale1',
+    },
+    {
+        imageUrl: 'user.png',
+        name: 'Surfiya Zakir ',
+        user: '@macale2',
+    },
+    {
+        imageUrl: 'user.png',
+        name: 'Goria Coast ',
+        user: '@macale3',
+    },
+    {
+        imageUrl: 'user.png',
+        name: 'Hurin Seary ',
+        user: '@macale4',
+    },
+    {
+        imageUrl: 'user.png',
+        name: 'Aliqa Macale',
+        user: '@macale12',
+    },
+];
 
 const custom = [
     {
@@ -53,6 +93,9 @@ function TestPage() {
         textareaContent: '',
         checkboxChecked: false,
     });
+    const [ valueChecked, setValueChecked ] = useState([]);
+    const [ objectChecked, setObjectChecked ] = useState([]);
+
     const textareaRef = useRef(null);
 
     function openModal() {
@@ -150,6 +193,51 @@ function TestPage() {
         );
     }
 
+    function handleCheckBox(value) {
+        setValueChecked(value);
+        console.log(valueChecked);
+    }
+
+    function MemberBadge(props) {
+        const value = props.value;
+        const checkedMember = memberList.find((o) => o.user === value);
+        const handleClick = () => {
+            props.onClick(props.index);
+        };
+        return (
+            <Badge
+                variant="outline"
+                color="cyan"
+                radius="sm"
+                size="xl"
+                classNames={{
+                    root: 'mx-1 mb-1 p-0 px-2',
+                }}
+                leftSection={
+                    <Avatar src={`assets/images/${checkedMember.imageUrl}`} size={22} radius="xl">
+                        BH
+                    </Avatar>
+                }
+                rightSection={
+                    <ActionIcon variant="transparent" radius="xl" size="xs" color="cyan" onClick={handleClick}>
+                        <IconX size={12} />
+                    </ActionIcon>
+                }
+            >
+                <Text size={10} color="dark">
+                    {checkedMember.name}
+                </Text>
+            </Badge>
+        );
+    }
+
+    function handleMemberBadgeClick(index){
+        const updatedItems = [ ...valueChecked ];
+        updatedItems.splice(index, 1);
+        setValueChecked(updatedItems);
+    }
+    
+
     return (
         <div>
             {/* <Button onClick={openModal}>Open Modal</Button>
@@ -176,40 +264,76 @@ function TestPage() {
                     <Button onClick={closeModal}>Close Modal</Button>
                 </div>
             </Modal> */}
-            <div className="d-flex">
-                <FacebookEmoji type="like" size="sm" />
-                <FacebookEmoji type="love" size="sm" />
-                <FacebookEmoji type="yay" size="sm" />
-                <FacebookEmoji type="haha" size="sm" />
-                <FacebookEmoji type="wow" size="sm" />
-                <FacebookEmoji type="sad" size="sm" />
-                <FacebookEmoji type="angry" size="sm" />
-            </div>
-            <Picker data={data} custom={custom} />
+            <Container size="xs" px="xs">
+                <div className="input-search">
+                    <Input
+                        icon={<IconSearch size={13} />}
+                        placehodler="Search for a friend or list…"
+                        size="xs"
+                        radius="xl"
+                    />
+                </div>
+                <ScrollArea style={{ height: 270 }}>
+                    <Checkbox.Group
+                        label="Select your favorite framework/library"
+                        description="This is anonymous"
+                        value={valueChecked}
+                        onChange={handleCheckBox}
+                        orientation="vertical"
+                    >
+                        <Group className="">
+                            {memberList.map((member, id) => (
+                                <Button
+                                    key={member.user}
+                                    fullWidth
+                                    size="xl"
+                                    leftIcon={
+                                        <Avatar
+                                            src={`assets/images/${member.imageUrl}`}
+                                            alt="it's me"
+                                            radius="xl"
+                                        />
+                                    }
+                                    variant="outline"
+                                    classNames={{
+                                        inner: 'justify-content-start',
+                                        root: 'px-0 ps-1',
+                                        label: 'flex-fill',
+                                    }}
+                                >
+                                    <Checkbox
+                                        value={member.user}
+                                        label={member.name}
+                                        labelPosition="left"
+                                        color="red"
+                                        radius="xl"
+                                        indeterminate
+                                        classNames={{
+                                            inner: 'mt-2',
+                                            root: 'flex-fill',
+                                            body: 'flex-fill pe-3 align-items-center',
+                                            labelWrapper: 'me-auto',
+                                        }}
+                                    />
+                                </Button>
+                            ))}
+                        </Group>
+                    </Checkbox.Group>
+                </ScrollArea>
+                {valueChecked.length > 0 && (
+                    <div className="pt-2 mt-4 border border-2">
+                        {valueChecked.map((value, id) => (
+                            <MemberBadge value={value} key={id} onClick={handleMemberBadgeClick} />
+                        ))}
+                    </div>
+                )}
+            </Container>
+
+            {/* <Picker data={data} custom={custom} />
             <em-emoji id="+1" size="2em"></em-emoji>
             <em-emoji id="+1" skin="2"></em-emoji>
             <em-emoji shortcodes=":+1::skin-tone-1:"></em-emoji>
-            <em-emoji shortcodes=":+1::skin-tone-2:"></em-emoji>
-            <SliderModal
-                slides={[
-                    {
-                        image: 'slide1.jpg',
-                        title: 'Slide 1',
-                        description: 'This is slide 1',
-                    },
-                    {
-                        image: 'slide2.jpg',
-                        title: 'Slide 2',
-                        description: 'This is slide 2',
-                    },
-                    {
-                        image: 'slide3.jpg',
-                        title: 'Slide 3',
-                        description: 'This is slide 3',
-                    },
-                ]}
-            />
-            ,
+            <em-emoji shortcodes=":+1::skin-tone-2:"></em-emoji> */}
         </div>
     );
 }
