@@ -36,7 +36,6 @@ function CreatePost(props) {
     // Variable for submiting modal
     const [ content, setContent ] = useState('');
     const [ files, setFiles ] = useState([]);
-    const [ lastSelectedFriend, setLastSelectedFriend ] = useState([]);
     const [ selectedFriend, setSelectedFriend ] = useState([]);
     const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
     const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
@@ -148,6 +147,12 @@ function CreatePost(props) {
             withCloseButton: false,
             size: '80%',
         },
+        tagPeople: {
+            type: 'tagPeople',
+            name: 'Tag people',
+            withCloseButton: false,
+            size: 'lg',
+        },
     };
     const [ showModalType, setShowModalType ] = useState(createPostModalType.default);
     const [ canPost, setcanPost ] = useState(false);
@@ -170,6 +175,7 @@ function CreatePost(props) {
             ...prevState,
             isShowTagPeople: !createPostState.isShowTagPeople,
         }));
+        setShowModalType(createPostModalType.tagPeople);
     }
     function handleAddFeeling() {
         setCreatePostState((prevState) => ({
@@ -237,7 +243,7 @@ function CreatePost(props) {
                 opened={showModalType.type != ''}
                 title={
                     <div className="d-flex justify-content-center">
-                        { (showModalType.type == 'postAudience' || showModalType.type == 'editMedia') && (
+                        { (showModalType.type == 'postAudience' || showModalType.type == 'editMedia' || showModalType.type == 'tagPeople') && (
                             <ActionIcon
                                 onClick={() => setShowModalType(createPostModalType.createPost)}
                             >

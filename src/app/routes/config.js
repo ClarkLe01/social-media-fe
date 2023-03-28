@@ -8,14 +8,17 @@ export const navigatePath = {
     profile: '/profile',
     home: '/',
     findpeople: '/people',
-    testpage: '/test',
     settings: '/settings',
+    notification: '/notification',
+    messages: '/messages',
+    media: '/media',
+    testpage: '/test',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
+const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 
-// const NewsFeed = lazy(() => import('@features/news-feed/NewsFeed'));
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
 const Settings = lazy(() => import('@features/settings/Settings'));
@@ -24,6 +27,9 @@ const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
+const Notification = lazy(() => import('@features/notification/Notification'));
+const Messages = lazy(() => import('@features/messages/Messages'));
+const PostView = lazy(() => import('@features/post/PostView'));
 
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
@@ -35,7 +41,7 @@ const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 const routes = [
     {
-        name: 'Auth Layout',
+        name: 'First Layout',
         element: MainLayout,
         requireAuth: AUTH.REQUIRE,
         children: [
@@ -63,6 +69,28 @@ const routes = [
                 name: 'Test Page',
                 path: navigatePath.testpage,
                 element: TestPage,
+            },
+        ],
+    },
+    {
+        name: 'Second Layout',
+        element: NoSideBarLayout,
+        requireAuth: AUTH.REQUIRE,
+        children: [
+            {
+                name: 'Notification',
+                path: navigatePath.notification,
+                element: Notification,
+            },
+            {
+                name: 'Messages',
+                path: navigatePath.messages,
+                element: Messages,
+            },
+            {
+                name: 'Post View',
+                path: navigatePath.media,
+                element: PostView,
             },
         ],
     },

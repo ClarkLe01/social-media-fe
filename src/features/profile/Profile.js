@@ -3,7 +3,7 @@ import ProfileCard from '@common/components/ProfileCard';
 import ProfileDetail from '@common/components/ProfileDetail';
 import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';
-import PostView from '@common/components/Postview';
+import PostCard from '@common/components/PostCard';
 import Load from '@common/components/Load';
 
 function Profile() {
@@ -18,7 +18,7 @@ function Profile() {
             </div>
             <div className="col-xxl-8 col-xl-8 col-lg-12 py-3">
                 <CreatePost defaultAudience='public' />
-                <PostView
+                <PostCard
                     id="32"
                     postvideo=""
                     postimage="post.png"
@@ -27,7 +27,7 @@ function Profile() {
                     time="22 min ago"
                     des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus."
                 />
-                <PostView
+                <PostCard
                     id="31"
                     postvideo=""
                     postimage="post.png"
@@ -36,7 +36,7 @@ function Profile() {
                     time="22 min ago"
                     des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus."
                 />
-                <PostView
+                <PostCard
                     id="33"
                     postvideo=""
                     postimage="post.png"

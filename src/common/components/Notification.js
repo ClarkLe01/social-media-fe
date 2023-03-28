@@ -3,6 +3,7 @@ import { useClickOutside } from '@mantine/hooks';
 
 import React, { useState, useEffect } from 'react';
 import { ScrollArea } from '@mantine/core';
+import { Link } from 'react-router-dom';
 
 function Notification() {
     
@@ -33,7 +34,10 @@ function Notification() {
                 aria-labelledby="dropdownMenu2"
                 ref={clickOutsideRef}
             >
-                <h4 className="fw-700 font-xss mb-4">Notification</h4>
+                <div className='d-flex'>
+                    <h4 className="fw-700 font-xss mb-4 me-auto">Notification</h4>
+                    <Link to='/notification' className='fw-700 font-xssss mb-4'>See all</Link>
+                </div>
                 <ScrollArea 
                     style={{ height: 250 }} 
                 >
