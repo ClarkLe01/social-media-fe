@@ -1,10 +1,112 @@
 import React, { useState } from 'react';
 import PostMenuTool from './PostMenuTool';
 import FacebookEmoji from './react-facebook-emoji';
-import { Button } from '@mantine/core';
+import { Button, Grid, Image, AspectRatio, Overlay, Text } from '@mantine/core';
 
-function PostView(props) {
-    const [ isOpen, setIsOpen ] = useState(false);
+function ImageGridPreview(props) {
+    const files = [ ...props.files ];
+
+    const previewsOneImage = files.map((obj, index) => {
+        return (
+            <React.Fragment key={index}>
+                <Grid.Col span={12}>
+                    <AspectRatio ratio={16 / 9}>
+                        <Image src={obj.file} fit="scale-down" />
+                    </AspectRatio>
+                </Grid.Col>
+            </React.Fragment>
+        );
+    });
+
+    const previewsTwoImage = files.map((obj, index) => {
+        return (
+            <React.Fragment key={index}>
+                <Grid.Col span={6}>
+                    <AspectRatio ratio={16 / 9}>
+                        <Image src={obj.file} fit="scale-down" />
+                    </AspectRatio>
+                </Grid.Col>
+            </React.Fragment>
+        );
+    });
+
+    const previewsThreeImage = files.map((obj, index) => {
+        return (
+            <React.Fragment key={index}>
+                <Grid.Col span={index > 0 ? 6 : 12}>
+                    <AspectRatio key={index} ratio={16 / 9}>
+                        <Image
+                            src={obj.file}
+                            fit="contain"
+                        />
+                    </AspectRatio>
+                </Grid.Col>
+            </React.Fragment>
+        );
+    });
+
+    const previewsFourImage = files.map((obj, index) => {
+        return (
+            <React.Fragment key={index}>
+                <Grid.Col span={index > 0 ? 4 : 12}>
+                    <AspectRatio key={index} ratio={16 / 9}>
+                        <Image
+                            src={obj.file}
+                        />
+                    </AspectRatio>
+                </Grid.Col>
+            </React.Fragment>
+        );
+    });
+
+    const previewsMoreFourImage = files.map((obj, index) => {
+        return (
+            <React.Fragment key={index}>
+                {index < 5 && (
+                    <Grid.Col span={index > 1 ? 4 : 6} className="p-1">
+                        <AspectRatio ratio={16 / 9}>
+                            <Image
+                                src={obj.file}
+                                withPlaceholder
+                            />
+                            {index > 3 && files.length - index - 1 > 0 && (
+                                <Overlay opacity={0.7} color="#000" zIndex={1}>
+                                    <Text
+                                        position="absolute"
+                                        top={0}
+                                        left={0}
+                                        right={0}
+                                        padding={20}
+                                        color="white"
+                                        size="xl"
+                                        weight={700}
+                                        style={{
+                                            zIndex: 2,
+                                        }}
+                                    >
+                                        + {files.length - index - 1}
+                                    </Text>
+                                </Overlay>
+                            )}
+                        </AspectRatio>
+                    </Grid.Col>
+                )}
+            </React.Fragment>
+        );
+    });
+
+    return (
+        <Grid>
+            {files.length == 1 && previewsOneImage}
+            {files.length == 2 && previewsTwoImage}
+            {files.length == 3 && previewsThreeImage}
+            {files.length == 4 && previewsFourImage}
+            {files.length > 4 && previewsMoreFourImage}
+        </Grid>
+    );
+}
+
+function PostCard(props) {
     const [ isActive, setIsActive ] = useState(false);
 
     const { user, time, des, avater, postimage, postvideo, id } = props;
@@ -38,7 +140,6 @@ function PostView(props) {
         setIsActive(true);
     };
 
-    const menuClass = `${isOpen ? ' show' : ''}`;
     const emojiClass = `${isActive ? ' active' : ''}`;
 
     return (
@@ -80,7 +181,7 @@ function PostView(props) {
                     </a>
                 </p>
             </div>
-            {postimage ? (
+            {/* {postimage ? (
                 <div className="card-body d-block p-0 mb-3">
                     <div className="row ps-2 pe-2">
                         <div className="col-sm-12 p-1">
@@ -94,7 +195,8 @@ function PostView(props) {
                 </div>
             ) : (
                 ''
-            )}
+            )} */}
+            {postimage && <ImageGridPreview files={postimage} />}
             <div className="card-body d-flex p-0">
                 <div className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
                     <i className="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>{' '}
@@ -108,9 +210,7 @@ function PostView(props) {
                     <i className="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
                     <span className="d-none-xss">22 Comment</span>
                 </a>
-                <div
-                    className="d-flex align-items-center ms-auto fw-600 text-grey-900 text-dark lh-26 font-xssss"
-                >
+                <div className="d-flex align-items-center ms-auto fw-600 text-grey-900 text-dark lh-26 font-xssss">
                     <i className="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
                     <span className="d-none-xss">22 Shares</span>
                 </div>
@@ -123,18 +223,17 @@ function PostView(props) {
                     onMouseLeave={handleMoveOut}
                 >
                     <div className="d-flex">
-                        <FacebookEmoji type="like"  size="sm" onChildData={handleReactClick} />
-                        <FacebookEmoji type="love"  size="sm" onChildData={handleReactClick} />
-                        <FacebookEmoji type="yay"   size="sm" onChildData={handleReactClick} />
-                        <FacebookEmoji type="haha"  size="sm" onChildData={handleReactClick} />
-                        <FacebookEmoji type="wow"   size="sm" onChildData={handleReactClick} />
-                        <FacebookEmoji type="sad"   size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="like" size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="love" size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="haha" size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="wow" size="sm" onChildData={handleReactClick} />
+                        <FacebookEmoji type="sad" size="sm" onChildData={handleReactClick} />
                         <FacebookEmoji type="angry" size="sm" onChildData={handleReactClick} />
                     </div>
                 </div>
                 <Button
                     fullWidth
-                    variant='outline'
+                    variant="outline"
                     leftIcon
                     classNames={{
                         root: 'flex-fill border-0',
@@ -147,7 +246,7 @@ function PostView(props) {
                 </Button>
                 <Button
                     fullWidth
-                    variant='outline'
+                    variant="outline"
                     classNames={{
                         root: 'flex-fill border-0',
                     }}
@@ -156,7 +255,7 @@ function PostView(props) {
                 </Button>
                 <Button
                     fullWidth
-                    variant='outline'
+                    variant="outline"
                     classNames={{
                         root: 'flex-fill border-0',
                     }}
@@ -168,4 +267,4 @@ function PostView(props) {
     );
 }
 
-export default PostView;
+export default PostCard;

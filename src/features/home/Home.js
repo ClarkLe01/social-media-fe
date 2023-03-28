@@ -1,9 +1,16 @@
 import React from 'react';
 import Storyslider from '@common/components/StorySlider';
 import CreatePost from '@common/components/CreatePost';
-import PostView from '@common/components/Postview';
+import PostCard from '@common/components/PostCard';
 import FriendSlider from '@common/components/FriendSlider';
 import Load from '@common/components/Load';
+
+const images = [
+    { file: 'https://placekitten.com/4000/3000', caption: '' },
+    { file: 'https://placekitten.com/1500/500', caption: '' },
+    
+
+];
 
 function Home() {
     return (
@@ -11,9 +18,7 @@ function Home() {
             <Storyslider />
             <CreatePost defaultAudience='private' />
             <FriendSlider />
-            <PostView id="32" postvideo="" postimage="post.png" avater="user.png" user="Surfiya Zakir" time="22 min ago" des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus." />
-            <PostView id="31" postvideo="" postimage="post.png" avater="user.png" user="David Goria" time="22 min ago" des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus." />
-            <PostView id="33" postvideo="" postimage="post.png" avater="user.png" user="Anthony Daugloi" time="2 hour ago" des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus." />
+            <PostCard id="32" postvideo="" postimage={images} avater="user.png" user="Surfiya Zakir" time="22 min ago" des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus." />
             <Load />
         </>
     );

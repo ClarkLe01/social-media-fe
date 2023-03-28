@@ -8,7 +8,7 @@ function FriendRequest() {
                 <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
                     Friend Request
                 </h4>
-                <Link to="/friend" className="fw-600 ms-auto font-xssss text-primary">
+                <Link to="/requestfriend" className="fw-600 ms-auto font-xssss text-primary">
                     See all
                 </Link>
             </div>

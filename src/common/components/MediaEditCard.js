@@ -1,13 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import {
-    Modal,
-    Radio,
-    Group,
-    SimpleGrid,
     Textarea,
-    ScrollArea,
-    Button,
     ActionIcon,
     Card,
     Text,
@@ -17,19 +11,12 @@ import {
 } from '@mantine/core';
 
 import {
-    IconLock,
-    IconTriangleInvertedFilled,
-    IconPhoto,
-    IconTag,
-    IconMapPinFilled,
-    IconMoodHappy,
-    IconArrowLeft,
     IconX,
 } from '@tabler/icons-react';
-import MediaFileSection from './MediaFileSection';
-import MultiMemberSelector from './MultiMemberSelector';
 import ReactPlayer from 'react-player';
+
 const MemoizedVideoComponent = React.memo(ReactPlayer);
+const MemoizedImageComponent = React.memo(Image);
 
 function MediaEditCard(props) {
     const file = props.objFile.file;
@@ -65,7 +52,7 @@ function MediaEditCard(props) {
                     }}
                 >
                     <div className="px-3">
-                        {fileType[0] == 'image' && <Image height={200} src={fileUrl} fit="fill" />}
+                        {fileType[0] == 'image' && <MemoizedImageComponent height={200} src={fileUrl} fit="contain" />}
                         {fileType[0] == 'video' && (
                             <MemoizedVideoComponent
                                 url={fileUrl}
