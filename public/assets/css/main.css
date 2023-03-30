@@ -1268,9 +1268,6 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-.create-post:hover {
-  background-color: #dfe3ee !important; }
-
 :root {
   --bs-primary: #1E74FD;
   --bs-secondary: #673BB7;
@@ -12214,3 +12211,9 @@ select.sort {
     display: block; }
   .emoji-wrap li i {
     font-size: 16px; } }
+
+.list-messengers > .messenger:hover {
+  background-color: #f7f7f7 !important; }
+
+.create-post:hover {
+  background-color: #dfe3ee !important; }

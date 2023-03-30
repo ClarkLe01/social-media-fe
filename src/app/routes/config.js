@@ -18,6 +18,7 @@ export const navigatePath = {
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
+const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
 
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
@@ -83,14 +84,21 @@ const routes = [
                 element: Notification,
             },
             {
-                name: 'Messages',
-                path: navigatePath.messages,
-                element: Messages,
-            },
-            {
                 name: 'Post View',
                 path: navigatePath.media,
                 element: PostView,
+            },
+        ],
+    },
+    {
+        name: 'Message Layout',
+        element: MessageLayout,
+        requireAuth: AUTH.REQUIRE,
+        children: [
+            {
+                name: 'Messages',
+                path: navigatePath.messages,
+                element: Messages,
             },
         ],
     },

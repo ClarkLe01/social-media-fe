@@ -10,6 +10,7 @@ import {
     IconHeart,
     IconMoodCry,
     IconMoodHappy,
+    IconSettings,
 } from '@tabler/icons-react';
 import { ActionIcon, Menu, Group, Avatar } from '@mantine/core';
 
@@ -149,7 +150,7 @@ function Notification() {
                         <Menu position="left-start" withArrow arrowPosition="center">
                             <Menu.Target>
                                 <ActionIcon>
-                                    <IconDots />
+                                    <IconSettings />
                                 </ActionIcon>
                             </Menu.Target>
                             <Menu.Dropdown>
