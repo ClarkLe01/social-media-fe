@@ -13,11 +13,6 @@ function MainLogo() {
                     </span>{' '}
                 </Link>
             </MediaQuery>
-            <MediaQuery largerThan="md" styles={{ display: 'none' }}>
-                <Link to="/">
-                    <i className="feather-zap text-success display1-size me-2 ms-0"></i>
-                </Link>
-            </MediaQuery>
         </>
     );
 }

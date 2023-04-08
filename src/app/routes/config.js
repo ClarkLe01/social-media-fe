@@ -5,13 +5,16 @@ export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
-    profile: '/profile',
+    profile: '/:userId',
     home: '/',
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
     messages: '/messages',
     media: '/media',
+    friendRequest: '/friendrequest',
+    yourRequest: '/yourrequest',
+    friendList: '/friendlist',
     testpage: '/test',
 };
 
@@ -19,6 +22,7 @@ const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
+const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
@@ -31,6 +35,10 @@ const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
 const Messages = lazy(() => import('@features/messages/Messages'));
 const PostView = lazy(() => import('@features/post/PostView'));
+const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
+const FriendList = lazy(() => import('@features/friend/FriendList'));
+const YourRequest = lazy(() => import('@features/friend/YourRequest'));
+
 
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
@@ -44,6 +52,7 @@ const routes = [
     {
         name: 'First Layout',
         element: MainLayout,
+        path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
@@ -76,6 +85,7 @@ const routes = [
     {
         name: 'Second Layout',
         element: NoSideBarLayout,
+        path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
@@ -93,6 +103,7 @@ const routes = [
     {
         name: 'Message Layout',
         element: MessageLayout,
+        path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
@@ -103,8 +114,32 @@ const routes = [
         ],
     },
     {
+        name: 'Friend Layout',
+        element: FriendLayout,
+        path: '/',
+        requireAuth: AUTH.REQUIRE,
+        children: [
+            {
+                name: 'Friend Request',
+                path: navigatePath.friendRequest,
+                element: FriendRequest,
+            },
+            {
+                name: 'Friend List',
+                path: navigatePath.friendList,
+                element: FriendList,
+            },
+            {
+                name: 'Your Request',
+                path: navigatePath.yourRequest,
+                element: YourRequest,
+            },
+        ],
+    },
+    {
         name: 'No Auth Layout',
         element: NoAuthLayout,
+        path: '/',
         requireAuth: AUTH.NOT_REQUIRE,
         children: [
             {

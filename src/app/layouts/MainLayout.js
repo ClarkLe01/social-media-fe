@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import {
     AppShell,
-    Navbar,
     Header,
     Aside,
     MediaQuery,
     Burger,
     useMantineTheme,
-    NavLink,
     ScrollArea,
     Transition,
     TextInput,
@@ -16,12 +14,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 import {
     IconSearch,
-    IconMoon,
     IconMessageCircle,
-    IconSettings,
-    IconUser,
-    IconHome,
-    IconFriends,
     IconArrowLeft,
 } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
@@ -30,6 +23,9 @@ import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 import RightChat from '@app/layouts/common/RightChat';
+import NavBar from './common/NavBar';
+
+
 export default function MainLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
@@ -50,69 +46,38 @@ export default function MainLayout() {
                 main: 'w-100',
             }}
             styles={{
-                
                 main: {
                     background:
                         theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
             }}
             navbar={
-                <Navbar 
-                    p="sm" 
-                    hiddenBreakpoint="md" 
-                    hidden={!opened} 
-                    width={{ sm: 65, xl:240 }}
-                    height = {{ sm:500 }}
-                >
-                    <NavLink
-                        component={Link}
-                        to="/profile"
-                        label="Profile"
-                        icon={<IconUser size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/"
-                        label="Newfeed"
-                        icon={<IconHome size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/friend"
-                        label="Friend"
-                        icon={<IconFriends size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink 
-                        label="Light/Dark" 
-                        icon={<IconMoon size={16} stroke={1.5} />} 
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/settings"
-                        label="Settings"
-                        icon={<IconSettings size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                </Navbar>
+                <NavBar 
+                    opened={opened}
+                    p="sm"
+                    hiddenBreakpoint="md"
+                    width={{
+                        sm: 65,
+                        xl: 240,
+                    }}
+                    height={{
+                        sm: 500,
+                    }}
+                />
             }
             aside={
                 <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-                    <Aside className='me-0 position-fixed' grow="true" component={ScrollArea} mx="-xs" px="xs" p="md" hiddenBreakpoint="sm" width={{ sm: 50, md: 270, lg: 310 }}>
-                        <RightChat/>
+                    <Aside
+                        className="me-0 position-fixed"
+                        grow="true"
+                        component={ScrollArea}
+                        mx="-xs"
+                        px="xs"
+                        p="md"
+                        hiddenBreakpoint="sm"
+                        width={{ sm: 50, md: 270, lg: 310 }}
+                    >
+                        <RightChat />
                     </Aside>
                 </MediaQuery>
             }
@@ -199,7 +164,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <Outlet/>
+            <Outlet />
         </AppShell>
     );
 }

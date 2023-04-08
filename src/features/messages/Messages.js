@@ -10,7 +10,7 @@ import {
     Indicator,
     Button,
     Popover,
-    Tooltip,
+    Textarea,
 } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 import {
@@ -26,9 +26,12 @@ import {
     IconSticker,
     IconSend,
 } from '@tabler/icons-react';
-import { useClickOutside, useScrollLock } from '@mantine/hooks';
+import { useScrollLock } from '@mantine/hooks';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
+import SentMessage from './components/SentMessage';
+import ReceivedMessage from './components/ReceivedMessage';
+import MessengerItem from './components/MessengerItem';
 
 const messengers = [
     {
@@ -273,115 +276,53 @@ const currentUser = {
     name: 'Vo Van Duc',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80',
 };
+const thumbsContainer = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+};
 
-function MessengerItem(props) {
-    const [ isHovering, setIsHovering ] = useState(false);
-    return (
-        <div
-            className="messenger d-flex mb-3 px-3"
-            style={{ backgroundColor: isHovering ? '#dfe3ee' : '' }}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-        >
-            <Group position="center" className="me-3">
-                <Indicator dot inline offset={4} position="bottom-end" color="green" withBorder>
-                    <Avatar size={45} radius="xl" src={props.messenger.avatar} />
-                </Indicator>
-            </Group>
-            <div>
-                <Text fw={500}>{props.messenger.name}</Text>
-                <div className="d-flex">
-                    <Text size="sm" lineClamp={1} c="dimmed">
-                        {props.messenger.lastMessage}
-                    </Text>
-                    <Text className="d-inline ms-1" size="sm" c="dimmed">
-                        {props.messenger.lastTime}
-                    </Text>
-                </div>
-            </div>
-        </div>
-    );
-}
+const thumb = {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box',
+};
 
+const thumbInner = {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden',
+};
+
+const img = {
+    display: 'block',
+    width: 'auto',
+    height: '100%',
+};
 const MemorizedMessengerItem = React.memo(MessengerItem);
-
-function SentMessage(props) {
-    const { time, content } = props;
-    return (
-        <div className="message-item outgoing-message py-2 mb-1">
-            <Grid className="align-items-center justify-content-end">
-                <Grid.Col
-                    className="p-0"
-                    span={12}
-                    style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word',
-                        maxWidth: '550px',
-                    }}
-                >
-                    <Tooltip position="top" label={time}>
-                        <div className="message-wrap mx-2">
-                            <Text>{content}</Text>
-                        </div>
-                    </Tooltip>
-                </Grid.Col>
-            </Grid>
-        </div>
-    );
-}
-
-function ReceivedMessage(props) {
-    const { time, content, receiver, isShowAvatar } = props;
-    return (
-        <div className="d-flex pe-2 align-items-center justify-content-center">
-            <div
-                style={{
-                    width: 40,
-                }}
-            >
-                {isShowAvatar && (
-                    <Tooltip position="top" label={receiver.name}>
-                        <div className="message-user">
-                            <Avatar size="md" radius="xl" src={receiver.avatar} />
-                        </div>
-                    </Tooltip>
-                )}
-            </div>
-
-            <div className="message-item mb-1 ps-1 ms-1">
-                <Grid className="align-items-center">
-                    <Grid.Col
-                        className="px-0"
-                        span={12}
-                        style={{
-                            wordBreak: 'break-word',
-                            overflowWrap: 'break-word',
-                            maxWidth: '550px',
-                        }}
-                    >
-                        <Tooltip position="top" label={time}>
-                            <div className="message-wrap mx-2">
-                                <Text>{content}</Text>
-                            </div>
-                        </Tooltip>
-                    </Grid.Col>
-                </Grid>
-            </div>
-        </div>
-    );
-}
 
 function Messages() {
     useScrollLock(true);
     const dropzoneRef = useRef(null);
     const [ valueInput, setValueInput ] = useState('');
+    const [ attachFiles, setAttachFiles ] = useState([]);
     const scrollChatingRef = useRef(null);
+    const chatInputRef = useRef(null);
+
     const scrollToBottom = () =>
         scrollChatingRef.current.scrollTo({
             top: scrollChatingRef.current.scrollHeight,
             behavior: 'smooth',
         });
     const handleSendingMessage = () => {
+        if (valueInput.length == 0) return;
         const date = new Date();
         const message = {
             id: messagesContent.length + 1,
@@ -402,7 +343,6 @@ function Messages() {
         messagesContent.push(message);
         setValueInput('');
         scrollToBottom();
-        console.log(scrollChatingRef.current.scrollHeight);
     };
     const handleEnterPress = (e) => {
         if (e.code == 'Enter') {
@@ -413,7 +353,27 @@ function Messages() {
         if (scrollChatingRef.current) {
             scrollChatingRef.current.scrollTop = scrollChatingRef.current.scrollHeight;
         }
-    }, [ ]);
+    }, []);
+
+    const thumbs = attachFiles.map((file) => (
+        <div style={thumb} key={file.name}>
+            <div style={thumbInner}>
+                <img
+                    src={file.preview}
+                    style={img}
+                    // Revoke data uri after image is loaded
+                    onLoad={() => {
+                        URL.revokeObjectURL(file.preview);
+                    }}
+                />
+            </div>
+        </div>
+    ));
+
+    useEffect(() => {
+        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+        return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    }, []);
     return (
         <div className="col-12">
             <div className="row">
@@ -508,7 +468,7 @@ function Messages() {
                             </div>
                             <div className="main-chat-content row">
                                 <ScrollArea
-                                    style={{ height: '525px' }}
+                                    style={{ height: '450px' }}
                                     type="auto"
                                     offsetScrollbars
                                     scrollbarSize={2}
@@ -533,8 +493,7 @@ function Messages() {
                                                         index == messagesContent.length - 1 ||
                                                         timeRangewithPrev <= 30
                                                             ? true
-                                                            : message.sender.id !=
-                                                              messagesContent[index + 1].sender.id;
+                                                            : message.sender.id != messagesContent[index + 1].sender.id;
                                                     let compareTimeNow =
                                                         (now - timeMessage) / (1000 * 60);
                                                     let timeString = timeMessage.toLocaleString(
@@ -607,14 +566,14 @@ function Messages() {
                                 </ScrollArea>
                             </div>
 
-                            <div className="main-chat-tool row">
+                            <div className="main-chat-tool row" ref={chatInputRef}>
                                 <div className="d-flex bd-highlight mb-3 mt-3">
-                                    <div className="p-2 bd-highlight">
+                                    <div className="p-2 bd-highlight align-self-end">
                                         <ActionIcon color="blue" variant="subtle">
                                             <IconMicrophone />
                                         </ActionIcon>
                                     </div>
-                                    <div className="p-2 bd-highlight">
+                                    <div className="p-2 bd-highlight align-self-end">
                                         <ActionIcon
                                             color="blue"
                                             variant="subtle"
@@ -623,20 +582,35 @@ function Messages() {
                                             <IconPhoto />
                                         </ActionIcon>
                                     </div>
-                                    <div className="p-2 bd-highlight">
+                                    <div className="p-2 bd-highlight align-self-end">
                                         <ActionIcon color="blue" variant="subtle">
                                             <IconSticker />
                                         </ActionIcon>
                                     </div>
-                                    <div className="p-2 bd-highlight">
+                                    <div className="p-2 bd-highlight align-self-end">
                                         <ActionIcon color="blue" variant="subtle">
                                             <IconGif />
                                         </ActionIcon>
                                     </div>
-                                    <div className="p-2 bd-highlight flex-fill ms-auto">
-                                        <Input
+                                    <div className="p-2 bd-highlight align-self-end flex-fill ms-auto">
+                                        {attachFiles.length > 0 && (
+                                            <aside
+                                                className="preview-attach-files"
+                                                style={thumbsContainer}
+                                            >
+                                                {thumbs}
+                                            </aside>
+                                        )}
+                                        <Textarea
+                                            classNames={{
+                                                input: 'py-1 ps-3 pe-5 align-self-start',
+                                            }}
+                                            autosize
+                                            minRows={1}
+                                            maxRows={4}
                                             variant="filled"
                                             radius="xl"
+                                            size={14}
                                             rightSection={
                                                 <Popover
                                                     position="top-start"
@@ -669,7 +643,7 @@ function Messages() {
                                             onKeyDown={handleEnterPress}
                                         />
                                     </div>
-                                    <div className="p-2 bd-highlight">
+                                    <div className="p-2 bd-highlight align-self-end">
                                         <ActionIcon
                                             color="blue"
                                             variant="subtle"
@@ -683,7 +657,15 @@ function Messages() {
                         </div>
                         <Dropzone
                             openRef={dropzoneRef}
-                            onDrop={(files) => console.log('drop files', files)}
+                            onDrop={(files) => {
+                                setAttachFiles(
+                                    files.map((file) =>
+                                        Object.assign(file, {
+                                            preview: URL.createObjectURL(file),
+                                        }),
+                                    ),
+                                );
+                            }}
                             onReject={(files) => console.log('rejected files', files)}
                             maxSize={3 * 1024 ** 2}
                             // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}

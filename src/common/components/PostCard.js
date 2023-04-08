@@ -12,7 +12,6 @@ function ImageGridPreview(props) {
         const image = new window.Image();
         if (files.length == 1) {
             image.onload = () => {
-                console.log(`Image width: ${image.width}, height: ${image.height}`);
                 console.log(image.width / image.height);
                 setAttrsImage({ width: image.width, height: image.height });
                 console.log(attrsImage.width);

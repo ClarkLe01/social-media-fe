@@ -29,6 +29,11 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        updateProfile: {
+            url: '/user/profile/update',
+            method: 'PATCH',
+            headers: headers.json,
+        },
         login: {
             url: '/user/login',
             method: 'POST',
@@ -37,6 +42,43 @@ export default {
         register: {
             url: '/user/register',
             method: 'POST',
+            headers: headers.json,
+        },
+        getProfileById: {
+            url: '/user/profile/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
+    },
+    friend: {
+        list: {
+            url: '/friend/list/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        requests: {
+            url: '/friend/requests',
+            method: 'GET',
+            headers: headers.json,
+        },
+        responses: {
+            url: '/friend/responses',
+            method: 'GET',
+            headers: headers.json,
+        },
+        add: {
+            url: '/friend/add',
+            method: 'POST',
+            headers: headers.json,
+        },
+        acceptRequest: {
+            url: '/friend/accept/:instanceId',
+            method: 'PATCH',
+            headers: headers.json,
+        },
+        delete: {
+            url: '/friend/delete/:instanceId',
+            method: 'DELETE',
             headers: headers.json,
         },
     },

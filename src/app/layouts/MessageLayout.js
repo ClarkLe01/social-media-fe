@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
     AppShell,
-    Navbar,
     Header,
     MediaQuery,
     Burger,
     useMantineTheme,
-    NavLink,
     Transition,
     TextInput,
     ActionIcon,
@@ -14,12 +12,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 import {
     IconSearch,
-    IconMoon,
     IconMessageCircle,
-    IconSettings,
-    IconUser,
-    IconHome,
-    IconFriends,
     IconArrowLeft,
 } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
@@ -27,7 +20,9 @@ import { useClickOutside } from '@mantine/hooks';
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
-export default function NoRightChatLayout() {
+import NavBar from './common/NavBar';
+
+export default function MessageLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
         out: { opacity: 0, transform: 'scaleY(0)' },
@@ -56,7 +51,7 @@ export default function NoRightChatLayout() {
                 
             }}
             navbar={
-                <Navbar
+                <NavBar 
                     p="md"
                     hiddenBreakpoint="md"
                     hidden={!opened}
@@ -66,51 +61,7 @@ export default function NoRightChatLayout() {
                         root: 'p-0 ps-1 pe-2',
                     }}
                     zIndex={102}
-                >
-                    <NavLink
-                        component={Link}
-                        to="/profile"
-                        label="Profile"
-                        icon={<IconUser size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/"
-                        label="Newfeed"
-                        icon={<IconHome size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/friend"
-                        label="Friend"
-                        icon={<IconFriends size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        label="Light/Dark"
-                        icon={<IconMoon size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                    <NavLink
-                        component={Link}
-                        to="/settings"
-                        label="Settings"
-                        icon={<IconSettings size={16} stroke={1.5} />}
-                        classNames={{
-                            root: 'nav-content-bttn open-font fw-600',
-                        }}
-                    />
-                </Navbar>
+                />
             }
 
             header={

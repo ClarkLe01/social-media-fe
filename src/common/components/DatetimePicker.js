@@ -1,21 +1,23 @@
 import React from "react";
 import { DatePicker } from '@mantine/dates';
+import { DatePickerInput } from '@mantine/dates';
 
 function DateTimePicker(props) {
-    const { name, icon, placeHolder, handleInputChange, ...other } = props;
-
+    const { name, icon, placeHolder, handleInputChange, ...other } = props;  
     return (
         <div className="form-group icon-input mb-3">
-            <DatePicker
+            <DatePickerInput
                 name={name}
                 icon={icon}
                 placeholder={placeHolder}
                 classNames={{
-                    input: 'form-control text-grey-900 font-xsss fw-600',
+                    input: 'form-control pt-0 font-xsss fw-600',
+                    placeholder: 'text-grey-600',
                 }}
-                styles={{ input: { backgroundColor: '#fff!important' } }}
-                inputFormat="DD-MM-YYYY"
+                valueFormat="DD/MM/YYYY"
                 onChange={handleInputChange}
+                hideOutsideDates
+                defaultLevel="year"
                 error 
                 {...other}
             />
