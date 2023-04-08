@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PostMenuTool from './PostMenuTool';
 import FacebookEmoji from './react-facebook-emoji';
 import { Button, Grid, Image, AspectRatio, Overlay, Text } from '@mantine/core';
 
+const MemorizedImage = React.memo(Image);
+
 function ImageGridPreview(props) {
     const files = [ ...props.files ];
+    const [ attrsImage, setAttrsImage ] = useState({ width: 0, height: 1 });
+    useEffect(() => {
+        const image = new window.Image();
+        if (files.length == 1) {
+            image.onload = () => {
+                console.log(image.width / image.height);
+                setAttrsImage({ width: image.width, height: image.height });
+                console.log(attrsImage.width);
+            };
+            image.src = files[0].file;
+        }
+    }, [ files.length == 1 ]);
 
     const previewsOneImage = files.map((obj, index) => {
         return (
             <React.Fragment key={index}>
                 <Grid.Col span={12}>
-                    <AspectRatio ratio={16 / 9}>
-                        <Image src={obj.file} fit="scale-down" />
-                    </AspectRatio>
+                    <MemorizedImage src={obj.file} fit="contain" />
                 </Grid.Col>
             </React.Fragment>
         );
@@ -22,8 +34,8 @@ function ImageGridPreview(props) {
         return (
             <React.Fragment key={index}>
                 <Grid.Col span={6}>
-                    <AspectRatio ratio={16 / 9}>
-                        <Image src={obj.file} fit="scale-down" />
+                    <AspectRatio ratio={attrsImage.height > attrsImage.width  ? 3/4 : 4/3 }>
+                        <MemorizedImage src={obj.file} fit="scale-down" />
                     </AspectRatio>
                 </Grid.Col>
             </React.Fragment>
@@ -35,10 +47,7 @@ function ImageGridPreview(props) {
             <React.Fragment key={index}>
                 <Grid.Col span={index > 0 ? 6 : 12}>
                     <AspectRatio key={index} ratio={16 / 9}>
-                        <Image
-                            src={obj.file}
-                            fit="contain"
-                        />
+                        <MemorizedImage src={obj.file} fit="contain" />
                     </AspectRatio>
                 </Grid.Col>
             </React.Fragment>
@@ -50,9 +59,7 @@ function ImageGridPreview(props) {
             <React.Fragment key={index}>
                 <Grid.Col span={index > 0 ? 4 : 12}>
                     <AspectRatio key={index} ratio={16 / 9}>
-                        <Image
-                            src={obj.file}
-                        />
+                        <MemorizedImage src={obj.file} />
                     </AspectRatio>
                 </Grid.Col>
             </React.Fragment>
@@ -65,10 +72,7 @@ function ImageGridPreview(props) {
                 {index < 5 && (
                     <Grid.Col span={index > 1 ? 4 : 6} className="p-1">
                         <AspectRatio ratio={16 / 9}>
-                            <Image
-                                src={obj.file}
-                                withPlaceholder
-                            />
+                            <MemorizedImage src={obj.file} withPlaceholder />
                             {index > 3 && files.length - index - 1 > 0 && (
                                 <Overlay opacity={0.7} color="#000" zIndex={1}>
                                     <Text
@@ -109,7 +113,7 @@ function ImageGridPreview(props) {
 function PostCard(props) {
     const [ isActive, setIsActive ] = useState(false);
 
-    const { user, time, des, avater, postimage, postvideo, id } = props;
+    const { user, time, des, avatar, postMedia, id } = props;
     let timeout;
     const [ reactType, setReactType ] = useState('Unlike');
 
@@ -147,8 +151,8 @@ function PostCard(props) {
             <div className="card-body p-0 d-flex">
                 <figure className="avatar me-3">
                     <img
-                        src={`assets/images/${avater}`}
-                        alt="avater"
+                        src={`assets/images/${avatar}`}
+                        alt="avatar"
                         className="shadow-sm rounded-circle w45"
                     />
                 </figure>
@@ -160,19 +164,8 @@ function PostCard(props) {
                         {time}
                     </span>
                 </h4>
-                <PostMenuTool key={`dropdownToolMenu${id}`} />
+                <PostMenuTool id={`dropdownToolMenu${id}`} />
             </div>
-            {postvideo ? (
-                <div className="card-body p-0 mb-3 rounded-3 overflow-hidden uttam-die">
-                    <a href="/defaultvideo" className="video-btn">
-                        <video autoPlay loop className="float-right w-100">
-                            <source src={`assets/images/${postvideo}`} type="video/mp4" />
-                        </video>
-                    </a>
-                </div>
-            ) : (
-                ''
-            )}
             <div className="card-body p-0 me-lg-5">
                 <p className="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
                     {des}{' '}
@@ -181,23 +174,8 @@ function PostCard(props) {
                     </a>
                 </p>
             </div>
-            {/* {postimage ? (
-                <div className="card-body d-block p-0 mb-3">
-                    <div className="row ps-2 pe-2">
-                        <div className="col-sm-12 p-1">
-                            <img
-                                src={`assets/images/${postimage}`}
-                                className="rounded-3 w-100"
-                                alt="post"
-                            />
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                ''
-            )} */}
-            {postimage && <ImageGridPreview files={postimage} />}
-            <div className="card-body d-flex p-0">
+            {postMedia && <ImageGridPreview files={postMedia} />}
+            <div className="card-body d-flex p-0 pt-2">
                 <div className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
                     <i className="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>{' '}
                     <i className="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>

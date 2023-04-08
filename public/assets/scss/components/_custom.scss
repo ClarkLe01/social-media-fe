@@ -1,0 +1,11 @@
+.list-messengers {
+  .messenger:hover {
+    background-color: #c0c0c0 !important;
+  }
+}
+
+.create-post {
+  &:hover {
+    background-color: #dfe3ee !important;
+  }
+}

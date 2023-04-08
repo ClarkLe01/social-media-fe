@@ -18,7 +18,7 @@ function AccessControl({ requireAuth, children }) {
     }
 
     if (requireAuth === AUTH.NOT_REQUIRE && profile) {
-        return <Navigate to={navigatePath.newsFeed} replace />;
+        return <Navigate to={navigatePath.home} replace />;
     }
 
     return children;

@@ -33,7 +33,7 @@ function Login() {
             },
             {
                 onSuccess: () => {
-                    const from = location.state?.from || navigatePath.newsFeed;
+                    const from = location.state?.from || navigatePath.home;
                     navigate(from, { state: { from: undefined } });
                 },
                 onError: (error) => {

@@ -3,12 +3,10 @@ import {
     AppShell,
     Navbar,
     Header,
-    Aside,
     MediaQuery,
     Burger,
     useMantineTheme,
     NavLink,
-    ScrollArea,
     Transition,
     TextInput,
     ActionIcon,
@@ -30,8 +28,10 @@ import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 import NavBar from './common/NavBar';
+import FriendNavBar from './common/FriendNavBar';
 
-export default function NoSideBarLayout() {
+
+export default function FriendLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
         out: { opacity: 0, transform: 'scaleY(0)' },
@@ -57,29 +57,19 @@ export default function NoSideBarLayout() {
                 },
             }}
             navbar={
-                <NavBar 
+                <FriendNavBar 
+                    opened={opened}
                     p="sm"
                     hiddenBreakpoint="md"
-                    hidden={!opened}
-                    width={{ sm: 65, xl: 240 }}
-                    height={{ sm: 500 }}
+                    width={{
+                        sm: 40,
+                        xl: 240,
+                    }}
+                    height={{
+                        sm: 500,
+                    }}
                 />
             }
-            // aside={
-            //     <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-            //         <Aside
-            //             className="me-0 position-fixed"
-            //             grow="true"
-            //             component={ScrollArea}
-            //             mx="-xs"
-            //             px="xs"
-            //             p="md"
-            //             hiddenBreakpoint="sm"
-            //             width={{ sm: 50, md: 270, lg: 310 }}
-            //         >
-            //         </Aside>
-            //     </MediaQuery>
-            // }
             header={
                 <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>

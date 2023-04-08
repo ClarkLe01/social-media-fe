@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import {
     AppShell,
-    Navbar,
     Header,
-    Aside,
     MediaQuery,
     Burger,
     useMantineTheme,
-    NavLink,
-    ScrollArea,
     Transition,
     TextInput,
     ActionIcon,
@@ -16,12 +12,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 import {
     IconSearch,
-    IconMoon,
     IconMessageCircle,
-    IconSettings,
-    IconUser,
-    IconHome,
-    IconFriends,
     IconArrowLeft,
 } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
@@ -31,7 +22,7 @@ import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 import NavBar from './common/NavBar';
 
-export default function NoSideBarLayout() {
+export default function MessageLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
         out: { opacity: 0, transform: 'scaleY(0)' },
@@ -54,37 +45,30 @@ export default function NoSideBarLayout() {
                 main: {
                     background:
                         theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+                    paddingTop: 7,
+                    marginTop: 50,
                 },
+                
             }}
             navbar={
                 <NavBar 
-                    p="sm"
+                    p="md"
                     hiddenBreakpoint="md"
                     hidden={!opened}
-                    width={{ sm: 65, xl: 240 }}
+                    width={{ sm: 45 }}
                     height={{ sm: 500 }}
+                    classNames={{
+                        root: 'p-0 ps-1 pe-2',
+                    }}
+                    zIndex={102}
                 />
             }
-            // aside={
-            //     <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-            //         <Aside
-            //             className="me-0 position-fixed"
-            //             grow="true"
-            //             component={ScrollArea}
-            //             mx="-xs"
-            //             px="xs"
-            //             p="md"
-            //             hiddenBreakpoint="sm"
-            //             width={{ sm: 50, md: 270, lg: 310 }}
-            //         >
-            //         </Aside>
-            //     </MediaQuery>
-            // }
+
             header={
-                <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
+                <Header height={{ base: 60 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                         <MainLogo />
-                        <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+                        <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
                             <form action="#" className="float-left header-search ms-3 mt-3">
                                 <Input
                                     icon={<IconSearch />}
@@ -98,7 +82,7 @@ export default function NoSideBarLayout() {
 
                         <Notification />
 
-                        <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+                        <MediaQuery largerThan="md" styles={{ display: 'none' }}>
                             <div>
                                 <ActionIcon
                                     className="pointer text-center ms-3 menu-icon chat-active-btn"

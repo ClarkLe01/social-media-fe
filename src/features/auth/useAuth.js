@@ -1,11 +1,12 @@
+import { navigatePath } from '@app/routes/config';
 import { getData, removeItem, setData } from '@common/utils/localStorage';
 import { storageKeyAccessToken, storageKeyRefreshToken } from '@constants';
 import api, { endPoints, publicApi } from '@services/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+
 function useAuth() {
     const queryClient = useQueryClient();
-
     const {
         data: profile,
         isLoading: profileLoading,
@@ -47,6 +48,7 @@ function useAuth() {
         removeItem(storageKeyRefreshToken);
 
         queryClient.setQueryData({ queryKey: [ 'profile/me' ], data: null });
+        window.location.href = navigatePath.login;
     };
 
     return {
