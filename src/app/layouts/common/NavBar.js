@@ -13,7 +13,7 @@ import {
     IconFriends,
     IconLogout,
 } from '@tabler/icons-react';
-import { useAuth } from '@features/auth';
+import { useAuth } from '@services/controller';
 
 function NavBar(props) {
     const { logout, profile } = useAuth();

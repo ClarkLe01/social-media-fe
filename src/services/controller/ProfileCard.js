@@ -28,9 +28,9 @@ import {
 } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 
-import { useAuth, useFriend } from '@features/auth';
+import { useAuth, useFriend } from '@services/controller';
 import { useParams } from 'react-router-dom';
-import ImageCropper from './ImageCropper';
+import ImageCropper from '../../common/components/ImageCropper';
 import { useQueryClient } from '@tanstack/react-query';
 
 function readFile(file) {
@@ -45,9 +45,10 @@ function ProfileCard(props) {
 
     const { user } = props;
     const { profile } = useAuth();
-    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(user.id);
-
+    
     const [ currentUser, setCurrentUser ] = useState(profile.data);
+    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } =  useFriend(currentUser.id);
+
     const [ dimensions, setDimensions ] = useState({ width: 400, height: 182 });
     const isHide = dimensions.width < 405 ? true : false;
 
@@ -75,35 +76,20 @@ function ProfileCard(props) {
 
     const handleAcceptRequest = useCallback(() => {
         const instances = [ ...friendList.data, ...requestList.data, ...responseList.data ];
-        console.log('handleAcceptRequest', instances);
         const target = instances.find((instance) => (instance.requestID === user.id && instance.responseID === currentUser.id) || (instance.requestID === currentUser.id && instance.responseID === user.id));
-        console.log('target_handleAcceptRequest', target);
         acceptRequest(
             {
-                instanceId: target.id,
+                pathParams: { instanceId: target.id },
             }, 
-            {
-                onError: (error) => {
-                    console.log(error.response.data);
-                },
-            },
         );
 
     }, [ user, friendList, responseList, requestList ]);
     const handleDeleteFriend = useCallback(() => {
         const instances = [ ...friendList.data, ...requestList.data, ...responseList.data ];
-        console.log('handleDeleteFriend', instances);
         const target = instances.find((instance) => (instance.requestID === user.id && instance.responseID === currentUser.id) || (instance.requestID === currentUser.id && instance.responseID === user.id));
-        console.log('target_handleDeleteFriend', target);
-        
         deleteFriend(
             {
                 pathParams: { instanceId: target.id },
-            }, 
-            {
-                onError: (error) => {
-                    console.log(error.response.data);
-                },
             },
         );
     }, [ user, friendList, responseList, requestList ]);
@@ -112,11 +98,6 @@ function ProfileCard(props) {
             {
                 data: { responseID: user.id },
             }, 
-            {
-                onError: (error) => {
-                    console.log(error.response.data);
-                },
-            },
         );
     }, [ user ]);
 

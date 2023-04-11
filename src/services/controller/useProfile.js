@@ -1,5 +1,5 @@
 import { endPoints, publicApi } from '@services/api';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueries } from '@tanstack/react-query';
 
 function useProfile(userId) {
     const {

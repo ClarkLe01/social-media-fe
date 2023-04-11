@@ -1,111 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Pagetitle from '@common/components/PageTitle';
-import { Button, Card, Grid, Group, Image, Avatar } from '@mantine/core';
-const memberList = [
-    {
-        imageUrl: 'user.png',
-        name: 'Victor Exrixon ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Surfiya Zakir ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Goria Coast ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Hurin Seary ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Victor Exrixon ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Surfiya Zakir ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Goria Coast ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Hurin Seary ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Surfiya Zakir ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Goria Coast ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Hurin Seary ',
-        user: '@macale343',
-    },
-    {
-        imageUrl: 'user.png',
-        name: 'Aliqa Macale ',
-        user: '@macale343',
-    },
-];
+import { Grid, Group, Text, ScrollArea } from '@mantine/core';
+import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
+import { useScrollLock } from '@mantine/hooks';
+import { useFriend, useAuth } from '@services/controller';
+import CardItem from './components/CardItem';
 
 function FriendList() {
+    useScrollLock(true);
+    const { profile } = useAuth();
+    const { friendList } = useFriend(profile.data.id);
+    const [ memberList, setMemberList ] = useState([]);
+    useEffect(() => {
+        if (friendList) {
+            console.log('friendList', friendList.data);
+            setMemberList([ ...friendList.data ]);
+        }
+    }, [ friendList ]);
+    useEffect(() => {
+        if (memberList.length != 0) {
+            console.log('memberList', memberList);
+        }
+    }, [ memberList ]);
     return (
         <div>
-            <Pagetitle title="Member" />
-            <div className="row ps-2 pe-2">
-                {memberList.map((value, index) => (
-                    <div key={index} className="col-md-3 col-sm-4 pe-2 ps-2">
-                        <div className="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
-                            <div className="card-body d-block ps-3 pe-3 pb-4 text-center">
-                                <figure className="overflow-hidden avatar ms-auto me-auto mb-0 position-relative w65 z-index-1">
-                                    <img
-                                        src={`assets/images/${value.imageUrl}`}
-                                        alt="avater"
-                                        className="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+            <Pagetitle title="Your Friends" />
+            {memberList.length == 0 ? (
+                <Group
+                    className="d-grid justify-content-center align-items-center"
+                    position="center"
+                >
+                    <DataArrangingLogo />
+                    <Text className="d-flex justify-content-center align-items-center">
+                        No Results
+                    </Text>
+                </Group>
+            ) : (
+                <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
+                    <Grid className="row ps-2 pe-2">
+                        {memberList.map((value) => {
+                            return (
+                                <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
+                                    <CardItem
+                                        idFriendInstance={value.id}
+                                        idProfile={value.requestID}
+                                        type='friend'
                                     />
-                                </figure>
-                                <div className="clearfix w-100"></div>
-                                <h4 className="fw-700 font-xsss mt-3 mb-0">{value.name} </h4>
-                                <p className="fw-500 font-xssss text-grey-500 mt-0 mb-3">
-                                    {value.user}
-                                </p>
-                                <div className="d-grid gap-2 mx-auto">
-                                    <Button
-                                        classNames={{
-                                            root: 'mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-success font-xsssss fw-700 ls-lg text-white',
-                                        }}
-                                    >
-                                        Add friend
-                                    </Button>
-                                    <Button
-                                        classNames={{
-                                            root: 'mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-secondary font-xsssss fw-700 ls-lg text-white',
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                                </Grid.Col>
+                            );
+                        })}
+                    </Grid>
+                </ScrollArea>
+            )}
         </div>
     );
 }

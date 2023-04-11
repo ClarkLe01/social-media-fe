@@ -18,8 +18,10 @@ function useFriend(userId) {
         queryKey: [ 'friend/list', userId ],
         queryFn: () => publicApi(endPoints.friend.list, { pathParams: { userId: userId } }),
         enabled: !!userId,
-        retryOnMount: false,
-        staleTime: Infinity,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        // refetchInterval: 1000,
     });
 
     const {
@@ -29,8 +31,11 @@ function useFriend(userId) {
     } = useQuery({
         queryKey: [ 'friend/requests' ],
         queryFn: () => api(endPoints.friend.requests),
-        retryOnMount: false,
-        staleTime: Infinity,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        refetchOnMount: true,
+        // refetchInterval: 1000,
     });
 
     const {
@@ -40,8 +45,11 @@ function useFriend(userId) {
     } = useQuery({
         queryKey: [ 'friend/responses' ],
         queryFn: () => api(endPoints.friend.responses),
-        retryOnMount: false,
-        staleTime: Infinity,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        refetchOnMount: true,
+        // refetchInterval: 1000,
     });
 
     const {
@@ -53,7 +61,13 @@ function useFriend(userId) {
             return api(endPoints.friend.add, variables);
         },
         onSuccess: ({ data }) => {
-            ReValidate();
+            // ReValidate();
+            queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
+        },
+        onError: (error) => {
+            console.log('add error', error);       
+            queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
         },
     });
 
@@ -63,10 +77,17 @@ function useFriend(userId) {
         mutate: acceptRequest,
     } = useMutation({
         mutationFn: (variables) => {
-            return api(endPoints.friend.acceptRequest, { pathParams: variables });
+            return api(endPoints.friend.acceptRequest, variables);
         },
         onSuccess: ({ data }) => {
-            ReValidate();
+            // ReValidate();
+            queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
+        },
+        onError: (error) => {    
+            console.log(error);
+            queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
         },
     });
 
@@ -79,8 +100,16 @@ function useFriend(userId) {
             return api(endPoints.friend.delete, variables);
         },
         onSuccess: ({ data }) => {
-            ReValidate();
+            queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
         },
+        onError: (error) => {
+            queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
+        },
+
     });
 
     return {

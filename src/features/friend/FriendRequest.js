@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Pagetitle from '@common/components/PageTitle';
-import { Button, Card, Grid, Group, Image, Text, ScrollArea } from '@mantine/core';
+import { Grid, Group, Text, ScrollArea } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
-const memberList = [];
+import { useFriend } from '@services/controller';
+import CardItem from './components/CardItem';
 
 function FriendRequest() {
     useScrollLock(true);
+    const { responseList } = useFriend();
+    const [ memberList, setMemberList ] = useState([]);
+    useEffect(() => {
+        if (responseList) {
+            console.log('responseList', responseList);
+            setMemberList([ ...responseList.data ]);
+        }
+    }, [ responseList ]);
+    useEffect(() => {
+        if (memberList.length != 0) {
+            console.log('memberList', memberList);
+        }
+    }, [ memberList ]);
     return (
         <div>
-            <Pagetitle title="Friend Request" />
-            {memberList.length === 0 ? (
+            <Pagetitle title="Your Request" />
+            {memberList.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"
                     position="center"
@@ -23,32 +37,17 @@ function FriendRequest() {
             ) : (
                 <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
                     <Grid className="row ps-2 pe-2">
-                        {memberList.map((value, index) => (
-                            <Grid.Col key={index} xs={6} sm={6} md={4} xl={3}>
-                                <Card shadow="sm" padding="lg" radius="md" withBorder>
-                                    <Card.Section>
-                                        <Image
-                                            src={`assets/images/${value.imageUrl}`}
-                                            height={160}
-                                            alt="Norway"
-                                        />
-                                    </Card.Section>
-
-                                    <Group position="apart" mt="xs">
-                                        <Text weight={500}>{value.name}</Text>
-                                    </Group>
-                                    <Group position="apart" mt={1} mb={6}>
-                                        <Text size="sm" color="dimmed">
-                                            18 mutual friends
-                                        </Text>
-                                    </Group>
-                                    <div className="d-grid gap-2 mx-auto">
-                                        <Button>Confirm</Button>
-                                        <Button color="gray">Cancel</Button>
-                                    </div>
-                                </Card>
-                            </Grid.Col>
-                        ))}
+                        {memberList.map((value) => {
+                            return (
+                                <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
+                                    <CardItem
+                                        idFriendInstance={value.id}
+                                        idProfile={value.requestID}
+                                        type='response'
+                                    />
+                                </Grid.Col>
+                            );
+                        })}
                     </Grid>
                 </ScrollArea>
             )}

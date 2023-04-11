@@ -12,7 +12,7 @@ import {
     IconUserPlus,
     IconUserShare,
 } from '@tabler/icons-react';
-import { useAuth } from '@features/auth';
+import { useAuth } from '@services/controller';
 
 function FriendNavBar(props) {
     const { logout, profile } = useAuth();
@@ -29,7 +29,7 @@ function FriendNavBar(props) {
         >
             <NavLink
                 component={Link}
-                to={`/profile/${currentUser.id}`}
+                to={`/${currentUser.id}`}
                 label="Profile"
                 icon={<IconUser size={16} stroke={1.5} />}
                 classNames={{
