@@ -1,6 +1,6 @@
 import Loading from '@common/components/Loading';
 import { AUTH } from '@constants';
-import { useAuth } from '@features/auth';
+import { useAuth } from '@services/controller';
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { navigatePath } from './config';

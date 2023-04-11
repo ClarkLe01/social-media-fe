@@ -4,7 +4,7 @@ import Input from '@common/components/Input';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@features/auth';
+import { useAuth } from '@services/controller';
 import { navigatePath } from '@app/routes/config';
 import { Notification } from '@mantine/core';
 import { Button, Overlay } from '@mantine/core';

@@ -5,7 +5,7 @@ import DateTimePicker from '@common/components/DatetimePicker';
 import Selector from '@common/components/Selector';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { useAuth } from '@features/auth';
+import { useAuth } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
 import { Button, Overlay } from '@mantine/core';
