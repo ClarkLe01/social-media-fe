@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ProfileCard from '@services/controller/ProfileCard';
+import ProfileCard from '@features/profile/components/ProfileCard';
 import ProfileDetail from '@common/components/ProfileDetail';
 import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';

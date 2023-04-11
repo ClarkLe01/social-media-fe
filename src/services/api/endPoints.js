@@ -32,7 +32,7 @@ export default {
         updateProfile: {
             url: '/user/profile/update',
             method: 'PATCH',
-            headers: headers.json,
+            headers: headers.multipart,
         },
         login: {
             url: '/user/login',

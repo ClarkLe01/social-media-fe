@@ -1,26 +1,27 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button, Group, Image, AspectRatio } from '@mantine/core';
 import Cropper from 'react-easy-crop';
 import { Slider } from '@mantine/core';
 import { getCroppedImg } from '../utils/canvasUtils';
 
 function ImageCropper(props) {
-    const { cropShape, aspect, maxZoom, imageSrc, setResult, height } = props;
+    const { cropShape, aspect, maxZoom, imageSrc, height, setResult } = props;
+    
     const [ crop, setCrop ] = useState({ x: 0, y: 0 });
     const [ zoom, setZoom ] = useState(1);
     const [ croppedAreaPixels, setCroppedAreaPixels ] = useState(null);
-    const [ croppedImage, setCroppedImage ] = useState(null);
 
     
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
         console.log(croppedArea, croppedAreaPixels);
     }, []);
+
     const showCroppedImage = useCallback(async () => {
         try {
             const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, 0);
             console.log('done', { croppedImage });
-            setCroppedImage(croppedImage);
+            setResult(croppedImage);
         } catch (e) {
             console.error(e);
         }
@@ -70,11 +71,8 @@ function ImageCropper(props) {
                 <Button
                     onClick={showCroppedImage}
                 >
-                    Save
+                    Crop
                 </Button>
-            </div>
-            <div>
-                {croppedImage && <Image src={croppedImage} />}
             </div>
         </div>
     );

@@ -11,20 +11,15 @@ import {
     TextInput,
     ActionIcon,
 } from '@mantine/core';
-import { Link, Outlet } from 'react-router-dom';
-import {
-    IconSearch,
-    IconMessageCircle,
-    IconArrowLeft,
-} from '@tabler/icons-react';
+import { Outlet } from 'react-router-dom';
+import { IconSearch, IconArrowLeft } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
 
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
-import Notification from '@common/components/Notification';
 import RightChat from '@app/layouts/common/RightChat';
 import NavBar from './common/NavBar';
-
+import MainHeader from './common/MainHeader';
 
 export default function MainLayout() {
     const scaleY = {
@@ -52,7 +47,7 @@ export default function MainLayout() {
                 },
             }}
             navbar={
-                <NavBar 
+                <NavBar
                     opened={opened}
                     p="sm"
                     hiddenBreakpoint="md"
@@ -96,8 +91,6 @@ export default function MainLayout() {
                                 />
                             </form>
                         </MediaQuery>
-
-                        <Notification />
 
                         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
                             <div>
@@ -143,12 +136,8 @@ export default function MainLayout() {
                                 </Transition>
                             </div>
                         </MediaQuery>
-                        <Link
-                            to="/message"
-                            className="p-2 text-center ms-3 menu-icon chat-active-btn"
-                        >
-                            <IconMessageCircle />
-                        </Link>
+
+                        <MainHeader />
 
                         <MediaQuery largerThan="md" styles={{ display: 'none' }}>
                             <Burger

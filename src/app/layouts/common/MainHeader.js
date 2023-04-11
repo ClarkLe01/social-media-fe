@@ -1,38 +1,53 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { IconSearch, IconBellFilled, IconMoon, IconMessageCircle } from '@tabler/icons-react';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { IconMessageCircle, IconLogout, IconAddressBook } from '@tabler/icons-react';
 
-import Input from '@common/components/Input';
-import MainLogo from '@common/components/MainLogo';
-import NavMenuButton from '@common/components/NavMenuButton';
+import { useAuth } from '@services/controller';
+import Notification from '@common/components/Notification';
+import { Avatar, ActionIcon, Menu } from '@mantine/core';
 
-const MainHeader = () => {
+import { navigatePath } from '@app/routes/config';
+function MainHeader() {
+    const { logout, profile } = useAuth();
+    const [ currentUser, setCurrentUser ] = useState(profile.data);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const goToProfile = () => {
+        navigate(navigatePath.profile.replace(':userId', currentUser.id), { state: { from: location.pathname } });
+    };
     return (
-        <div className="nav-header bg-white shadow-xs border-0">
-            <div className="nav-top">
-                <MainLogo />
-                <NavMenuButton />
-            </div>
-            <form action="#" className="float-left header-search ms-3 mt-3">
-                <Input
-                    icon={<IconSearch />}
-                    type="text"
-                    name="search"
-                    placeHolder="Search in Sociala"
-                    className="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-500 rounded-xl w350 theme-dark-bg h-auto"
-                />
-            </form>
-            <span className="p-2 pointer text-center ms-auto menu-icon">
-                <IconBellFilled />
-            </span>
-            <Link to="/" className="p-2 text-center ms-3 menu-icon chat-active-btn">
+        <>
+            <Notification />
+            <Link
+                to="/messages"
+                className="p-2 text-center ms-3 menu-icon chat-active-btn"
+            >
                 <IconMessageCircle />
             </Link>
-            <span className="pointer p-2 text-center ms-3 menu-icon chat-active-btn ">
-                <IconMoon />
-            </span>
-        </div>
+            <Menu position="bottom-end" withArrow>
+                <Menu.Target>
+                    <ActionIcon className='ms-3 me-3'>
+                        <Avatar src={currentUser.avatar} radius="xl"  size={35}/>
+                    </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                    <Menu.Item
+                        icon={<IconAddressBook size={16} />}
+                        onClick={goToProfile}
+                    >
+                        Profile
+                    </Menu.Item>
+                    <Menu.Item
+                        icon={<IconLogout size={16} />}
+                        onClick={logout}
+                    >
+                        Logout
+                    </Menu.Item>
+                </Menu.Dropdown>
+            </Menu>
+            
+        </>
     );
-};
+}
 
 export default MainHeader;
