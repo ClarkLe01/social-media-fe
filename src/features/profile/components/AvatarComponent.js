@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconPhoto, IconCamera, IconUpload } from '@tabler/icons-react';
 import {
     Button,
@@ -20,7 +20,6 @@ import { readFile, base64ToFile } from '@common/utils/canvasUtils';
 function AvatarComponent(props) {
     const { user } = props;
     const { profile } = useAuth();
-    const [ currentUser, setCurrentUser ] = useState(profile.data);
     const { updateProfile } = useProfile(user.id);
 
     const [ avatarSrc, setAvatarSrc ] = useState(null);
@@ -37,7 +36,7 @@ function AvatarComponent(props) {
             setAvatarSrc(imageDataUrl);
         }
     };
-    const handleAvatarUpdate = async () => {
+    const handleAvatarUpdate = () => {
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
         const form = new FormData();
         form.append('avatar', file);
@@ -48,6 +47,13 @@ function AvatarComponent(props) {
         setAvatarSrc(null);
         setOpenAvatarModal(false);
     };
+    useEffect(() => {
+        return () => {
+            setUpdatedAvatarSrc(null);
+            setAvatarSrc(null);
+            setOpenAvatarModal(false);
+        };
+    }, [ user ]);
     return (
         <>
             <figure
@@ -62,8 +68,9 @@ function AvatarComponent(props) {
                         image: 'float-right p-1 bg-white rounded-circle w-100',
                     }}
                     src={user.avatar}
+                    key={user.updated}
                 />
-                {user.id == currentUser.id && (
+                {user.id == profile.data.id && (
                     <>
                         <Group
                             style={{
@@ -98,7 +105,7 @@ function AvatarComponent(props) {
                 )}
             </figure>
 
-            {user.id == currentUser.id && (
+            {user.id == profile.data.id && (
                 <>
                     <div hidden>
                         <Dropzone
@@ -130,22 +137,29 @@ function AvatarComponent(props) {
                                 setResult={setUpdatedAvatarSrc}
                             />
                         </div>
-                        <div className="mt-3 pt-3">
-                            <Button
-                                onClick={() => {
-                                    handleAvatarUpdate();
-                                }}
-                            >
-                                Confirm
-                            </Button>
-                        </div>
-                        <div>
-                            {updatedAvatarSrc && (
-                                <AspectRatio ratio={16 / 9}>
-                                    <Image src={updatedAvatarSrc} />
-                                </AspectRatio>
-                            )}
-                        </div>
+                        {updatedAvatarSrc && (
+                            <>
+                                <div className="mt-3 pt-3">
+                                    <Button
+                                        onClick={() => {
+                                            handleAvatarUpdate();
+                                        }}
+                                    >
+                                        Confirm
+                                    </Button>
+                                </div>
+                                <div>
+                                    <Avatar
+                                        radius={100}
+                                        size={100}
+                                        src={updatedAvatarSrc}
+                                        key={user.updated}
+                                    />
+                                    
+                                </div>
+                            </>
+                        )}
+                        
                     </Modal>
                 </>
             )}

@@ -15,6 +15,7 @@ function useAuth() {
         queryKey: [ 'profile/me' ],
         queryFn: () => api(endPoints.user.profile),
         retryOnMount: false,
+        staleTime: 1000*2,
     });
 
     const {

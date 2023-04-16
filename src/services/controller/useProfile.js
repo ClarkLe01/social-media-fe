@@ -7,31 +7,31 @@ function useProfile(userId) {
         data: profileId,
         isLoading: profileIdLoading,
         error: profileIdError,
+        refetch: profileIdRefetch,
     } = useQuery({
         queryKey: [ `profile/${userId}` ],
         queryFn: () => publicApi(endPoints.user.getProfileById, { pathParams: { userId: userId } }),
         enabled: !!userId,
         retryOnMount: false,
+        staleTime: 1000,
     });
 
     const {
         isLoading: updateProfileLoading,
         error: updateProfileError,
         mutate: updateProfile,
+        
     } = useMutation({
         mutationFn: (variables) => {
             return api(endPoints.user.updateProfile, variables);
         },
         onSuccess: ({ data }) => {
-            // ReValidate();
-            console.log(data);
             queryClient.invalidateQueries({ queryKey: [ `profile/${userId}` ] });
             queryClient.invalidateQueries({ queryKey: [ 'profile/me' ] });
-
         },
         onError: (error) => {
-            console.log('add error', error);
             queryClient.invalidateQueries({ queryKey: [ `profile/${userId}` ] });
+            queryClient.invalidateQueries({ queryKey: [ 'profile/me' ] });
         },
 
     });
@@ -40,6 +40,7 @@ function useProfile(userId) {
         profileId,
         profileIdLoading,
         profileIdError,
+        profileIdRefetch,
 
         updateProfile,
         updateProfileLoading,

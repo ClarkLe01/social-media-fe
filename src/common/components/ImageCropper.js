@@ -1,72 +1,42 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Button, Group, Image, AspectRatio } from '@mantine/core';
-import Cropper from 'react-easy-crop';
-import { Slider } from '@mantine/core';
-import { getCroppedImg } from '../utils/canvasUtils';
+import React, { useCallback, useRef } from 'react';
+import { Button, Group, Image } from '@mantine/core';
+import Cropper from 'react-cropper'; //Import Cropper Component
+import '@assets/scss/cropper.scss'; //Import Cropper CSS
 
 function ImageCropper(props) {
-    const { cropShape, aspect, maxZoom, imageSrc, height, setResult } = props;
+    const { cropShape, aspect, imageSrc, setResult } = props;
     
-    const [ crop, setCrop ] = useState({ x: 0, y: 0 });
-    const [ zoom, setZoom ] = useState(1);
-    const [ croppedAreaPixels, setCroppedAreaPixels ] = useState(null);
-
-    
-    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-        console.log(croppedArea, croppedAreaPixels);
-    }, []);
+    const cropperRef = useRef(null);
 
     const showCroppedImage = useCallback(async () => {
         try {
-            const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, 0);
-            console.log('done', { croppedImage });
-            setResult(croppedImage);
+            const cropper = cropperRef.current?.cropper;
+            console.log(cropper);
+            setResult(cropper.getCroppedCanvas({
+                imageSmoothingQuality: "high",
+                fillColor: '#000',
+            }).toDataURL());
         } catch (e) {
             console.error(e);
         }
-    }, [ imageSrc, croppedAreaPixels ]);
+    }, [ imageSrc ]);
 
     return (
         <div>
             <Group position="center" className="d-flex justify-content-center align-items-center">
-                <div
-                    style={{
-                        height: height ? height : '300px',
-                    }}
-                >
+                <div>
                     <Cropper
-                        style={{
-                            containerStyle: {
-                                height: '50vh',
-                                width: ' 100%',
-                                display: 'block',
-                                marginTop: 0,
-                            },
-                        }}
-                        image={imageSrc}
-                        crop={crop}
-                        zoom={zoom}
-                        aspect={aspect}
-                        onCropChange={setCrop}
-                        onCropComplete={onCropComplete}
-                        onZoomChange={setZoom}
-                        cropShape={cropShape}
-                        minZoom={1}
-                        maxZoom={maxZoom}
+                        ref={cropperRef}
+                        src={imageSrc}
+                        style={{ height: 400, width: '100%' }}
+                        aspectRatio={aspect}
+                        guides={false}
+                        cropBoxResizable={true}
+                        minCropBoxHeight={225}
+                        minCropBoxWidth={400}
                     />
                 </div>
             </Group>
-            <div>
-                <Slider
-                    label={null}
-                    value={zoom * 100}
-                    onChange={(e) => setZoom(e / 100)}
-                    min={100}
-                    max={maxZoom * 100}
-                />
-            </div>
-
             <div className="mt-3 pt-3">
                 <Button
                     onClick={showCroppedImage}

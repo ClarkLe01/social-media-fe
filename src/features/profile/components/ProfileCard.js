@@ -30,8 +30,7 @@ function ProfileCard(props) {
     const { user } = props;
     const { profile } = useAuth();
 
-    const [ currentUser, setCurrentUser ] = useState(profile.data);
-    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(currentUser.id);
+    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(profile.data.id);
 
     const [ dimensions, setDimensions ] = useState({ width: 400, height: 182 });
     const isHide = dimensions.width < 405 ? true : false;
@@ -48,8 +47,8 @@ function ProfileCard(props) {
         const instances = [ ...friendList.data, ...requestList.data, ...responseList.data ];
         const target = instances.find(
             (instance) =>
-                (instance.requestID === user.id && instance.responseID === currentUser.id) ||
-                (instance.requestID === currentUser.id && instance.responseID === user.id),
+                (instance.requestID === user.id && instance.responseID === profile.data.id) ||
+                (instance.requestID === profile.data.id && instance.responseID === user.id),
         );
         acceptRequest({
             pathParams: { instanceId: target.id },
@@ -59,8 +58,8 @@ function ProfileCard(props) {
         const instances = [ ...friendList.data, ...requestList.data, ...responseList.data ];
         const target = instances.find(
             (instance) =>
-                (instance.requestID === user.id && instance.responseID === currentUser.id) ||
-                (instance.requestID === currentUser.id && instance.responseID === user.id),
+                (instance.requestID === user.id && instance.responseID === profile.data.id) ||
+                (instance.requestID === profile.data.id && instance.responseID === user.id),
         );
         deleteFriend({
             pathParams: { instanceId: target.id },
@@ -142,11 +141,11 @@ function ProfileCard(props) {
 
     useEffect(() => {
         if (friendList && requestList && responseList) {
-            if (user.id != currentUser.id) {
+            if (user.id != profile.data.id) {
                 let isFriend = friendList.data.find(
                     (friend) =>
-                        (friend.responseID == user.id && friend.requestID == currentUser.id) ||
-                        (friend.responseID == currentUser.id && friend.requestID == user.id),
+                        (friend.responseID == user.id && friend.requestID == profile.data.id) ||
+                        (friend.responseID == profile.data.id && friend.requestID == user.id),
                 );
                 let isRequest = requestList.data.find((request) => request.responseID == user.id);
                 let isResponse = responseList.data.find(

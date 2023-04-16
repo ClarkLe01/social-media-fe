@@ -82,4 +82,21 @@ export default {
             headers: headers.json,
         },
     },
+    notification: {
+        list: {
+            url: '/notification',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/notification/read/:instanceId',
+            method: 'PATCH',
+            headers: headers.json,
+        },
+        delete: {
+            url: '/notification/delete/:instanceId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
 };

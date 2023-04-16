@@ -33,6 +33,7 @@ export async function getCroppedImg(
     flip = { horizontal: false, vertical: false },
 ) {
     const image = await createImage(imageSrc);
+    const pixelRatio = window.devicePixelRatio;
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
@@ -51,7 +52,8 @@ export async function getCroppedImg(
 
     // set canvas size to match the bounding box
     canvas.width = bBoxWidth;
-    canvas.height = bBoxHeight;
+    canvas.height = bBoxHeight*pixelRatio;
+    
 
     // translate canvas context to a central location to allow rotating and flipping around the center
     ctx.translate(bBoxWidth / 2, bBoxHeight / 2);

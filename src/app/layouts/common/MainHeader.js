@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IconMessageCircle, IconLogout, IconAddressBook } from '@tabler/icons-react';
 
@@ -9,12 +9,12 @@ import { Avatar, ActionIcon, Menu } from '@mantine/core';
 import { navigatePath } from '@app/routes/config';
 function MainHeader() {
     const { logout, profile } = useAuth();
-    const [ currentUser, setCurrentUser ] = useState(profile.data);
     const navigate = useNavigate();
     const location = useLocation();
     const goToProfile = () => {
-        navigate(navigatePath.profile.replace(':userId', currentUser.id), { state: { from: location.pathname } });
+        navigate(navigatePath.profile.replace(':userId', profile.data.id), { state: { from: location.pathname } });
     };
+    
     return (
         <>
             <Notification />
@@ -24,10 +24,10 @@ function MainHeader() {
             >
                 <IconMessageCircle />
             </Link>
-            <Menu position="bottom-end" withArrow>
+            <Menu position="bottom-end" width={150} withArrow>
                 <Menu.Target>
                     <ActionIcon className='ms-3 me-3'>
-                        <Avatar src={currentUser.avatar} radius="xl"  size={35}/>
+                        <Avatar src={profile.data.avatar} radius="xl" size={35} key={profile.data.updated}/>
                     </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
@@ -45,7 +45,6 @@ function MainHeader() {
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
-            
         </>
     );
 }

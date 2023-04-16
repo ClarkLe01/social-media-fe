@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconPhoto, IconCamera, IconUpload } from '@tabler/icons-react';
 import { Button, Image, Text, Group, AspectRatio, Menu, Modal } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
@@ -10,7 +10,6 @@ import { readFile, base64ToFile } from '@common/utils/canvasUtils';
 function CoverComponent(props) {
     const { user } = props;
     const { profile } = useAuth();
-    const [ currentUser, setCurrentUser ] = useState(profile.data);
     const { updateProfile } = useProfile(user.id);
 
     const [ coverSrc, setCoverSrc ] = useState(null);
@@ -22,31 +21,44 @@ function CoverComponent(props) {
 
     const onCoverChange = async (files) => {
         if (files && files.length > 0) {
+            
             let imageDataUrl = await readFile(files[0]);
-            setCoverSrc(imageDataUrl); // data image base64 string
+            
+            const image = new window.Image();
+            image.src = imageDataUrl;
+            image.onload = () => {
+                image.width < 600 || image.height < 400?setCoverSrc(null) : setCoverSrc(imageDataUrl);
+            };
         }
     };
 
-    const handleCoverUpdate = async () => {
+    const handleCoverUpdate = () => {
         const file = base64ToFile(updatedCoverSrc, 'cover.jpg');
         const form = new FormData();
         form.append('cover', file);
-        updateProfile(
-            {
-                data: form,
-            },
-        );
-        setUpdatedCoverSrc(null); 
-        setCoverSrc(null); 
+        updateProfile({
+            data: form,
+        });
+        setUpdatedCoverSrc(null);
+        setCoverSrc(null);
         setOpenCoverModal(false);
     };
 
+    useEffect(() => {
+        return () => {
+            setUpdatedCoverSrc(null);
+            setCoverSrc(null);
+            setOpenCoverModal(false);
+        };
+    }, [ user ]);
+
     return (
         <div>
-            <AspectRatio ratio={16 / 9} mah={300}>
-                <Image src={user.cover} alt="cover" fit="cover"/>
-            </AspectRatio>
-            {user.id == currentUser.id && (
+            {/* <AspectRatio ratio={16/ 9} mah={300}>
+                <Image src={user.cover} key={user.updated} />
+            </AspectRatio> */}
+            <Image src={user.cover} key={user.updated} width={"100%"} height={320} fit='cover' />
+            {user.id == profile.data.id && (
                 <>
                     <Group style={{ position: 'relative' }}>
                         <Menu shadow="md" width={200}>
@@ -82,7 +94,7 @@ function CoverComponent(props) {
                     </Group>
                 </>
             )}
-            {user.id == currentUser.id && (
+            {user.id == profile.data.id && (
                 <>
                     <div hidden>
                         <Dropzone
@@ -100,7 +112,7 @@ function CoverComponent(props) {
                     </div>
                     <Modal
                         opened={openCoverModal && coverSrc}
-                        size={'xl'}
+                        size={'80%'}
                         onClose={() => {
                             setUpdatedCoverSrc(null), setCoverSrc(null), setOpenCoverModal(false);
                         }}
@@ -115,20 +127,24 @@ function CoverComponent(props) {
                                 cropShape="square"
                                 setResult={setUpdatedCoverSrc}
                             />
-                            <div className="mt-3 pt-3">
-                                <Button
-                                    onClick={() => {handleCoverUpdate();}}
-                                >
-                                    Confirm
-                                </Button>
-                            </div>
-                            <div>
-                                {updatedCoverSrc && (
-                                    <AspectRatio ratio={16 / 9}>
-                                        <Image src={updatedCoverSrc} />
-                                    </AspectRatio>
-                                )}
-                            </div>
+                            {updatedCoverSrc && (
+                                <>
+                                    <div className="mt-3 pt-3">
+                                        <Button
+                                            onClick={() => {
+                                                handleCoverUpdate();
+                                            }}
+                                        >
+                                            Confirm
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        <AspectRatio ratio={16 / 9}>
+                                            <Image src={updatedCoverSrc} fit="contain" />
+                                        </AspectRatio>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </Modal>
                 </>
