@@ -56,6 +56,7 @@
         "react-accessible-accordion": "^5.0.0",
         "react-apexcharts": "^1.4.0",
         "react-bootstrap": "^2.7.2",
+        "react-cropper": "^2.3.2",
         "react-dom": "^18.2.0",
         "react-easy-crop": "^4.7.4",
         "react-input-mask": "^2.0.4",

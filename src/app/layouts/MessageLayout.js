@@ -21,6 +21,7 @@ import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
 import Notification from '@common/components/Notification';
 import NavBar from './common/NavBar';
+import MainHeader from './common/MainHeader';
 
 export default function MessageLayout() {
     const scaleY = {
@@ -80,8 +81,6 @@ export default function MessageLayout() {
                             </form>
                         </MediaQuery>
 
-                        <Notification />
-
                         <MediaQuery largerThan="md" styles={{ display: 'none' }}>
                             <div>
                                 <ActionIcon
@@ -126,12 +125,8 @@ export default function MessageLayout() {
                                 </Transition>
                             </div>
                         </MediaQuery>
-                        <Link
-                            to="/message"
-                            className="p-2 text-center ms-3 menu-icon chat-active-btn"
-                        >
-                            <IconMessageCircle />
-                        </Link>
+                        
+                        <MainHeader />
 
                         <MediaQuery largerThan="md" styles={{ display: 'none' }}>
                             <Burger

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ProfileCard from '@services/controller/ProfileCard';
+import ProfileCard from '@features/profile/components/ProfileCard';
 import ProfileDetail from '@common/components/ProfileDetail';
 import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';
@@ -11,10 +11,7 @@ import { useAuth, useProfile } from '@services/controller';
 function Profile() {
     const { userId } = useParams();  // get param userId from url
     const { profileId } = useProfile(userId); // profile of user by params userId
-    
     const { profile } = useAuth(); // current user
-    
-    const [ currentUser, setCurrentUser ] = useState(profile.data);
     const [ user, setUser ] = useState(null);
     useEffect(() => {
         if (profileId) {
@@ -31,8 +28,8 @@ function Profile() {
                 <ProfilePhoto />
             </div>
             <div className="col-xxl-8 col-xl-8 col-lg-12 py-3">
-                {currentUser.id === profileId && (
-                    <CreatePost user={currentUser} defaultAudience="public" />
+                {profile.data.id === profileId && (
+                    <CreatePost user={profile.data} defaultAudience="public" />
                 )}
                 <PostCard
                     id="32"

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PostMenuTool from './PostMenuTool';
 import FacebookEmoji from './react-facebook-emoji';
-import { Button, Grid, Image, AspectRatio, Overlay, Text } from '@mantine/core';
+import { Button, Grid, Image, AspectRatio, Overlay, Text, Avatar, Tooltip, ActionIcon } from '@mantine/core';
+import { ReactHaha, ReactLike, ReactLove } from '@assets/images/reaction';
+import { IconShare3, IconMessage2 } from '@tabler/icons-react';
 
 const MemorizedImage = React.memo(Image);
 
@@ -34,7 +36,7 @@ function ImageGridPreview(props) {
         return (
             <React.Fragment key={index}>
                 <Grid.Col span={6}>
-                    <AspectRatio ratio={attrsImage.height > attrsImage.width  ? 3/4 : 4/3 }>
+                    <AspectRatio ratio={attrsImage.height > attrsImage.width ? 3 / 4 : 4 / 3}>
                         <MemorizedImage src={obj.file} fit="scale-down" />
                     </AspectRatio>
                 </Grid.Col>
@@ -177,20 +179,39 @@ function PostCard(props) {
             {postMedia && <ImageGridPreview files={postMedia} />}
             <div className="card-body d-flex p-0 pt-2">
                 <div className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
-                    <i className="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>{' '}
-                    <i className="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>
-                    2.8K Like
+
+                    <Tooltip.Group openDelay={300} closeDelay={100}>
+                        <Avatar.Group spacing={4}>
+                            <Tooltip label="Like" withArrow>
+                                <Avatar src={ReactLike} size={18} radius="xl"/>
+                            </Tooltip>
+                            <Tooltip label="Haha" withArrow>
+                                <Avatar src={ReactHaha} size={18} radius="xl"/>
+                            </Tooltip>
+                            <Tooltip label="Love" withArrow>
+                                <Avatar src={ReactLove} size={18} radius="xl" />
+                            </Tooltip>
+                        </Avatar.Group>
+                    </Tooltip.Group>
+                    <Text className='ps-1'>
+                        2.8K
+                    </Text>
                 </div>
-                <a
-                    href="/defaultvideo"
-                    className="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+                <div
+                    className="d-flex ms-auto fw-600 text-grey-900 text-dark lh-26 font-xssss"
                 >
-                    <i className="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
-                    <span className="d-none-xss">22 Comment</span>
-                </a>
-                <div className="d-flex align-items-center ms-auto fw-600 text-grey-900 text-dark lh-26 font-xssss">
-                    <i className="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
-                    <span className="d-none-xss">22 Shares</span>
+                    <div className='d-flex align-items-center'>
+                        <Text className='me-1'>
+                            22
+                        </Text>
+                        <IconMessage2 />
+                    </div>
+                    <div className='d-flex align-items-center ps-3'>
+                        <Text className='me-1'>
+                            22
+                        </Text>
+                        <IconShare3 />
+                    </div>
                 </div>
             </div>
             <div className="card-body d-grid gap-2 d-flex justify-content-between px-0 py-0">
@@ -225,6 +246,7 @@ function PostCard(props) {
                 <Button
                     fullWidth
                     variant="outline"
+                    leftIcon={<IconMessage2 />}
                     classNames={{
                         root: 'flex-fill border-0',
                     }}
@@ -234,6 +256,7 @@ function PostCard(props) {
                 <Button
                     fullWidth
                     variant="outline"
+                    leftIcon={<IconShare3 />}
                     classNames={{
                         root: 'flex-fill border-0',
                     }}

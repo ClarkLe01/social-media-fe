@@ -33,6 +33,7 @@ export async function getCroppedImg(
     flip = { horizontal: false, vertical: false },
 ) {
     const image = await createImage(imageSrc);
+    const pixelRatio = window.devicePixelRatio;
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
@@ -51,7 +52,8 @@ export async function getCroppedImg(
 
     // set canvas size to match the bounding box
     canvas.width = bBoxWidth;
-    canvas.height = bBoxHeight;
+    canvas.height = bBoxHeight*pixelRatio;
+    
 
     // translate canvas context to a central location to allow rotating and flipping around the center
     ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
@@ -74,14 +76,14 @@ export async function getCroppedImg(
     ctx.putImageData(data, 0, 0);
 
     // As Base64 string
-    // return canvas.toDataURL('image/jpeg');
+    return canvas.toDataURL('image/jpeg');
 
     // As a blob
-    return new Promise((resolve, reject) => {
-        canvas.toBlob((file) => {
-            resolve(URL.createObjectURL(file));
-        }, 'image/jpeg');
-    });
+    // return new Promise((resolve, reject) => {
+    //     canvas.toBlob((file) => {
+    //         resolve(URL.createObjectURL(file));
+    //     }, 'image/jpeg');
+    // });
 }
 
 export async function getRotatedImage(imageSrc, rotation = 0) {
@@ -108,4 +110,26 @@ export async function getRotatedImage(imageSrc, rotation = 0) {
             resolve(URL.createObjectURL(file));
         }, 'image/png');
     });
+}
+
+export function readFile(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result), false);
+        reader.readAsDataURL(file);
+    });
+}
+
+export function base64ToFile(base64Image, filename) {
+    const byteString = atob(base64Image.split(',')[1]); 
+    const mimeType = base64Image.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+    }
+
+    const blob = new Blob([ arrayBuffer ], { type: mimeType });
+    return new File([ blob ], filename, { type: mimeType });
 }

@@ -32,7 +32,8 @@ function Login() {
                 data: values,
             },
             {
-                onSuccess: () => {
+                onSuccess: (data) => {
+                    console.log(data);
                     const from = location.state?.from || navigatePath.home;
                     navigate(from, { state: { from: undefined } });
                 },

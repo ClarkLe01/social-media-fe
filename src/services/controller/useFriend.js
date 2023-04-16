@@ -21,7 +21,7 @@ function useFriend(userId) {
         retryOnMount: true,
         retry: 5,
         retryDelay: 1000,
-        // refetchInterval: 1000,
+        staleTime: 1000,
     });
 
     const {
@@ -35,6 +35,7 @@ function useFriend(userId) {
         retry: 5,
         retryDelay: 1000,
         refetchOnMount: true,
+        staleTime: 1000,
         // refetchInterval: 1000,
     });
 
@@ -49,6 +50,7 @@ function useFriend(userId) {
         retry: 5,
         retryDelay: 1000,
         refetchOnMount: true,
+        staleTime: 1000,
         // refetchInterval: 1000,
     });
 
