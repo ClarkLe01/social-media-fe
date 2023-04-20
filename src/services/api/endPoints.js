@@ -99,4 +99,45 @@ export default {
             headers: headers.json,
         },
     },
+    chat: {
+        message: {
+            lastest:{
+                url: '/chat/message/latest/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            list: {
+                url: '/chat/message/list/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            seen: {
+                url: '/chat/message/seen/:messageId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            send: {
+                url: '/chat/message/send',
+                method: 'POST',
+                headers: headers.json,
+            },
+        },
+        room: {
+            list: {
+                url: '/chat/room/list',
+                method: 'GET',
+                headers: headers.json,
+            },
+            create: {
+                url: '/chat/room/create',
+                method: 'POST',
+                headers: headers.json,
+            },
+            detail: {
+                url: '/chat/room/detail/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+        },
+    },
 };

@@ -10,7 +10,7 @@ export const navigatePath = {
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
-    messages: '/messages',
+    chat: ':roomId',
     media: '/media',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
@@ -33,7 +33,7 @@ const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
-const Messages = lazy(() => import('@features/messages/Messages'));
+const Chat = lazy(() => import('@features/messages/Chat'));
 const PostView = lazy(() => import('@features/post/PostView'));
 const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
@@ -101,15 +101,20 @@ const routes = [
         ],
     },
     {
-        name: 'Message Layout',
+        name: 'Chat Layout',
         element: MessageLayout,
-        path: '/',
+        path: 'message',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
-                name: 'Messages',
-                path: navigatePath.messages,
-                element: Messages,
+                name: 'Chat',
+                path: navigatePath.chat,
+                element: Chat,
+            },
+            {
+                name: 'Home Chat',
+                path: '',
+                element: Chat,
             },
         ],
     },

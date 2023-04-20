@@ -16,7 +16,7 @@ function ReceivedMessage(props) {
                 }}
             >
                 {isShowAvatar && (
-                    <Tooltip position="top" label={receiver.name}>
+                    <Tooltip position="top" label={receiver.last_name}>
                         <div className="message-user">
                             <Avatar size="md" radius="xl" src={receiver.avatar} />
                         </div>

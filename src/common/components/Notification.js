@@ -8,8 +8,11 @@ import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
 import Socket, { connections } from '@services/socket';
 import NotificationItem from './NotificationItem';
+import { useQueryClient } from '@tanstack/react-query';
 
 function Notification() {
+
+    const queryClient = useQueryClient();
     const { notificationList, notificationListLoading } = useNotification();
     const [ notifications, setNotifications ] = useState([]);
     const socketClientRef = useRef(null);
@@ -19,7 +22,7 @@ function Notification() {
         if (!notificationListLoading) {
             setNotifications([ ...notificationList.data ]);
         }
-    }, [ notificationListLoading ]);
+    }, [ notificationList ]);
     
     
 
@@ -56,7 +59,8 @@ function Notification() {
                 if(data){
                     data = JSON.parse(data.data);
                     if(data.value){
-                        !notifications.includes(data.value) && setNotifications([ data.value, ...notifications ]);
+                        queryClient.invalidateQueries({ queryKey: [ "notifications" ] });
+                        setNotifications([ data.value, ...notifications ]);
                     }
                 }
                 

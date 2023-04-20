@@ -19,6 +19,7 @@ import {
     ReactAngry,
 } from '@assets/images/reaction';
 import { useProfile, useNotification } from '@services/controller';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 function NotificationItem(props) {
@@ -28,18 +29,36 @@ function NotificationItem(props) {
     const [ timeDifference, setTimeDifference ] = useState(Math.floor((new Date() - new Date(item.created)) / 1000));
     const [ isHover, setIsHover ] = useState(false);
     const { updateNotificationItem, deleteNotificationItem } = useNotification();
-
+    const queryClient = useQueryClient();
     const handleMaskReadNotification = () => {
         updateNotificationItem({
             pathParams: { instanceId: item.id },
+        },
+        {
+            onSuccess: (data) => {
+                console.log(data);
+                queryClient.invalidateQueries({ queryKey: [ `notifications` ] });
+            },
+            onError: (error) => {
+                console.log(error);
+            },
         });
     };
 
     const handleDeleteNotification = () => {
-        deleteNotificationItem({
-            pathParams: { instanceId: item.id },
-            
-        });
+        deleteNotificationItem(
+            {
+                pathParams: { instanceId: item.id },
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                    queryClient.invalidateQueries({ queryKey: [ `notifications` ] });
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            });
     };
 
     useEffect(() => {
