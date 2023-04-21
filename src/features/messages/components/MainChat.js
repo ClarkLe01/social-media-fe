@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Grid,
     Avatar,
@@ -29,6 +29,8 @@ import { useAuth, useMessage, useRoom } from '@services/controller';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Messages from './Messages';
 import Socket, { connections } from '@services/socket';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { API_URL } from '@constants';
 
 const thumbsContainer = {
     display: 'flex',
@@ -63,20 +65,21 @@ const img = {
 
 const MemorizedMessages = React.memo(Messages);
 function MainChat(props) {
+    const queryClient = useQueryClient();
     const { roomId } = props;
     const [ showRoomDetail, setShowRoomDetail ] = useState(false);
     const [ textAreaHeight, setTextAreaHeight ] = useState(0);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const [ valueInput, setValueInput ] = useState('');
-    const { messageList, RoomDetail, RoomDetailLoading } = useMessage(roomId);
+    const { messageList, messageListLoading, RoomDetail, RoomDetailLoading, sendMessage } = useMessage(roomId);
     const { profile } = useAuth();
     const [ roomDetail, setRoomDetail ] = useState(null);
+    const [ messages, setMessages ] = useState([]);
     const scrollChatingRef = useRef(null);
     const dropzoneRef = useRef(null);
     const chatInputRef = useRef(null);
-
-    const wsChat = useRef(null);
-    const [ waitingToReconnect, setWaitingToReconnect ] = useState(null);
+    const [ clientSocket, setClientSocket ] = useState(null);
+    const [ connected, setConnected ] = useState(false);
 
     const thumbs = attachFiles.map((file) => (
         <div style={thumb} key={file.name}>
@@ -97,8 +100,108 @@ function MainChat(props) {
             top: scrollChatingRef.current.scrollHeight,
             behavior: 'smooth',
         });
+    useEffect(() => {
+        if (!RoomDetailLoading) {
+            setRoomDetail(RoomDetail.data);
+        }
+    }, [ RoomDetail ]);
+
+    useEffect(() => {
+        if (!messageListLoading) {
+            setMessages(messageList.data);
+        }
+    }, [ messageList ]);
+
+    useEffect(() => {
+        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+        
+        return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+        
+    }, []);
+
+    useEffect(() => {
+        setTextAreaHeight(`calc(100vh - 160px - ${chatInputRef.current?.clientHeight}px)`);
+        
+    }, [ chatInputRef.current?.clientHeight ]);
+
+    useEffect(() => {
+        const initChat = async () => {
+            const socket = new Socket(connections.chat, { pathParams: { roomId } }).private();
+            
+            setClientSocket(socket);
+            setConnected(true);
+            
+        };
+        initChat();
+        
+    }, [ roomId ]);
+    useEffect(() => {
+        if (!clientSocket) return;
+        let timeoutId;
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                console.log('left tab');
+                timeoutId = setTimeout(() => {
+                    clientSocket.close();
+                    setConnected(false);
+                }, 5000);
+            } else {
+                console.log('returned to tab');
+                console.log(connected);
+                clearTimeout(timeoutId);
+                if (!connected) {
+                    setClientSocket(new Socket(connections.chat, { pathParams: { roomId } }).private());
+                    setConnected(true);
+                    console.log('reconnected');
+                    queryClient.invalidateQueries({ queryKey: [ "message/list", `room:${roomId}` ] });
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                }
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clientSocket.close();
+        };
+
+    }, [ clientSocket, connected ]);
+
+    useEffect(() => {
+        if(connected){
+            clientSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log(data);
+                if(data.type == 'message'){
+                    const message = data.data;
+                    message.senderID.avatar = API_URL  + message.senderID.avatar;
+                    setMessages((messages) => [ ...messages, data.data ]);
+                    scrollToBottom();
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                }
+            };
+        }
+    }, [ clientSocket, connected ]);
+
+    if (!clientSocket || !connected) return null;
+
+    
+
     const handleSendingMessage = () => {
         if (valueInput.length == 0) return;
+        clientSocket &&
+            clientSocket.send(
+                JSON.stringify({
+                    content: valueInput,
+                }),
+            );
+        // sendMessage({
+        //     data: {
+        //         content: valueInput,
+        //         receiverID: roomDetail.id,
+        //     },
+        // });
         setValueInput('');
         scrollToBottom();
     };
@@ -110,70 +213,6 @@ function MainChat(props) {
         }
     };
 
-    useEffect(() => {
-        if (!RoomDetailLoading) {
-            setRoomDetail(RoomDetail.data);
-        }
-    }, [ RoomDetail ]);
-
-    useEffect(() => {
-        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-        return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-    }, []);
-
-    useEffect(() => {
-        setTextAreaHeight(`calc(100vh - 160px - ${chatInputRef.current?.clientHeight}px)`);
-    }, [ chatInputRef.current?.clientHeight ]);
-
-    useEffect(() => {
-        if (waitingToReconnect) {
-            return;
-        }
-        if (roomId === undefined) return;
-        const socket = new Socket(connections.chat, { pathParams: { roomId } }).private();
-        wsChat.current = socket;
-
-        // Opening the ws connection
-
-        wsChat.current.onopen = () => {
-            console.log("Connection opened");
-        };
-
-        // Listening on ws new added messages
-
-        wsChat.current.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('data chat', data);
-        };
-
-        wsChat.current.close = () => {
-            if (wsChat.current) {
-                // Connection failed
-                console.log('ws closed by server');
-            } else {
-                // Cleanup initiated from app side, can return here, to not attempt a reconnect
-                console.log('ws closed by app component unmount');
-                return;
-            }
-            if (waitingToReconnect) {
-                return;
-            }
-            console.log('ws closed');
-            setWaitingToReconnect(true);
-        };
-        socket.onerror = (e) => console.error(e);
-
-        return () => {
-            console.log('Cleanup');
-            // Dereference, so it will set up next time
-            
-            wsChat.current.close();
-            wsChat.current = null;
-            socket.close();
-
-            
-        };
-    }, [ roomId, waitingToReconnect ]);
 
     return (
         <Grid columns={24} className="px-0">
@@ -202,7 +241,12 @@ function MainChat(props) {
                                                     <Avatar
                                                         size={45}
                                                         radius="xl"
-                                                        src={roomDetail.members.filter(member => member.id !== profile.data.id)[0].avatar}
+                                                        src={
+                                                            roomDetail.members.filter(
+                                                                (member) =>
+                                                                    member.id !== profile.data.id,
+                                                            )[0].avatar
+                                                        }
                                                     />
                                                 )}
                                             </Indicator>
@@ -252,7 +296,8 @@ function MainChat(props) {
                                 scrollbar: 'me-0',
                             }}
                         >
-                            {messageList && <MemorizedMessages messages={messageList.data} />}
+                            {messages.length > 0 && <MemorizedMessages messages={messages} />}
+                            {scrollChatingRef.current && scrollToBottom()}
                         </ScrollArea>
                     </div>
 
@@ -328,7 +373,7 @@ function MainChat(props) {
                                     }
                                     value={valueInput}
                                     onChange={(e) => {
-                                        setValueInput(e.currentTarget.value), console.log('change');
+                                        setValueInput(e.currentTarget.value);
                                     }}
                                     onKeyDown={handleEnterPress}
                                 />

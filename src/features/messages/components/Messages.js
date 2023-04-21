@@ -9,9 +9,9 @@ function Messages(props) {
     const { profile, profileLoading } = useAuth();
 
     return (
-        <div className="chat-wrapper pt-0 w-100 position-relative bg-white theme-dark-bg">
+        <div className="chat-wrapper pt-0 w-100 position-relative">
             <div className="chat-body p-3 ">
-                <div className="messages-content pb-5">
+                <div className="messages-content pb-0">
                     {messages.map((message, index) => {
                         const timeMessage = new Date(message.created);
                         let prevTimeMessage =

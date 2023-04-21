@@ -24,8 +24,6 @@ function Room(props) {
 
         if (diffSec < 60) {
             return `${diffSec} s`;
-        } else if (diffMin === 1) {
-            return '1 minute ago';
         } else if (diffMin < 60) {
             return `${diffMin} m`;
         } else if (diffHr < 24) {

@@ -15,7 +15,7 @@ function useMessage(roomId) {
         retryOnMount: true,
         retry: 5,
         retryDelay: 1000,
-        staleTime: 1000,
+        staleTime: Infinity,
     });
 
     const {
