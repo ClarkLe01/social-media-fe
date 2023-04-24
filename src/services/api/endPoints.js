@@ -129,7 +129,7 @@ export default {
                 headers: headers.json,
             },
             create: {
-                url: '/chat/room/create',
+                url: '/chat/room/new',
                 method: 'POST',
                 headers: headers.json,
             },

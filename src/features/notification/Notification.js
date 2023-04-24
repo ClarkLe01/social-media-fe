@@ -4,11 +4,12 @@ import {
     IconTrashX,
     IconSettings,
 } from '@tabler/icons-react';
-import { ActionIcon, Menu } from '@mantine/core';
+import { ActionIcon, AspectRatio, Menu, Image } from '@mantine/core';
 import useNotification from '@services/controller/useNotification';
 import Socket, { connections } from '@services/socket';
 import NotificationItem from './components/NotificationItem';
 import { useQueryClient } from '@tanstack/react-query';
+import NoDataIllustration from '@assets/images/no-data.jpg';
 
 function Notification() {
     const queryClient = useQueryClient();
@@ -134,11 +135,17 @@ function Notification() {
                         </Menu>
                     </div>
                 </h2>
-                {notifications.map((item, index) => (
-                    <div key={index}>
-                        <NotificationItem item={item} />
-                    </div>
-                ))}
+                {notifications.length == 0 ? (
+                    <AspectRatio ratio={1/1} maw={700} className='mx-auto'> 
+                        <Image src={NoDataIllustration} />
+                    </AspectRatio>
+                ) : (
+                    notifications.map((item, index) => (
+                        <div key={index}>
+                            <NotificationItem item={item} />
+                        </div>
+                    ))
+                )}
             </div>
 
         </div>

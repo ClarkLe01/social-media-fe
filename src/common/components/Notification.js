@@ -3,12 +3,13 @@ import {
 } from '@tabler/icons-react';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollArea, Popover, ActionIcon, Grid } from '@mantine/core';
+import { ScrollArea, Popover, ActionIcon, Grid, Avatar, Image, AspectRatio } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
 import Socket, { connections } from '@services/socket';
 import NotificationItem from './NotificationItem';
 import { useQueryClient } from '@tanstack/react-query';
+import EmptyStateIllustration from '@assets/svgs/empty-state.svg';
 
 function Notification() {
 
@@ -100,7 +101,10 @@ function Notification() {
                         </Link>
                     </div>
                     {notifications.length == 0 ? (
-                        <div>no item</div>
+                        <AspectRatio ratio={4/3}>
+                            <Image src={EmptyStateIllustration}/>
+                        </AspectRatio>
+                        
                     ) : (
                         <ScrollArea
                             style={{ height: 500 }}

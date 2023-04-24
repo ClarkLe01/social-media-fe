@@ -29,7 +29,7 @@ import { useAuth, useMessage, useRoom } from '@services/controller';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Messages from './Messages';
 import Socket, { connections } from '@services/socket';
-import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '@constants';
 
 const thumbsContainer = {
@@ -296,7 +296,7 @@ function MainChat(props) {
                                 scrollbar: 'me-0',
                             }}
                         >
-                            {messages.length > 0 && <MemorizedMessages messages={messages} />}
+                            {messages.length > 0 && <Messages messages={messages} />}
                             {scrollChatingRef.current && scrollToBottom()}
                         </ScrollArea>
                     </div>

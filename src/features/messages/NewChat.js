@@ -18,19 +18,12 @@ import { MainChat, Rooms } from './components';
 import { useQueryClient } from '@tanstack/react-query';
 import Socket, { connections } from '@services/socket';
 
-function Chat() {
+function NewChat() {
     useScrollLock(true);
-    let { roomId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
     const { RoomList, RoomListLoading } = useRoom();
-    
-    useEffect(() => {
-        if (roomId === undefined && !RoomListLoading && RoomList.data.length > 0) {
-            roomId = RoomList.data[0].id;
-            navigate(`${location.pathname}/${roomId}`, { state: { from: undefined } });
-        }
-    }, [ roomId, RoomList, RoomListLoading, location.pathname, navigate ]);
+
 
     return (
         <div className="row">
@@ -68,11 +61,11 @@ function Chat() {
                     </div>
                 </Grid.Col>
                 <Grid.Col span={16} className="border-bottom-0 p-0 py-0">
-                    {roomId ? <MainChat roomId={roomId} /> :<>  </>}
+                    
                 </Grid.Col>
             </Grid>
         </div>
     );
 }
 
-export default Chat;
+export default NewChat;

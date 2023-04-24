@@ -11,6 +11,7 @@ export const navigatePath = {
     settings: '/settings',
     notification: '/notification',
     chat: ':roomId',
+    newChat: 'new',
     media: '/media',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
@@ -34,6 +35,7 @@ const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPasswor
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
 const Chat = lazy(() => import('@features/messages/Chat'));
+const NewChat = lazy(() => import('@features/messages/NewChat'));
 const PostView = lazy(() => import('@features/post/PostView'));
 const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
@@ -115,6 +117,11 @@ const routes = [
                 name: 'Home Chat',
                 path: '',
                 element: Chat,
+            },
+            {
+                name: 'New Room Chat',
+                path: navigatePath.newChat,
+                element: NewChat,
             },
         ],
     },
