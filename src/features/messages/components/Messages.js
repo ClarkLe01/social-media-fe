@@ -10,7 +10,7 @@ function Messages(props) {
 
     return (
         <div className="chat-wrapper pt-0 w-100 position-relative">
-            <div className="chat-body p-3 ">
+            <div className="chat-body p-3 px-1">
                 <div className="messages-content pb-0">
                     {messages.map((message, index) => {
                         const timeMessage = new Date(message.created);

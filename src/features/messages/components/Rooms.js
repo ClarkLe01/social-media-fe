@@ -4,11 +4,10 @@ import { useAuth } from '@services/controller';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function Room(props) {
-    const { id, roomName, members, isGroup, latest_message } = props.room;
+    const { id, roomName, members, isGroup, latest_message, updated } = props.room;
     const [ isHovering, setIsHovering ] = useState(false);
     const { profile, profileLoading } = useAuth();
     const { roomId } = useParams();
-    const location = useLocation();
     const navigate = useNavigate();
 
     function timeDiffToString(timestamp) {
@@ -40,9 +39,10 @@ function Room(props) {
     const currentUser = useMemo(() => profile.data, [ profile.data ]);
 
     const getOtherUsers = useCallback(
-        (members, currentUser, isGroup) => {
+        (members, currentUser, isGroup, roomName) => {
             const filteredMembers = members.filter((member) => member.id !== currentUser.id);
             if (!isGroup) return filteredMembers[0].first_name + ' ' + filteredMembers[0].last_name;
+            if (roomName) return roomName;
             return filteredMembers.map((member, index) => {
                 if (index === filteredMembers.length - 1) return member.last_name;
                 else return member.last_name + ', ';
@@ -90,21 +90,34 @@ function Room(props) {
             </Group>
             <div>
                 <Text fw={500} lineClamp={1}>
-                    {getOtherUsers(members, currentUser, isGroup)}
+                    {getOtherUsers(members, currentUser, isGroup, roomName)}
                 </Text>
                 <Grid className="d-flex">
                     <Grid.Col span={'auto'}>
-                        <Text size="sm" lineClamp={1} c="dimmed">
-                            {latest_message.senderID.id == currentUser.id
-                                ? 'You'
-                                : latest_message.senderID.last_name}
-                            :&nbsp;{latest_message.content}
-                        </Text>
+                        {latest_message ? (
+                            <Text size="sm" lineClamp={1} c="dimmed">
+                                {latest_message.senderID.id == currentUser.id
+                                    ? 'You'
+                                    : latest_message.senderID.last_name}
+                                :&nbsp;{latest_message.content}
+                            </Text>
+                        ) : (
+                            <Text size="sm" lineClamp={1} c="dimmed">
+                                You are friend now
+                            </Text>
+                        )}
                     </Grid.Col>
                     <Grid.Col span={'content'}>
-                        <Text className="d-inline" size="sm" c="dimmed">
-                            {timeDiffToString(latest_message.created)}
-                        </Text>
+                        {latest_message ? (
+                            <Text className="d-inline" size="sm" c="dimmed">
+                                {timeDiffToString(latest_message.created)}
+                            </Text>
+                        ): (
+                            <Text className="d-inline" size="sm" c="dimmed">
+                                {timeDiffToString(updated)}
+                            </Text>
+                        )}
+                        
                     </Grid.Col>
                 </Grid>
             </div>

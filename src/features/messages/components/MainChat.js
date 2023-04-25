@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     Grid,
     Avatar,
@@ -31,6 +31,7 @@ import Messages from './Messages';
 import Socket, { connections } from '@services/socket';
 import { useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '@constants';
+import InputChat from './InputChat';
 
 const thumbsContainer = {
     display: 'flex',
@@ -63,21 +64,19 @@ const img = {
     height: '100%',
 };
 
-const MemorizedMessages = React.memo(Messages);
 function MainChat(props) {
     const queryClient = useQueryClient();
     const { roomId } = props;
     const [ showRoomDetail, setShowRoomDetail ] = useState(false);
-    const [ textAreaHeight, setTextAreaHeight ] = useState(0);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const [ valueInput, setValueInput ] = useState('');
-    const { messageList, messageListLoading, RoomDetail, RoomDetailLoading, sendMessage } = useMessage(roomId);
+    const { messageList, messageListLoading, messageListError, RoomDetail, RoomDetailLoading, RoomDetailError, sendMessage } = useMessage(roomId);
     const { profile } = useAuth();
+    const currentUser = useMemo(() => profile.data, [ profile.data ]);
     const [ roomDetail, setRoomDetail ] = useState(null);
     const [ messages, setMessages ] = useState([]);
     const scrollChatingRef = useRef(null);
     const dropzoneRef = useRef(null);
-    const chatInputRef = useRef(null);
     const [ clientSocket, setClientSocket ] = useState(null);
     const [ connected, setConnected ] = useState(false);
 
@@ -95,6 +94,20 @@ function MainChat(props) {
             </div>
         </div>
     ));
+    
+    const getOtherUsers = useCallback(
+        (members, currentUser, isGroup, roomName) => {
+            const filteredMembers = members.filter((member) => member.id !== currentUser.id);
+            if (!isGroup) return filteredMembers[0].first_name + ' ' + filteredMembers[0].last_name;
+            if (roomName) return roomName;
+            return filteredMembers.map((member, index) => {
+                if (index === filteredMembers.length - 1) return member.last_name;
+                else return member.last_name + ', ';
+            });
+        },
+        [ currentUser ],
+    );
+    
     const scrollToBottom = () =>
         scrollChatingRef.current.scrollTo({
             top: scrollChatingRef.current.scrollHeight,
@@ -104,36 +117,28 @@ function MainChat(props) {
         if (!RoomDetailLoading) {
             setRoomDetail(RoomDetail.data);
         }
-    }, [ RoomDetail ]);
+    }, [ RoomDetailLoading ]);
 
     useEffect(() => {
         if (!messageListLoading) {
             setMessages(messageList.data);
         }
-    }, [ messageList ]);
+    }, [ messageListLoading ]);
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-        
-        return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-        
-    }, []);
 
-    useEffect(() => {
-        setTextAreaHeight(`calc(100vh - 160px - ${chatInputRef.current?.clientHeight}px)`);
-        
-    }, [ chatInputRef.current?.clientHeight ]);
+        return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    }, []);
 
     useEffect(() => {
         const initChat = async () => {
             const socket = new Socket(connections.chat, { pathParams: { roomId } }).private();
-            
+
             setClientSocket(socket);
             setConnected(true);
-            
         };
         initChat();
-        
     }, [ roomId ]);
     useEffect(() => {
         if (!clientSocket) return;
@@ -150,43 +155,42 @@ function MainChat(props) {
                 console.log(connected);
                 clearTimeout(timeoutId);
                 if (!connected) {
-                    setClientSocket(new Socket(connections.chat, { pathParams: { roomId } }).private());
+                    setClientSocket(
+                        new Socket(connections.chat, { pathParams: { roomId } }).private(),
+                    );
                     setConnected(true);
                     console.log('reconnected');
-                    queryClient.invalidateQueries({ queryKey: [ "message/list", `room:${roomId}` ] });
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'message/list', `room:${roomId}` ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
                 }
             }
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        
+
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             clientSocket.close();
         };
-
     }, [ clientSocket, connected ]);
 
     useEffect(() => {
-        if(connected){
+        if (connected) {
             clientSocket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 console.log(data);
-                if(data.type == 'message'){
+                if (data.type == 'message') {
                     const message = data.data;
-                    message.senderID.avatar = API_URL  + message.senderID.avatar;
+                    message.senderID.avatar = API_URL + message.senderID.avatar;
                     setMessages((messages) => [ ...messages, data.data ]);
                     scrollToBottom();
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
                 }
             };
         }
     }, [ clientSocket, connected ]);
 
     if (!clientSocket || !connected) return null;
-
-    
 
     const handleSendingMessage = () => {
         if (valueInput.length == 0) return;
@@ -213,6 +217,9 @@ function MainChat(props) {
         }
     };
 
+    if(messageListLoading || RoomDetailLoading) return (
+        <div>Error</div>
+    );
 
     return (
         <Grid columns={24} className="px-0">
@@ -258,7 +265,7 @@ function MainChat(props) {
                                     }}
                                 >
                                     <Text size="lg" fw={700} color="dark">
-                                        Vo Van Duc
+                                        {getOtherUsers(roomDetail.members, currentUser, roomDetail.isGroup, roomDetail.roomName)}
                                     </Text>
                                     <Text size="xs" c="dimmed">
                                         Active Now
@@ -285,9 +292,14 @@ function MainChat(props) {
                             </div>
                         </div>
                     </div>
-                    <div className="main-chat-content">
+                    <div
+                        className="main-chat-content"
+                        style={{
+                            position: 'relative',
+                        }}
+                    >
                         <ScrollArea
-                            style={{ height: `${textAreaHeight}` }}
+                            style={{ height: `80vh` }}
                             type="auto"
                             offsetScrollbars
                             scrollbarSize={2}
@@ -299,93 +311,94 @@ function MainChat(props) {
                             {messages.length > 0 && <Messages messages={messages} />}
                             {scrollChatingRef.current && scrollToBottom()}
                         </ScrollArea>
-                    </div>
-
-                    <div className="main-chat-tool">
-                        <div className="d-flex bd-highlight mb-3 mt-3">
-                            <div className="p-2 bd-highlight align-self-end">
-                                <ActionIcon color="blue" variant="subtle">
-                                    <IconMicrophone />
-                                </ActionIcon>
-                            </div>
-                            <div className="p-2 bd-highlight align-self-end">
-                                <ActionIcon
-                                    color="blue"
-                                    variant="subtle"
-                                    onClick={() => dropzoneRef.current()}
-                                >
-                                    <IconPhoto />
-                                </ActionIcon>
-                            </div>
-                            <div className="p-2 bd-highlight align-self-end">
-                                <ActionIcon color="blue" variant="subtle">
-                                    <IconSticker />
-                                </ActionIcon>
-                            </div>
-                            <div className="p-2 bd-highlight align-self-end">
-                                <ActionIcon color="blue" variant="subtle">
-                                    <IconGif />
-                                </ActionIcon>
-                            </div>
-                            <div className="p-2 bd-highlight align-self-end flex-fill ms-auto">
-                                {attachFiles.length > 0 && (
-                                    <aside className="preview-attach-files" style={thumbsContainer}>
-                                        {thumbs}
-                                    </aside>
-                                )}
-
-                                <Textarea
-                                    classNames={{
-                                        input: 'py-1 ps-3 pe-5 align-self-start',
-                                    }}
-                                    ref={chatInputRef}
-                                    // autosize
-                                    // minRows={1}
-                                    // maxRows={4}
-                                    rows={1}
-                                    variant="filled"
-                                    radius="xl"
-                                    size={14}
-                                    rightSection={
-                                        <Popover
-                                            position="top-start"
-                                            shadow="md"
-                                            classNames={{
-                                                dropdown: 'p-0',
-                                            }}
-                                        >
-                                            <Popover.Target>
-                                                <ActionIcon className="me-5" radius="xl">
-                                                    <IconMoodSmileFilled />
-                                                </ActionIcon>
-                                            </Popover.Target>
-                                            <Popover.Dropdown>
-                                                <div>
-                                                    <Picker
-                                                        data={data}
-                                                        onEmojiSelect={(e) =>
-                                                            setValueInput(valueInput + e.native)
-                                                        }
-                                                    />
-                                                </div>
-                                            </Popover.Dropdown>
-                                        </Popover>
-                                    }
-                                    value={valueInput}
-                                    onChange={(e) => {
-                                        setValueInput(e.currentTarget.value);
-                                    }}
-                                    onKeyDown={handleEnterPress}
-                                />
-                            </div>
-                            <div className="p-2 bd-highlight align-self-end">
-                                <ActionIcon
-                                    color="blue"
-                                    variant="subtle"
-                                    onClick={handleSendingMessage}
-                                >
-                                    <IconSend />
-                                </ActionIcon>
+                        <div
+                            className="main-chat-tool algin-items-center justify-content-center"
+                            style={{
+                                position: 'absolute',
+                                bottom: '-6vh',
+                                display: 'block',
+                                width: '100%',
+                                zIndex: 2,
+                                backgroundColor: '#fff',
+                            }}
+                        >
+                            <div className="d-flex bd-highlight mb-3 mt-3">
+                                <div className="p-2 bd-highlight align-self-end">
+                                    <ActionIcon color="blue" variant="subtle">
+                                        <IconMicrophone />
+                                    </ActionIcon>
+                                </div>
+                                <div className="p-2 bd-highlight align-self-end">
+                                    <ActionIcon
+                                        color="blue"
+                                        variant="subtle"
+                                        onClick={() => dropzoneRef.current()}
+                                    >
+                                        <IconPhoto />
+                                    </ActionIcon>
+                                </div>
+                                <div className="p-2 bd-highlight align-self-end">
+                                    <ActionIcon color="blue" variant="subtle">
+                                        <IconSticker />
+                                    </ActionIcon>
+                                </div>
+                                <div className="p-2 bd-highlight align-self-end">
+                                    <ActionIcon color="blue" variant="subtle">
+                                        <IconGif />
+                                    </ActionIcon>
+                                </div>
+                                <div className="p-2 bd-highlight align-self-end ms-auto flex-fill">
+                                    <Textarea
+                                        classNames={{
+                                            input: 'ps-3 pe-5 align-self-start ',
+                                        }}
+                                        autosize
+                                        minRows={1}
+                                        maxRows={3}
+                                        rows={1}
+                                        variant="filled"
+                                        radius="xl"
+                                        size={14}
+                                        rightSection={
+                                            <Popover
+                                                position="top-start"
+                                                shadow="md"
+                                                classNames={{
+                                                    dropdown: 'p-0',
+                                                }}
+                                            >
+                                                <Popover.Target>
+                                                    <ActionIcon className="me-5" radius="xl">
+                                                        <IconMoodSmileFilled />
+                                                    </ActionIcon>
+                                                </Popover.Target>
+                                                <Popover.Dropdown className="me-4">
+                                                    <div>
+                                                        <Picker
+                                                            data={data}
+                                                            onEmojiSelect={(e) =>
+                                                                setValueInput(valueInput + e.native)
+                                                            }
+                                                        />
+                                                    </div>
+                                                </Popover.Dropdown>
+                                            </Popover>
+                                        }
+                                        value={valueInput}
+                                        onChange={(e) => {
+                                            setValueInput(e.currentTarget.value);
+                                        }}
+                                    />
+                                </div>
+                                <div className="p-2 pb-3 bd-highlight align-self-end">
+                                    <ActionIcon
+                                        color="blue"
+                                        variant="subtle"
+                                        onClick={handleSendingMessage}
+                                    >
+                                        <IconSend />
+                                    </ActionIcon>
+                                </div>
                             </div>
                         </div>
                     </div>

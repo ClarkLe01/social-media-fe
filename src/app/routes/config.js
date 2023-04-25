@@ -16,10 +16,12 @@ export const navigatePath = {
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
+    notFound404: '/notfound404',
     testpage: '/test',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
+const ErrorLayout = lazy(() => import('@app/layouts/ErrorLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
@@ -41,7 +43,7 @@ const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
 const YourRequest = lazy(() => import('@features/friend/YourRequest'));
 
-
+const NotFound404 = lazy(() => import('@features/errorsPage/NotFound404'));
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 /*
@@ -168,6 +170,19 @@ const routes = [
                 name: 'ForgetPassword',
                 path: navigatePath.forgetPassword,
                 element: ForgetPassword,
+            },
+        ],
+    },
+    {
+        name: 'Error Layout',
+        element: ErrorLayout,
+        path: '/',
+        requireAuth: AUTH.BOTH,
+        children: [
+            {
+                name: 'Not Found 404',
+                path: navigatePath.notFound404,
+                element: NotFound404,
             },
         ],
     },

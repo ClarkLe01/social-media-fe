@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
     Grid,
     Text,
@@ -15,8 +15,8 @@ import { useScrollLock } from '@mantine/hooks';
 import { useRoom } from '@services/controller';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MainChat, Rooms } from './components';
-import { useQueryClient } from '@tanstack/react-query';
-import Socket, { connections } from '@services/socket';
+import { navigatePath } from '@app/routes/config';
+
 
 function Chat() {
     useScrollLock(true);
@@ -24,6 +24,10 @@ function Chat() {
     const location = useLocation();
     const navigate = useNavigate();
     const { RoomList, RoomListLoading } = useRoom();
+
+    const handleNavigateToCreateRoom = () => {
+        navigate(`../${navigatePath.newChat}`, { state: { from: undefined } });
+    };
     
     useEffect(() => {
         if (roomId === undefined && !RoomListLoading && RoomList.data.length > 0) {
@@ -42,7 +46,9 @@ function Chat() {
                                 Chats
                             </Text>
                             <div>
-                                <ActionIcon>
+                                <ActionIcon
+                                    onClick={handleNavigateToCreateRoom}
+                                >
                                     <IconEdit />
                                 </ActionIcon>
                             </div>
