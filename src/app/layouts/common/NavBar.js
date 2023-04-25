@@ -30,7 +30,7 @@ function NavBar(props) {
         >
             <NavLink
                 component={Link}
-                to={`/${currentUser.id}`}
+                to={`/profile/${currentUser.id}`}
                 label="Profile"
                 icon={<IconUser size={16} stroke={1.5} />}
                 classNames={{

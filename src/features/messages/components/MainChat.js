@@ -32,6 +32,8 @@ import Socket, { connections } from '@services/socket';
 import { useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '@constants';
 import InputChat from './InputChat';
+import { navigatePath } from '@app/routes/config';
+import NotFound404 from '@features/errorsPage/NotFound404';
 
 const thumbsContainer = {
     display: 'flex',
@@ -79,6 +81,8 @@ function MainChat(props) {
     const dropzoneRef = useRef(null);
     const [ clientSocket, setClientSocket ] = useState(null);
     const [ connected, setConnected ] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const thumbs = attachFiles.map((file) => (
         <div style={thumb} key={file.name}>
@@ -105,41 +109,42 @@ function MainChat(props) {
                 else return member.last_name + ', ';
             });
         },
-        [ currentUser ],
+        [ currentUser, roomId ],
     );
-    
+
     const scrollToBottom = () =>
         scrollChatingRef.current.scrollTo({
             top: scrollChatingRef.current.scrollHeight,
             behavior: 'smooth',
         });
-    useEffect(() => {
-        if (!RoomDetailLoading) {
-            setRoomDetail(RoomDetail.data);
-        }
-    }, [ RoomDetailLoading ]);
 
     useEffect(() => {
-        if (!messageListLoading) {
+        if (!RoomDetailLoading && RoomDetail) {
+            setRoomDetail(RoomDetail.data);
+        }
+        
+    }, [ RoomDetailLoading, roomId ]);
+
+    useEffect(() => {
+        if (!messageListLoading && messageList) {
             setMessages(messageList.data);
         }
-    }, [ messageListLoading ]);
+    }, [ messageListLoading, roomId ]);
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-
         return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-    }, []);
+    }, [ roomId ]);
 
     useEffect(() => {
         const initChat = async () => {
             const socket = new Socket(connections.chat, { pathParams: { roomId } }).private();
-
             setClientSocket(socket);
             setConnected(true);
         };
         initChat();
     }, [ roomId ]);
+
     useEffect(() => {
         if (!clientSocket) return;
         let timeoutId;
@@ -165,14 +170,12 @@ function MainChat(props) {
                 }
             }
         };
-
         document.addEventListener('visibilitychange', handleVisibilityChange);
-
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             clientSocket.close();
         };
-    }, [ clientSocket, connected ]);
+    }, [ clientSocket, connected, roomId ]);
 
     useEffect(() => {
         if (connected) {
@@ -188,24 +191,23 @@ function MainChat(props) {
                 }
             };
         }
-    }, [ clientSocket, connected ]);
+    }, [ clientSocket, connected, roomId ]);
+
+    useEffect(() => {
+        console.log('valueInput', valueInput, valueInput.length);
+    }, [ valueInput ]);
 
     if (!clientSocket || !connected) return null;
 
     const handleSendingMessage = () => {
-        if (valueInput.length == 0) return;
+        console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
+        if (valueInput.trim().length == 0) return;
         clientSocket &&
             clientSocket.send(
                 JSON.stringify({
                     content: valueInput,
                 }),
             );
-        // sendMessage({
-        //     data: {
-        //         content: valueInput,
-        //         receiverID: roomDetail.id,
-        //     },
-        // });
         setValueInput('');
         scrollToBottom();
     };
@@ -217,9 +219,15 @@ function MainChat(props) {
         }
     };
 
-    if(messageListLoading || RoomDetailLoading) return (
-        <div>Error</div>
-    );
+    if(messageListError) {
+        console.log('messageListError', messageListError);
+        return <NotFound404 />;
+    }
+
+    if(RoomDetailError) {
+        console.log('RoomDetailError', RoomDetailError);
+        return <NotFound404 />;
+    }
 
     return (
         <Grid columns={24} className="px-0">
@@ -388,6 +396,7 @@ function MainChat(props) {
                                         onChange={(e) => {
                                             setValueInput(e.currentTarget.value);
                                         }}
+                                        onKeyDown={handleEnterPress}
                                     />
                                 </div>
                                 <div className="p-2 pb-3 bd-highlight align-self-end">

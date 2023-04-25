@@ -31,73 +31,12 @@ import { Rooms } from './components';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
-const dataTest = [
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/futurama-bender.png',
-        label: 'Bender Bending Rodríguez',
-        value: 'Bender Bending Rodríguez',
-        description: 'Fascinated with cooking',
-    },
-
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/futurama-mom.png',
-        label: 'Carol Miller',
-        value: 'Carol Miller',
-        description: 'One of the richest people on Earth',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/homer-simpson.png',
-        label: 'Homer Simpson',
-        value: 'Homer Simpson',
-        description: 'Overweight, lazy, and often ignorant',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants',
-        value: 'Spongebob Squarepants',
-        description: 'Not just a sponge',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants 2',
-        value: 'Spongebob Squarepants 2',
-        description: 'Not just a sponge',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants 3',
-        value: 'Spongebob Squarepants 3',
-        description: 'Not just a sponge',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants 4',
-        value: 'Spongebob Squarepants  4',
-        description: 'Not just a sponge',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants 5',
-        value: 'Spongebob Squarepants 5',
-        description: 'Not just a sponge',
-    },
-    {
-        image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-        label: 'Spongebob Squarepants 6',
-        value: 'Spongebob Squarepants 6',
-        description: 'Not just a sponge',
-    },
-];
-
-let SelectItem = ({ image, label, description, ...others }, ref) => (
+let SelectItem = ({ avatar, label, ...others }, ref) => (
     <div ref={ref} {...others}>
         <Group noWrap>
-            <Avatar src={image} />
+            <Avatar src={avatar} radius={'100%'} />
             <div>
                 <Text>{label}</Text>
-                <Text size="xs" color="dimmed">
-                    {description}
-                </Text>
             </div>
         </Group>
     </div>
@@ -108,10 +47,10 @@ SelectItem = forwardRef(SelectItem);
 function NewChat() {
     useScrollLock(true);
     const { profile } = useAuth();
-    const { friendList, friendListLoading } = useFriend(profile.data.id);
+    const { friendListDetail, friendListDetailLoading } = useFriend(profile.data.id);
     const location = useLocation();
     const navigate = useNavigate();
-    const { RoomList } = useRoom();
+    const { RoomList, createRoom } = useRoom();
     const [ attachFiles, setAttachFiles ] = useState([]);
     const [ valueInput, setValueInput ] = useState('');
     const [ friendData, setFriendData ] = useState([]);
@@ -127,11 +66,62 @@ function NewChat() {
         console.log('members', members);
     }, [ members ]);
 
-    useEffect(() => {
-        if(friendList && !friendListLoading){
-            console.log(friendList.data);
+    const handleSendingMessage = () => {
+        console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
+        if (valueInput.trim().length == 0) return;
+        const form = new FormData();
+        attachFiles.map(file => form.append("chatFiles", file));
+        form.append('members', [ members ]);
+        form.append('content', valueInput);
+        createRoom(
+            {
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                },
+            },
+        );
+    };
+
+    const handleEnterPress = (e) => {
+        if (e.code == 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendingMessage();
         }
-    }, [ friendListLoading, friendList ]);
+    };
+
+    useEffect(() => {
+        if(friendListDetail && !friendListDetailLoading){
+            friendListDetail.data.map(item => {
+                item.requestID.id === profile.data.id 
+                    ? setFriendData(prev => [ ...prev, 
+                        {
+                            value: item.responseID.id,
+                            email: item.responseID.email,
+                            avatar: item.responseID.avatar,
+                            label: item.responseID.first_name + ' ' + item.responseID.last_name,
+                        },
+                    ]) 
+                    : setFriendData(prev => [ ...prev, 
+                        {
+                            value: item.requestID.id,
+                            email: item.requestID.email,
+                            avatar: item.requestID.avatar,
+                            label: item.requestID.first_name + ' ' + item.requestID.last_name,
+                        },
+                    ]);
+            });
+        }
+    }, [ friendListDetail, friendListDetailLoading ]);
+
+    useEffect(() => {
+        console.log('friendData ', friendData);
+    }, [ friendData ]);
 
     return (
         <div className="row">
@@ -178,7 +168,7 @@ function NewChat() {
                                         onChange={setMembers}
                                         label="To :"
                                         itemComponent={SelectItem}
-                                        data={dataTest}
+                                        data={friendData}
                                         searchable
                                         nothingFound="Nothing found"
                                         maxDropdownHeight={400}
@@ -186,10 +176,7 @@ function NewChat() {
                                             !selected &&
                                             (item.label
                                                 .toLowerCase()
-                                                .includes(value.toLowerCase().trim()) ||
-                                                item.description
-                                                    .toLowerCase()
-                                                    .includes(value.toLowerCase().trim()))
+                                                .includes(value.toLowerCase().trim()))
                                         }
                                         rightSection={<></>}
                                         classNames={{
@@ -305,13 +292,14 @@ function NewChat() {
                                                     onChange={(e) => {
                                                         setValueInput(e.currentTarget.value);
                                                     }}
+                                                    onKeyDown={handleEnterPress}
                                                 />
                                             </div>
                                             <div className="p-2 pb-3 bd-highlight align-self-end">
                                                 <ActionIcon
                                                     color="blue"
                                                     variant="subtle"
-                                                    // onClick={handleSendingMessage}
+                                                    onClick={handleSendingMessage}
                                                 >
                                                     <IconSend />
                                                 </ActionIcon>

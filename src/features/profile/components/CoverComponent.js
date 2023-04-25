@@ -54,9 +54,6 @@ function CoverComponent(props) {
 
     return (
         <div>
-            {/* <AspectRatio ratio={16/ 9} mah={300}>
-                <Image src={user.cover} key={user.updated} />
-            </AspectRatio> */}
             <Image src={user.cover} key={user.updated} width={"100%"} height={320} fit='cover' />
             {user.id == profile.data.id && (
                 <>

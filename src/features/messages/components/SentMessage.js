@@ -21,7 +21,13 @@ function SentMessage(props) {
                 >
                     <Tooltip position="top" label={time}>
                         <div className="message-wrap mx-2">
-                            <Text>{content}</Text>
+                            <Text
+                                style={{
+                                    whiteSpace: 'pre-line',
+                                }}
+                            >
+                                {content}
+                            </Text>
                         </div>
                     </Tooltip>
                 </Grid.Col>

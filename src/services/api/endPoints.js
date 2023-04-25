@@ -56,6 +56,11 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        detail: {
+            url: '/friend/list/detail/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
         requests: {
             url: '/friend/requests',
             method: 'GET',
@@ -119,7 +124,7 @@ export default {
             send: {
                 url: '/chat/message/send',
                 method: 'POST',
-                headers: headers.json,
+                headers: headers.multipart,
             },
         },
         room: {
@@ -131,7 +136,7 @@ export default {
             create: {
                 url: '/chat/room/new',
                 method: 'POST',
-                headers: headers.json,
+                headers: headers.multipart,
             },
             detail: {
                 url: '/chat/room/detail/:roomId',

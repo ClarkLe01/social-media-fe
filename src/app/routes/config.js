@@ -5,8 +5,8 @@ export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
-    profile: '/:userId',
-    home: '/',
+    profile: '/profile/:userId',
+    home: '',
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
@@ -174,18 +174,12 @@ const routes = [
         ],
     },
     {
-        name: 'Error Layout',
-        element: ErrorLayout,
-        path: '/',
+        name: 'Error 404 NotFound Layout Page',
+        element: NotFound404,
+        path: '*',
         requireAuth: AUTH.BOTH,
-        children: [
-            {
-                name: 'Not Found 404',
-                path: navigatePath.notFound404,
-                element: NotFound404,
-            },
-        ],
     },
+    
 ];
 
 export default routes;

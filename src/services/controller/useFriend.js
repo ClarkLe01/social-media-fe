@@ -25,6 +25,20 @@ function useFriend(userId) {
     });
 
     const {
+        data: friendListDetail,
+        isLoading: friendListDetailLoading,
+        error: friendListDetailError,
+    } = useQuery({
+        queryKey: [ 'friend/listDetail', userId ],
+        queryFn: () => publicApi(endPoints.friend.detail, { pathParams: { userId: userId } }),
+        enabled: !!userId,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        staleTime: 1000,
+    });
+
+    const {
         data: requestList,
         isLoading: requestListLoading,
         error: requestListError,
@@ -118,6 +132,10 @@ function useFriend(userId) {
         friendList,
         friendListLoading,
         friendListError,
+
+        friendListDetail,
+        friendListDetailLoading,
+        friendListDetailError,
 
         requestList,
         requestListLoading,

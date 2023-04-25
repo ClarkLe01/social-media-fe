@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AccessControl from './AccessControl';
 import routes from './config';
+import NotFound404 from '@features/errorsPage/NotFound404';
 
 function createRoute(routes) {
     const route = routes.map((route) => (
@@ -14,6 +15,7 @@ function createRoute(routes) {
                 </AccessControl>
             }
             {...route.props}
+            
         >
             {route.children && createRoute(route.children)}
         </Route>
@@ -25,7 +27,11 @@ function createRoute(routes) {
 function AppRoutes() {
     return (
         <BrowserRouter>
-            <Routes>{createRoute(routes)}</Routes>
+            <Routes>
+                
+                {createRoute(routes)}
+                
+            </Routes>
         </BrowserRouter>
     );
 }
