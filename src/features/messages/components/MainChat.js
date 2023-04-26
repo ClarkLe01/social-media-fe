@@ -128,7 +128,9 @@ function MainChat(props) {
                 const data = JSON.parse(event.data);
                 console.log(data);
                 if (data.type == 'message') {
+                    
                     const message = data.data;
+                    console.log('abc', message);
                     message.senderID.avatar = API_URL + message.senderID.avatar;
                     setMessages((messages) => [ ...messages, data.data ]);
                     scrollToBottom();
@@ -148,13 +150,25 @@ function MainChat(props) {
 
     const handleSendingMessage = () => {
         console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
-        if (valueInput.trim().length == 0) return;
-        clientSocket &&
-            clientSocket.send(
-                JSON.stringify({
-                    content: valueInput,
-                }),
-            );
+        if (valueInput.trim().length == 0 && attachFiles.length == 0) return;
+        const form = new FormData();
+        attachFiles.map(file => form.append("chatFiles", file));
+        form.append('content', valueInput);
+        form.append('receiverID', roomId);
+        sendMessage(
+            {
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                },
+            },
+        );
+        setAttachFiles([]);
         setValueInput('');
         scrollToBottom();
     };

@@ -57,10 +57,11 @@ function Messages(props) {
                                     </div>
                                 )}
                                 {profile.data.id == message.senderID.id ? (
-                                    <SentMessage content={message.content} time={timeString} />
+                                    <SentMessage content={message.content} files={message.files} time={timeString} />
                                 ) : (
                                     <ReceivedMessage
                                         content={message.content}
+                                        files={message.files}
                                         time={timeString}
                                         receiver={message.senderID}
                                         isShowAvatar={isShowAvatar}
