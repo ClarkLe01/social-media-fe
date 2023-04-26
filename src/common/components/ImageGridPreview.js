@@ -1,6 +1,6 @@
 import { Text, Image, Grid, AspectRatio, Overlay, ActionIcon } from '@mantine/core';
 import { IconPlayerPlay } from '@tabler/icons-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 function ImageGridPreview(props) {
     const files = [ ...props.files ];
@@ -29,6 +29,8 @@ function ImageGridPreview(props) {
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
+                                width={'auto'}
+                                height={'auto'}
                             />
                             <Text
                                 position="absolute"
@@ -75,6 +77,8 @@ function ImageGridPreview(props) {
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
+                                width={'auto'}
+                                height={'auto'}
                             />
                             <Text
                                 position="absolute"

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Avatar, Group, Text, Indicator, Grid } from '@mantine/core';
 import { useAuth } from '@services/controller';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import AvatarDisplay from './AvatarDisplay';
+import RoomNameDisplay from './RoomNameDisplay';
 
 function Room(props) {
     const { id, roomName, members, isGroup, latest_message, updated } = props.room;
@@ -22,7 +24,7 @@ function Room(props) {
         const diffYear = now.getUTCFullYear() - date.getUTCFullYear();
 
         if (diffSec < 60) {
-            return `${diffSec} s`;
+            return `1 m`;
         } else if (diffMin < 60) {
             return `${diffMin} m`;
         } else if (diffHr < 24) {
@@ -37,31 +39,6 @@ function Room(props) {
     }
 
     const currentUser = useMemo(() => profile.data, [ profile.data ]);
-
-    const getOtherUsers = useCallback(
-        (members, currentUser, isGroup, roomName) => {
-            const filteredMembers = members.filter((member) => member.id !== currentUser.id);
-            if (!isGroup) return filteredMembers[0].first_name + ' ' + filteredMembers[0].last_name;
-            if (roomName) return roomName;
-            return filteredMembers.map((member, index) => {
-                if (index === filteredMembers.length - 1) return member.last_name;
-                else return member.last_name + ', ';
-            });
-        },
-        [ members, currentUser ],
-    );
-
-    const getAvatarRoom = useCallback(
-        (members, currentUser, isGroup) => {
-            const filteredMembers = members.filter((member) => member.id !== currentUser.id);
-            if (!isGroup) return filteredMembers[0].avatar;
-            // return filteredMembers.map((member, index) => {
-            //     if(index === filteredMembers.length - 1) return member.last_name;
-            //     else return member.last_name+', ';
-            // });
-        },
-        [ members, currentUser ],
-    );
 
     const handleClickRoom = useCallback(() => {
         navigate(`/message/${id}`, { state: { from: undefined } });
@@ -81,17 +58,23 @@ function Room(props) {
         >
             <Group position="center" className="me-3">
                 <Indicator inline offset={4} position="bottom-end" color="green" withBorder>
-                    <Avatar
-                        size={45}
-                        radius="xl"
-                        src={getAvatarRoom(members, currentUser, isGroup)}
+                    <AvatarDisplay 
+                        size={48}
+                        members={members}
+                        currentUser={currentUser}
+                        isGroup={isGroup}
                     />
                 </Indicator>
             </Group>
             <div>
-                <Text fw={500} lineClamp={1}>
-                    {getOtherUsers(members, currentUser, isGroup, roomName)}
-                </Text>
+                <RoomNameDisplay 
+                    members={members}
+                    currentUser={currentUser}
+                    isGroup={isGroup}
+                    roomName={roomName}
+                    fw={500} 
+                    lineClamp={1}
+                />
                 <Grid className="d-flex">
                     <Grid.Col span={'auto'}>
                         {latest_message ? (

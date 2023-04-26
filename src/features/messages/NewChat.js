@@ -30,6 +30,8 @@ import { Rooms } from './components';
 
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
+import { navigatePath } from '@app/routes/config';
+import ThumbMedia from './components/ThumbMedia';
 
 let SelectItem = ({ avatar, label, ...others }, ref) => (
     <div ref={ref} {...others}>
@@ -62,13 +64,10 @@ function NewChat() {
         return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
     }, []);
 
-    useEffect(() => {
-        console.log('members', members);
-    }, [ members ]);
-
     const handleSendingMessage = () => {
         console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
-        if (valueInput.trim().length == 0) return;
+        if(members.length == 0) return;
+        if (valueInput.trim().length == 0 && attachFiles.length == 0) return;
         const form = new FormData();
         attachFiles.map(file => form.append("chatFiles", file));
         form.append('members', [ members ]);
@@ -79,7 +78,8 @@ function NewChat() {
             },
             {
                 onSuccess: (data) => {
-                    console.log(data);
+                    const from = location.state?.from || navigatePath.chat;
+                    navigate(from.replace(':roomId', data.data.id), { state: { from: undefined } });
                 },
                 onError: (error) => {
                     console.log(error.response.data);
@@ -117,6 +117,7 @@ function NewChat() {
                     ]);
             });
         }
+        return () => setFriendData([]);
     }, [ friendListDetail, friendListDetailLoading ]);
 
     useEffect(() => {
@@ -218,6 +219,11 @@ function NewChat() {
                                             backgroundColor: '#fff',
                                         }}
                                     >
+                                        <div>
+                                            {attachFiles.length > 0 && (
+                                                <ThumbMedia files={attachFiles} setFiles={setAttachFiles} openDropZone={() => dropzoneRef.current()}/>
+                                            )}
+                                        </div>
                                         <div className="d-flex bd-highlight mb-3 mt-3">
                                             <div className="p-2 bd-highlight align-self-end">
                                                 <ActionIcon color="blue" variant="subtle">
@@ -311,15 +317,7 @@ function NewChat() {
                         </Grid.Col>
                         <Dropzone
                             openRef={dropzoneRef}
-                            onDrop={(files) => {
-                                setAttachFiles(
-                                    files.map((file) =>
-                                        Object.assign(file, {
-                                            preview: URL.createObjectURL(file),
-                                        }),
-                                    ),
-                                );
-                            }}
+                            onDrop={(files) => setAttachFiles(prev => [ ...prev, ...files ])}
                             onReject={(files) => console.log('rejected files', files)}
                             maxSize={3 * 1024 ** 2}
                             // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}

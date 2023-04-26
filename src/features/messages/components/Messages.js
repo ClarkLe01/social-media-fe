@@ -6,7 +6,7 @@ import ReceivedMessage from './ReceivedMessage';
 
 function Messages(props) {
     const { messages } = props;
-    const { profile, profileLoading } = useAuth();
+    const { profile } = useAuth();
 
     return (
         <div className="chat-wrapper pt-0 w-100 position-relative">

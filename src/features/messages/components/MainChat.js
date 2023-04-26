@@ -25,46 +25,18 @@ import {
 } from '@tabler/icons-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { useAuth, useMessage, useRoom } from '@services/controller';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useAuth, useMessage } from '@services/controller';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Messages from './Messages';
 import Socket, { connections } from '@services/socket';
 import { useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '@constants';
-import InputChat from './InputChat';
-import { navigatePath } from '@app/routes/config';
 import NotFound404 from '@features/errorsPage/NotFound404';
-
-const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 16,
-};
-
-const thumb = {
-    display: 'inline-flex',
-    borderRadius: 2,
-    border: '1px solid #eaeaea',
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: 'border-box',
-};
-
-const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden',
-};
-
-const img = {
-    display: 'block',
-    width: 'auto',
-    height: '100%',
-};
+import GroupRoomProfile from './GroupRoomProfile';
+import PrivateRoomProfile from './PrivateRoomProfile';
+import AvatarDisplay from './AvatarDisplay';
+import RoomNameDisplay from './RoomNameDisplay';
+import ThumbMedia from './ThumbMedia';
 
 function MainChat(props) {
     const queryClient = useQueryClient();
@@ -84,33 +56,7 @@ function MainChat(props) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const thumbs = attachFiles.map((file) => (
-        <div style={thumb} key={file.name}>
-            <div style={thumbInner}>
-                <img
-                    src={file.preview}
-                    style={img}
-                    // Revoke data uri after image is loaded
-                    onLoad={() => {
-                        URL.revokeObjectURL(file.preview);
-                    }}
-                />
-            </div>
-        </div>
-    ));
     
-    const getOtherUsers = useCallback(
-        (members, currentUser, isGroup, roomName) => {
-            const filteredMembers = members.filter((member) => member.id !== currentUser.id);
-            if (!isGroup) return filteredMembers[0].first_name + ' ' + filteredMembers[0].last_name;
-            if (roomName) return roomName;
-            return filteredMembers.map((member, index) => {
-                if (index === filteredMembers.length - 1) return member.last_name;
-                else return member.last_name + ', ';
-            });
-        },
-        [ currentUser, roomId ],
-    );
 
     const scrollToBottom = () =>
         scrollChatingRef.current.scrollTo({
@@ -197,6 +143,8 @@ function MainChat(props) {
         console.log('valueInput', valueInput, valueInput.length);
     }, [ valueInput ]);
 
+    useEffect(() => { console.log(attachFiles); }, [ attachFiles ]);
+
     if (!clientSocket || !connected) return null;
 
     const handleSendingMessage = () => {
@@ -248,22 +196,12 @@ function MainChat(props) {
                                                 color="green"
                                                 withBorder
                                             >
-                                                {roomDetail.isGroup ? (
-                                                    <div>
-                                                        <Avatar size={45} radius="xl" />
-                                                    </div>
-                                                ) : (
-                                                    <Avatar
-                                                        size={45}
-                                                        radius="xl"
-                                                        src={
-                                                            roomDetail.members.filter(
-                                                                (member) =>
-                                                                    member.id !== profile.data.id,
-                                                            )[0].avatar
-                                                        }
-                                                    />
-                                                )}
+                                                <AvatarDisplay 
+                                                    size={36}
+                                                    members={roomDetail.members.filter((member) => member.id !== currentUser.id)}
+                                                    currentUser={currentUser}
+                                                    isGroup={roomDetail.isGroup}
+                                                />
                                             </Indicator>
                                         </Group>
                                     }
@@ -272,9 +210,15 @@ function MainChat(props) {
                                         root: 'me-auto',
                                     }}
                                 >
-                                    <Text size="lg" fw={700} color="dark">
-                                        {getOtherUsers(roomDetail.members, currentUser, roomDetail.isGroup, roomDetail.roomName)}
-                                    </Text>
+                                    <RoomNameDisplay
+                                        members={roomDetail.members}
+                                        currentUser={currentUser}
+                                        isGroup={roomDetail.isGroup}
+                                        roomName={roomDetail.roomName}
+                                        size="lg" 
+                                        fw={700} 
+                                        color="dark"
+                                    />
                                     <Text size="xs" c="dimmed">
                                         Active Now
                                     </Text>
@@ -330,7 +274,12 @@ function MainChat(props) {
                                 backgroundColor: '#fff',
                             }}
                         >
-                            <div className="d-flex bd-highlight mb-3 mt-3">
+                            <div>
+                                {attachFiles.length > 0 && (
+                                    <ThumbMedia files={attachFiles} setFiles={setAttachFiles} openDropZone={() => dropzoneRef.current()}/>
+                                )}
+                            </div>
+                            <div className="d-flex bd-highlight mb-3">
                                 <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon color="blue" variant="subtle">
                                         <IconMicrophone />
@@ -356,6 +305,7 @@ function MainChat(props) {
                                     </ActionIcon>
                                 </div>
                                 <div className="p-2 bd-highlight align-self-end ms-auto flex-fill">
+                                    
                                     <Textarea
                                         classNames={{
                                             input: 'ps-3 pe-5 align-self-start ',
@@ -385,7 +335,8 @@ function MainChat(props) {
                                                         <Picker
                                                             data={data}
                                                             onEmojiSelect={(e) =>
-                                                                setValueInput(valueInput + e.native)
+                                                                // setValueInput(valueInput + e.native)
+                                                                console.log(e)
                                                             }
                                                         />
                                                     </div>
@@ -413,25 +364,20 @@ function MainChat(props) {
                     </div>
                 </div>
             </Grid.Col>
-            {showRoomDetail && (
+            {showRoomDetail && RoomDetail && (
                 <Grid.Col span={7} className="border border-1 border-bottom-0 p-0 py-0 pt-2">
-                    <div>Test</div>
+                    {roomDetail.isGroup ? (
+                        <GroupRoomProfile roomDetail={roomDetail} currentUser={currentUser}/>
+                    ) : (
+                        <PrivateRoomProfile roomDetail={roomDetail} currentUser={currentUser}/>
+                    )}
                 </Grid.Col>
             )}
             <Dropzone
                 openRef={dropzoneRef}
-                onDrop={(files) => {
-                    setAttachFiles(
-                        files.map((file) =>
-                            Object.assign(file, {
-                                preview: URL.createObjectURL(file),
-                            }),
-                        ),
-                    );
-                }}
+                onDrop={(files) => setAttachFiles(prev => [ ...prev, ...files ])}
                 onReject={(files) => console.log('rejected files', files)}
                 maxSize={3 * 1024 ** 2}
-                // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}
                 accept={{
                     'image/*': [], // All images
                     'video/*': [],

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
     Textarea,
     ActionIcon,
@@ -13,37 +13,18 @@ import {
 import {
     IconX,
 } from '@tabler/icons-react';
-import ReactPlayer from 'react-player';
 
-const MemoizedVideoComponent = React.memo(ReactPlayer);
 const MemoizedImageComponent = React.memo(Image);
 
 function MediaEditCard(props) {
     const file = props.objFile.file;
     const fileType = file.type.split('/');
     const fileUrl = URL.createObjectURL(file);
-    const componentWidthImage = useRef(null);
-    const [ isHoveringMediaCard, setIsHoveringMediaCard ] = useState(null);
-    const [ basedImageGridWidth, setBasedImageGridWidth ] = useState(340);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setBasedImageGridWidth(componentWidthImage.current.offsetWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
+    
     return (
         <Card
             shadow="sm"
             p="xl"
-            onMouseEnter={() => setIsHoveringMediaCard(true)}
-            onMouseLeave={() => setIsHoveringMediaCard(false)}
         >
             <Card.Section>
                 <Box
@@ -52,34 +33,40 @@ function MediaEditCard(props) {
                     }}
                 >
                     <div className="px-3">
-                        {fileType[0] == 'image' && <MemoizedImageComponent height={200} src={fileUrl} fit="contain" />}
+                        {fileType[0] == 'image' && (
+                            <MemoizedImageComponent 
+                                height={200} 
+                                width={'100%'} 
+                                src={fileUrl} 
+                                fit="contain"
+                                imageProps={{ onLoad: () => URL.revokeObjectURL(fileUrl) }}
+                            />
+                        )}
                         {fileType[0] == 'video' && (
-                            <MemoizedVideoComponent
-                                url={fileUrl}
+                            <video 
+                                src={fileUrl}
                                 height={200}
-                                width={basedImageGridWidth}
+                                width={'100%'}
                             />
                         )}
                     </div>
-                    {isHoveringMediaCard && (
-                        <div
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                            }}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                        }}
+                    >
+                        <ActionIcon
+                            variant="filled"
+                            className="me-2 mt-2"
+                            radius="xl"
+                            size="sm"
+                            onClick={() => {props.onRemove(), URL.revokeObjectURL(fileUrl);}}
                         >
-                            <ActionIcon
-                                variant="filled"
-                                className="me-2 mt-2"
-                                radius="xl"
-                                size="sm"
-                                onClick={props.onRemove}
-                            >
-                                <IconX />
-                            </ActionIcon>
-                        </div>
-                    )}
+                            <IconX />
+                        </ActionIcon>
+                    </div>
                 </Box>
             </Card.Section>
             <Card.Section>
@@ -90,7 +77,6 @@ function MediaEditCard(props) {
                     <Textarea
                         value={props.objFile.caption}
                         className="pb-3"
-                        ref={componentWidthImage}
                         onChange={(e) => props.onChange(e.target.value)}
                     />
                 </div>

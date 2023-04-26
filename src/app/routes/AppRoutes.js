@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AccessControl from './AccessControl';
 import routes from './config';
-import NotFound404 from '@features/errorsPage/NotFound404';
 
 function createRoute(routes) {
     const route = routes.map((route) => (

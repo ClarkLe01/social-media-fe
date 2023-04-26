@@ -10,8 +10,9 @@ export const navigatePath = {
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
-    chat: ':roomId',
-    newChat: 'new',
+    chat: '/message/:roomId',
+    chatHome: '/message',
+    newChat: '/message/new',
     media: '/media',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
@@ -107,7 +108,7 @@ const routes = [
     {
         name: 'Chat Layout',
         element: MessageLayout,
-        path: 'message',
+        path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
@@ -117,7 +118,7 @@ const routes = [
             },
             {
                 name: 'Home Chat',
-                path: '',
+                path: navigatePath.chatHome,
                 element: Chat,
             },
             {
