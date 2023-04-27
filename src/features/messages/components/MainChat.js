@@ -140,16 +140,12 @@ function MainChat(props) {
         }
     }, [ clientSocket, connected, roomId ]);
 
-    useEffect(() => {
-        console.log('valueInput', valueInput, valueInput.length);
-    }, [ valueInput ]);
 
     useEffect(() => { console.log(attachFiles); }, [ attachFiles ]);
 
     if (!clientSocket || !connected) return null;
 
     const handleSendingMessage = () => {
-        console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
         if (valueInput.trim().length == 0 && attachFiles.length == 0) return;
         const form = new FormData();
         attachFiles.map(file => form.append("chatFiles", file));
@@ -160,12 +156,12 @@ function MainChat(props) {
                 data: form,
             },
             {
-                onSuccess: (data) => {
-                    console.log(data);
-                },
-                onError: (error) => {
-                    console.log(error.response.data);
-                },
+                // onSuccess: (data) => {
+                //     console.log(data);
+                // },
+                // onError: (error) => {
+                //     console.log(error.response.data);
+                // },
             },
         );
         setAttachFiles([]);
@@ -348,8 +344,7 @@ function MainChat(props) {
                                                         <Picker
                                                             data={data}
                                                             onEmojiSelect={(e) =>
-                                                                // setValueInput(valueInput + e.native)
-                                                                console.log(e)
+                                                                setValueInput(valueInput + e.native)
                                                             }
                                                         />
                                                     </div>

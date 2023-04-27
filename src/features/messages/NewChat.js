@@ -65,7 +65,6 @@ function NewChat() {
     }, []);
 
     const handleSendingMessage = () => {
-        console.log('handleSendingMessage valueInput', valueInput, valueInput.length);
         if(members.length == 0) return;
         if (valueInput.trim().length == 0 && attachFiles.length == 0) return;
         const form = new FormData();
