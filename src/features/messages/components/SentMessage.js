@@ -104,7 +104,7 @@ function SentMessage(props) {
                                             <ReactPlayer
                                                 url={API_URL+file.instance.replace(API_URL,'')}
                                                 width={"100%"}
-                                                playing={true}
+                                                playing={false}
                                                 controls={true}
                                             />
                                         </div>
