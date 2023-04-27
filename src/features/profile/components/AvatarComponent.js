@@ -10,6 +10,9 @@ import {
     Modal,
     Avatar,
     ActionIcon,
+    Grid,
+    Box,
+    Container,
 } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 
@@ -37,6 +40,7 @@ function AvatarComponent(props) {
         }
     };
     const handleAvatarUpdate = () => {
+        if(!updatedAvatarSrc) return;
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
         const form = new FormData();
         form.append('avatar', file);
@@ -110,7 +114,7 @@ function AvatarComponent(props) {
                     <div hidden>
                         <Dropzone
                             openRef={openAvatarRef}
-                            onDrop={(files) => onAvatarChange(files)}
+                            onDrop={(files) => {onAvatarChange(files), setUpdatedAvatarSrc(null);}}
                             onReject={(files) => console.log('rejected files', files)}
                             maxSize={3 * 1024 ** 2}
                             accept={{
@@ -121,12 +125,16 @@ function AvatarComponent(props) {
                     </div>
                     <Modal
                         opened={openAvatarModal && avatarSrc}
+                        size={'xl'}
                         onClose={() => {
                             setUpdatedAvatarSrc(null),
                             setAvatarSrc(null),
                             setOpenAvatarModal(false);
                         }}
                         title="Update Avatar"
+                        styles={{
+                            inner: { backgroundColor: 'rgba(253,226,243,0.4)' },
+                        }}
                     >
                         <div>
                             <ImageCropper
@@ -135,31 +143,33 @@ function AvatarComponent(props) {
                                 maxZoom={3}
                                 cropShape="round"
                                 setResult={setUpdatedAvatarSrc}
+                                value = {updatedAvatarSrc}
+                                dropZoneOpen={() => openAvatarRef.current()}
                             />
                         </div>
-                        {updatedAvatarSrc && (
-                            <>
-                                <div className="mt-3 pt-3">
-                                    <Button
-                                        onClick={() => {
-                                            handleAvatarUpdate();
-                                        }}
-                                    >
-                                        Confirm
-                                    </Button>
-                                </div>
-                                <div>
-                                    <Avatar
-                                        radius={100}
-                                        size={100}
-                                        src={updatedAvatarSrc}
-                                        key={user.updated}
-                                    />
-                                    
-                                </div>
-                            </>
-                        )}
-                        
+                        <div className="d-grid gap-5 d-flex justify-content-evenly mt-3 pt-3">
+                            <Button
+                                fullWidth
+                                variant="outline" color="red"
+                                onClick={() => {
+                                    setUpdatedAvatarSrc(null),
+                                    setAvatarSrc(null),
+                                    setOpenAvatarModal(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                fullWidth
+                                variant="light" color="green"
+                                onClick={() => {
+                                    handleAvatarUpdate();
+                                }}
+                            >
+                                Confirm
+                            </Button>
+                        </div>
                     </Modal>
                 </>
             )}

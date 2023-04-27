@@ -33,6 +33,7 @@ function CoverComponent(props) {
     };
 
     const handleCoverUpdate = () => {
+        if(!updatedCoverSrc) return;
         const file = base64ToFile(updatedCoverSrc, 'cover.jpg');
         const form = new FormData();
         form.append('cover', file);
@@ -126,25 +127,32 @@ function CoverComponent(props) {
                                 min
                                 cropShape="square"
                                 setResult={setUpdatedCoverSrc}
+                                value = {updatedCoverSrc}
+                                dropZoneOpen={() => openCoverRef.current()}
                             />
-                            {updatedCoverSrc && (
-                                <>
-                                    <div className="mt-3 pt-3">
-                                        <Button
-                                            onClick={() => {
-                                                handleCoverUpdate();
-                                            }}
-                                        >
-                                            Confirm
-                                        </Button>
-                                    </div>
-                                    <div>
-                                        <AspectRatio ratio={16 / 9}>
-                                            <Image src={updatedCoverSrc} fit="contain" />
-                                        </AspectRatio>
-                                    </div>
-                                </>
-                            )}
+                            <div className="d-grid gap-5 d-flex justify-content-evenly mt-3 pt-3">
+                                <Button
+                                    fullWidth
+                                    variant="outline" color="red"
+                                    onClick={() => {
+                                        setUpdatedCoverSrc(null),
+                                        setCoverSrc(null),
+                                        setOpenCoverModal(false);
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+
+                                <Button
+                                    fullWidth
+                                    variant="light" color="green"
+                                    onClick={() => {
+                                        handleCoverUpdate();
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </div>
                         </div>
                     </Modal>
                 </>
