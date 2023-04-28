@@ -1,15 +1,23 @@
 import { Avatar } from '@mantine/core';
 import React from 'react';
+import { API_URL } from '@constants';
 
 const AvatarDisplay = (props) => {
-    const { members, currentUser, isGroup, size } = props;
+    const { members, currentUser, isGroup, size, avatar } = props;
     const filteredMembers = members.filter((member) => member.id !== currentUser.id);
     if (!isGroup)
         return (
             <div>
-                <Avatar size={size} radius={'100%'} src={filteredMembers[0].avatar} />
+                <Avatar size={size} radius={'100%'} src={API_URL+filteredMembers[0].user.avatar.replace(API_URL,'')} />
             </div>
         );
+    if(avatar){
+        return (
+            <div>
+                <Avatar size={size} radius={'100%'} src={API_URL+avatar.replace(API_URL,'')} />
+            </div>
+        );
+    }
     return (
         <div
             style={{
@@ -28,7 +36,7 @@ const AvatarDisplay = (props) => {
                         left: 0,
                         zIndex: 1,
                     }}
-                    src={filteredMembers[0].avatar}
+                    src={API_URL+filteredMembers[0].user.avatar.replace(API_URL,'')}
                 />
                 <Avatar
                     size={size*2/3}
@@ -38,7 +46,7 @@ const AvatarDisplay = (props) => {
                         top: 0,
                         right: 0,
                     }}
-                    src={filteredMembers[1].avatar}
+                    src={API_URL+filteredMembers[1].user.avatar.replace(API_URL,'')}
                 />
             </Avatar.Group>
         </div>

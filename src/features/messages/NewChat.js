@@ -32,6 +32,7 @@ import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { navigatePath } from '@app/routes/config';
 import ThumbMedia from './components/ThumbMedia';
+import { API_URL } from '@constants';
 
 let SelectItem = ({ avatar, label, ...others }, ref) => (
     <div ref={ref} {...others}>
@@ -102,7 +103,7 @@ function NewChat() {
                         {
                             value: item.responseID.id,
                             email: item.responseID.email,
-                            avatar: item.responseID.avatar,
+                            avatar: API_URL+item.responseID.avatar.replace(API_URL,''),
                             label: item.responseID.first_name + ' ' + item.responseID.last_name,
                         },
                     ]) 
@@ -110,7 +111,7 @@ function NewChat() {
                         {
                             value: item.requestID.id,
                             email: item.requestID.email,
-                            avatar: item.requestID.avatar,
+                            avatar: API_URL+item.requestID.avatar.replace(API_URL,''),
                             label: item.requestID.first_name + ' ' + item.requestID.last_name,
                         },
                     ]);
@@ -165,7 +166,7 @@ function NewChat() {
                                 <div className="main-chat-header border border-1 px-0 py-1 mx-0">
                                     <MultiSelect
                                         value={members}
-                                        onChange={setMembers}
+                                        onChange={(e) => {setMembers(e), console.log('onChange', e);}}
                                         label="To :"
                                         itemComponent={SelectItem}
                                         data={friendData}

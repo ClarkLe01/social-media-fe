@@ -4,9 +4,10 @@ import { useAuth } from '@services/controller';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
+import { API_URL } from '@constants';
 
 function Room(props) {
-    const { id, roomName, members, isGroup, latest_message, updated } = props.room;
+    const { id, roomName, members, isGroup, latest_message, updated, roomAvatar } = props.room;
     const [ isHovering, setIsHovering ] = useState(false);
     const { profile, profileLoading } = useAuth();
     const { roomId } = useParams();
@@ -63,6 +64,7 @@ function Room(props) {
                         members={members}
                         currentUser={currentUser}
                         isGroup={isGroup}
+                        avatar={roomAvatar}
                     />
                 </Indicator>
             </Group>

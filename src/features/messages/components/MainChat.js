@@ -131,7 +131,7 @@ function MainChat(props) {
                     
                     const message = data.data;
                     console.log('abc', message);
-                    message.senderID.avatar = API_URL + message.senderID.avatar;
+                    message.senderID.avatar = API_URL + message.senderID.avatar.replace(API_URL,'');
                     setMessages((messages) => [ ...messages, data.data ]);
                     scrollToBottom();
                     queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });

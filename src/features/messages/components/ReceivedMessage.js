@@ -50,7 +50,7 @@ function ReceivedMessage(props) {
                     {isShowAvatar && (
                         <Tooltip position="top" label={receiver.last_name}>
                             <div className="message-user">
-                                <Avatar size="md" radius="xl" src={receiver.avatar} />
+                                <Avatar size="md" radius="xl" src={API_URL+receiver.avatar.replace(API_URL,'')} />
                             </div>
                         </Tooltip>
                     )}
@@ -95,7 +95,7 @@ function ReceivedMessage(props) {
                     {isShowAvatar && (
                         <Tooltip position="top" label={receiver.last_name}>
                             <div className="message-user">
-                                <Avatar size="md" radius="xl" src={receiver.avatar} />
+                                <Avatar size="md" radius="xl" src={API_URL+receiver.avatar.replace(API_URL,'')} />
                             </div>
                         </Tooltip>
                     )}
@@ -162,7 +162,7 @@ function ReceivedMessage(props) {
                     {isShowAvatar && (
                         <Tooltip position="top" label={receiver.last_name}>
                             <div className="message-user">
-                                <Avatar size="md" radius="xl" src={receiver.avatar} />
+                                <Avatar size="md" radius="xl" src={API_URL+receiver.avatar.replace(API_URL,'')} />
                             </div>
                         </Tooltip>
                     )}

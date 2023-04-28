@@ -1,8 +1,17 @@
 import React from 'react';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
-import { IconAlarmFilled, IconSearch, IconUserCircle } from '@tabler/icons-react';
-import { Accordion, ActionIcon, Text } from '@mantine/core';
+import {
+    IconAlarmFilled,
+    IconBrandYoutube,
+    IconBrush,
+    IconMoodHappy,
+    IconPhoto,
+    IconSearch,
+    IconUserCircle,
+    IconAbc,
+} from '@tabler/icons-react';
+import { Accordion, ActionIcon, Button, Group, Text, ThemeIcon } from '@mantine/core';
 
 const PrivateRoomProfile = (props) => {
     const { roomDetail, currentUser } = props;
@@ -29,61 +38,113 @@ const PrivateRoomProfile = (props) => {
             </div>
             <div className="d-flex justify-content-center align-items-center pb-2">
                 <div className="justify-content-center px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className='mx-auto'>
+                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
                         <IconUserCircle />
                     </ActionIcon>
-                    <Text size={13}>
-                        Profile
-                    </Text>
+                    <Text size={13}>Profile</Text>
                 </div>
                 <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className='mx-auto'>
+                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
                         <IconAlarmFilled />
                     </ActionIcon>
-                    <Text size={13}>
-                        Mute
-                    </Text>
+                    <Text size={13}>Mute</Text>
                 </div>
                 <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className='mx-auto'>
+                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
                         <IconSearch size={20} />
                     </ActionIcon>
-                    <Text size={13}>
-                        Search
-                    </Text>
+                    <Text size={13}>Search</Text>
                 </div>
             </div>
             <div>
                 <Accordion>
                     <Accordion.Item value="customization">
                         <Accordion.Control>
-                            <Text fw={500}>
-                                Customization
-                            </Text>
+                            <Text fw={500}>Customization</Text>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            Colors, fonts, shadows and many other parts are customizable to fit your
-                            design needs
+                            <Group className="gap-0">
+                                <Button
+                                    color="dark"
+                                    fullWidth
+                                    variant="subtle"
+                                    classNames={{
+                                        inner: 'justify-content-start align-items-center',
+                                    }}
+                                    leftIcon={
+                                        <ThemeIcon variant="light" radius={'100%'}>
+                                            <IconBrush size={20} />
+                                        </ThemeIcon>
+                                    }
+                                >
+                                    Change theme
+                                </Button>
+                                <Button
+                                    color="dark"
+                                    fullWidth
+                                    variant="subtle"
+                                    classNames={{
+                                        inner: 'justify-content-start align-items-center',
+                                    }}
+                                    leftIcon={
+                                        <ThemeIcon
+                                            variant="gradient"
+                                            gradient={{ from: 'teal', to: 'lime', deg: 105 }}
+                                            radius={'100%'}
+                                        >
+                                            <IconAbc size={20} />
+                                        </ThemeIcon>
+                                    }
+                                >
+                                    Change NickName
+                                </Button>
+                            </Group>
                         </Accordion.Panel>
                     </Accordion.Item>
 
                     <Accordion.Item value="files">
                         <Accordion.Control>
-                            <Text fw={500}>
-                                Videos and Images
-                            </Text>
+                            <Text fw={500}>Videos and Images</Text>
                         </Accordion.Control>
                         <Accordion.Panel>
-                            Configure components appearance and behavior with vast amount of
-                            settings or overwrite any part of component styles
+                            <Group className="gap-0">
+                                <Button
+                                    color="dark"
+                                    fullWidth
+                                    variant="subtle"
+                                    classNames={{
+                                        inner: 'justify-content-start align-items-center',
+                                    }}
+                                    leftIcon={
+                                        <ThemeIcon variant="light" radius={'100%'} color="gray">
+                                            <IconBrandYoutube size={20} />
+                                        </ThemeIcon>
+                                    }
+                                >
+                                    Videos
+                                </Button>
+                                <Button
+                                    color="dark"
+                                    fullWidth
+                                    variant="subtle"
+                                    classNames={{
+                                        inner: 'justify-content-start align-items-center',
+                                    }}
+                                    leftIcon={
+                                        <ThemeIcon variant="light" radius={'100%'} color="gray">
+                                            <IconPhoto size={20} />
+                                        </ThemeIcon>
+                                    }
+                                >
+                                    Images
+                                </Button>
+                            </Group>
                         </Accordion.Panel>
                     </Accordion.Item>
 
                     <Accordion.Item value="privacySupport">
                         <Accordion.Control>
-                            <Text fw={500}>
-                                Privacy and Support
-                            </Text>
+                            <Text fw={500}>Privacy and Support</Text>
                         </Accordion.Control>
                         <Accordion.Panel>
                             With new :focus-visible pseudo-class focus ring appears only when user

@@ -7,6 +7,7 @@ import Notification from '@common/components/Notification';
 import { Avatar, ActionIcon, Menu } from '@mantine/core';
 
 import { navigatePath } from '@app/routes/config';
+import { API_URL } from '@constants';
 function MainHeader() {
     const { logout, profile } = useAuth();
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ function MainHeader() {
             <Menu position="bottom-end" width={150} withArrow>
                 <Menu.Target>
                     <ActionIcon className='ms-3 me-3'>
-                        <Avatar src={profile.data.avatar} radius="xl" size={35} key={profile.data.updated}/>
+                        <Avatar src={API_URL+profile.data.avatar.replace(API_URL, '')} radius="xl" size={35}/>
                     </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>

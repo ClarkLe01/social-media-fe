@@ -143,6 +143,11 @@ export default {
                 method: 'GET',
                 headers: headers.json,
             },
+            update: {
+                url: '/chat/room/update/:roomId',
+                method: 'PATCH',
+                headers: headers.multipart,
+            },
         },
     },
 };

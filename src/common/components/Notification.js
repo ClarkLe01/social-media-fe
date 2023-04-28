@@ -3,7 +3,7 @@ import {
 } from '@tabler/icons-react';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollArea, Popover, ActionIcon, Grid, Avatar, Image, AspectRatio } from '@mantine/core';
+import { ScrollArea, Popover, ActionIcon, Image, AspectRatio } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
 import Socket, { connections } from '@services/socket';
