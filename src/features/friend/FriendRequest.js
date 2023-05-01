@@ -12,15 +12,9 @@ function FriendRequest() {
     const [ memberList, setMemberList ] = useState([]);
     useEffect(() => {
         if (responseList) {
-            console.log('responseList', responseList);
             setMemberList([ ...responseList.data ]);
         }
     }, [ responseList ]);
-    useEffect(() => {
-        if (memberList.length != 0) {
-            console.log('memberList', memberList);
-        }
-    }, [ memberList ]);
     return (
         <div>
             <Pagetitle title="Your Request" />

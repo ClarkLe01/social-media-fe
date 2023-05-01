@@ -28,7 +28,6 @@ function Chat() {
     const handleNavigateToCreateRoom = () => {
         navigate(`../${navigatePath.newChat}`, { state: { from: undefined } });
     };
-    console.log(RoomList);
     useEffect(() => {
         if (roomId === undefined && !RoomListLoading && RoomList.data.length > 0) {
             roomId = RoomList.data[0].id;

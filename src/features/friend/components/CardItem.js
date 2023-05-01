@@ -19,7 +19,6 @@ function CardItem(props) {
         });
     };
     const handleAccept= () => {
-        console.log('handleAccept');
         acceptRequest({
             pathParams: { instanceId: idFriendInstance },
         });
@@ -33,11 +32,6 @@ function CardItem(props) {
         }
     }, [ profileId ]);
 
-    useEffect(() => {
-        if(user){
-            console.log('user', user);
-        }
-    }, [ user ]);
     return (
         <>
             {user && (

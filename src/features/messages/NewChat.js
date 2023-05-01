@@ -120,10 +120,6 @@ function NewChat() {
         return () => setFriendData([]);
     }, [ friendListDetail, friendListDetailLoading ]);
 
-    useEffect(() => {
-        console.log('friendData ', friendData);
-    }, [ friendData ]);
-
     return (
         <div className="row">
             <Grid grow gutter="sm" className="p-0" columns={24}>
