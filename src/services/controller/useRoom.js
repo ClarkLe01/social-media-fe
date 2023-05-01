@@ -1,7 +1,7 @@
 import api, { endPoints, publicApi } from '@services/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-function useMessage() {
+function useRoom() {
     const queryClient = useQueryClient();
 
     const {
@@ -28,8 +28,23 @@ function useMessage() {
         onSuccess: ({ data }) => {
             queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
         },
-        onError: (error) => {
-            console.log('add error', error);       
+        onError: (error) => {     
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+    });
+
+    const {
+        isLoading: updateRoomLoading,
+        error: updateRoomError,
+        mutate: updateRoom,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.chat.room.update, variables);
+        },
+        onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+        onError: (error) => {      
             queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
         },
     });
@@ -42,7 +57,11 @@ function useMessage() {
         createRoomLoading,
         createRoomError,
         createRoom,
+
+        updateRoomLoading,
+        updateRoomError,
+        updateRoom,
     };
 }
 
-export default useMessage;
+export default useRoom;

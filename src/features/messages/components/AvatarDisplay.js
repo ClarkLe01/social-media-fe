@@ -1,16 +1,20 @@
 import { Avatar } from '@mantine/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { API_URL } from '@constants';
 
 const AvatarDisplay = (props) => {
     const { members, currentUser, isGroup, size, avatar } = props;
     const filteredMembers = members.filter((member) => member.id !== currentUser.id);
-    if (!isGroup)
+    useEffect(() => {
+        console.log;
+    }, [ avatar ]);
+    if (!isGroup){
         return (
             <div>
                 <Avatar size={size} radius={'100%'} src={API_URL+filteredMembers[0].user.avatar.replace(API_URL,'')} />
             </div>
         );
+    }
     if(avatar){
         return (
             <div>

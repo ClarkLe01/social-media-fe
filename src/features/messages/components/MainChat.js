@@ -43,10 +43,9 @@ function MainChat(props) {
     const [ showRoomDetail, setShowRoomDetail ] = useState(false);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const [ valueInput, setValueInput ] = useState('');
-    const { messageList, messageListLoading, messageListError, RoomDetail, RoomDetailLoading, RoomDetailError, sendMessage } = useMessage(roomId);
+    const { messageList, messageListLoading, messageListError, RoomDetail, RoomDetailError, sendMessage } = useMessage(roomId);
     const { profile } = useAuth();
     const currentUser = useMemo(() => profile.data, [ profile.data ]);
-    const [ roomDetail, setRoomDetail ] = useState(null);
     const [ messages, setMessages ] = useState([]);
     const scrollChatingRef = useRef(null);
     const dropzoneRef = useRef(null);
@@ -62,13 +61,6 @@ function MainChat(props) {
             top: scrollChatingRef.current.scrollHeight,
             behavior: 'smooth',
         });
-
-    useEffect(() => {
-        if (!RoomDetailLoading && RoomDetail) {
-            setRoomDetail(RoomDetail.data);
-        }
-        
-    }, [ RoomDetailLoading, roomId ]);
 
     useEffect(() => {
         if (!messageListLoading && messageList) {
@@ -192,7 +184,7 @@ function MainChat(props) {
                 <div>
                     <div className="main-chat-header border border-1 px-0 py-1 mx-0">
                         <div className="d-flex align-items-center px-0">
-                            {roomDetail && (
+                            {RoomDetail && (
                                 <Button
                                     variant="subtle"
                                     size="lg"
@@ -207,9 +199,10 @@ function MainChat(props) {
                                             >
                                                 <AvatarDisplay 
                                                     size={36}
-                                                    members={roomDetail.members.filter((member) => member.id !== currentUser.id)}
+                                                    members={RoomDetail.data.members.filter((member) => member.id !== currentUser.id)}
                                                     currentUser={currentUser}
-                                                    isGroup={roomDetail.isGroup}
+                                                    isGroup={RoomDetail.data.isGroup}
+                                                    avatar={RoomDetail.data.roomAvatar}
                                                 />
                                             </Indicator>
                                         </Group>
@@ -220,10 +213,10 @@ function MainChat(props) {
                                     }}
                                 >
                                     <RoomNameDisplay
-                                        members={roomDetail.members}
+                                        members={RoomDetail.data.members}
                                         currentUser={currentUser}
-                                        isGroup={roomDetail.isGroup}
-                                        roomName={roomDetail.roomName}
+                                        isGroup={RoomDetail.data.isGroup}
+                                        roomName={RoomDetail.data.roomName}
                                         size="lg" 
                                         fw={700} 
                                         color="dark"
@@ -374,10 +367,10 @@ function MainChat(props) {
             </Grid.Col>
             {showRoomDetail && RoomDetail && (
                 <Grid.Col span={7} className="border border-1 border-bottom-0 p-0 py-0 pt-2">
-                    {roomDetail.isGroup ? (
-                        <GroupRoomProfile roomDetail={roomDetail} currentUser={currentUser}/>
+                    {RoomDetail.data.isGroup ? (
+                        <GroupRoomProfile roomDetail={RoomDetail.data} currentUser={currentUser}/>
                     ) : (
-                        <PrivateRoomProfile roomDetail={roomDetail} currentUser={currentUser}/>
+                        <PrivateRoomProfile roomDetail={RoomDetail.data} currentUser={currentUser}/>
                     )}
                 </Grid.Col>
             )}

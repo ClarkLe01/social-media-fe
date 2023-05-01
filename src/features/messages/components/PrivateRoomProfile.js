@@ -5,7 +5,6 @@ import {
     IconAlarmFilled,
     IconBrandYoutube,
     IconBrush,
-    IconMoodHappy,
     IconPhoto,
     IconSearch,
     IconUserCircle,
@@ -15,22 +14,23 @@ import { Accordion, ActionIcon, Button, Group, Text, ThemeIcon } from '@mantine/
 
 const PrivateRoomProfile = (props) => {
     const { roomDetail, currentUser } = props;
+    const { isGroup, members, roomName } = roomDetail;
     return (
         <div>
             <div className="d-flex justify-content-center align-items-center pt-3 pb-2">
                 <AvatarDisplay
                     size={81}
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
                 />
             </div>
             <div className="d-flex justify-content-center align-items-center pb-2">
                 <RoomNameDisplay
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
-                    roomName={roomDetail.roomName}
+                    roomName={roomName}
                     size="md"
                     fw={600}
                     color="dark"

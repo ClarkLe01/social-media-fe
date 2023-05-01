@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Accordion,
     ActionIcon,
@@ -35,6 +35,8 @@ import { API_URL } from '@constants';
 import ImageCropper from '@common/components/ImageCropper';
 import { Dropzone } from '@mantine/dropzone';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRoom } from '@services/controller';
 
 function CompareRole(item1, item2) {
     if (item1.role === 'admin' && item2.role !== 'admin') {
@@ -58,7 +60,7 @@ function IsAdmin(user, members){
 
 const GroupRoomProfile = (props) => {
     const { roomDetail, currentUser } = props;
-    const [ members, setMembers ] = useState(roomDetail.members);
+    const { isGroup, members, roomName, roomAvatar } = roomDetail;
     const [ showAddPeople, setShowAddPeople ] = useState(false);
     const [ showChangeRoomName, setShowChangeRoomName ] = useState(false);
     const [ avatarSrc, setAvatarSrc ] = useState(null);
@@ -67,6 +69,9 @@ const GroupRoomProfile = (props) => {
     const [ openAvatarModal, setOpenAvatarModal ] = useState(false);
 
     const openAvatarRef = useRef(null);
+
+    const queryClient = useQueryClient();
+    const { updateRoom } = useRoom();
 
     const onAvatarChange = async (files) => {
         if (files && files.length > 0) {
@@ -80,29 +85,54 @@ const GroupRoomProfile = (props) => {
         if(!updatedAvatarSrc) return;
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
         const form = new FormData();
-        form.append('avatar', file);
+        form.append('roomAvatar', file);
+        updateRoom(
+            {
+                pathParams: { roomId: roomDetail.id },
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                },
+                onError: (error) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onError', error);
+                },
+            },
+        );
         setUpdatedAvatarSrc(null);
         setAvatarSrc(null);
         setOpenAvatarModal(false);
     };
+
+    useEffect(() => {
+        if (avatarSrc) {
+            setOpenAvatarModal(true);
+        }
+        console.log('roomName', roomName);
+    }, [ roomDetail.roomName ]);
+
+    
 
     return (
         <div>
             <div className="d-flex justify-content-center align-items-center pt-3 pb-2">
                 <AvatarDisplay
                     size={81}
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
-                    avatar={roomDetail.roomAvatar}
+                    avatar={roomAvatar}
                 />
             </div>
             <div className="d-flex justify-content-center align-items-center pb-2">
                 <RoomNameDisplay
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
-                    roomName={roomDetail.roomName}
+                    roomName={roomName}
                     size="md"
                     fw={600}
                     color="dark"
@@ -150,7 +180,7 @@ const GroupRoomProfile = (props) => {
                                 >
                                     Change chat name
                                 </Button>
-                                {/* <Button
+                                <Button
                                     color="dark"
                                     fullWidth
                                     variant="subtle"
@@ -168,7 +198,7 @@ const GroupRoomProfile = (props) => {
                                     }
                                 >
                                     Change theme
-                                </Button> */}
+                                </Button>
                                 <Button
                                     color="dark"
                                     fullWidth
