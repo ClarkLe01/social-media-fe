@@ -5,20 +5,24 @@ export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
-    profile: '/:userId',
-    home: '/',
+    profile: '/profile/:userId',
+    home: '',
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
-    messages: '/messages',
+    chat: '/message/:roomId',
+    chatHome: '/message',
+    newChat: '/message/new',
     media: '/media',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
+    notFound404: '/notfound404',
     testpage: '/test',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
+const ErrorLayout = lazy(() => import('@app/layouts/ErrorLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
 const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
@@ -33,13 +37,14 @@ const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
-const Messages = lazy(() => import('@features/messages/Messages'));
+const Chat = lazy(() => import('@features/messages/Chat'));
+const NewChat = lazy(() => import('@features/messages/NewChat'));
 const PostView = lazy(() => import('@features/post/PostView'));
 const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
 const YourRequest = lazy(() => import('@features/friend/YourRequest'));
 
-
+const NotFound404 = lazy(() => import('@features/errorsPage/NotFound404'));
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 /*
@@ -101,15 +106,25 @@ const routes = [
         ],
     },
     {
-        name: 'Message Layout',
+        name: 'Chat Layout',
         element: MessageLayout,
         path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
-                name: 'Messages',
-                path: navigatePath.messages,
-                element: Messages,
+                name: 'Chat',
+                path: navigatePath.chat,
+                element: Chat,
+            },
+            {
+                name: 'Home Chat',
+                path: navigatePath.chatHome,
+                element: Chat,
+            },
+            {
+                name: 'New Room Chat',
+                path: navigatePath.newChat,
+                element: NewChat,
             },
         ],
     },
@@ -159,6 +174,13 @@ const routes = [
             },
         ],
     },
+    {
+        name: 'Error 404 NotFound Layout Page',
+        element: NotFound404,
+        path: '*',
+        requireAuth: AUTH.BOTH,
+    },
+    
 ];
 
 export default routes;

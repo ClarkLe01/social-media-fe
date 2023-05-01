@@ -19,6 +19,8 @@ import {
     ReactAngry,
 } from '@assets/images/reaction';
 import { useProfile, useNotification } from '@services/controller';
+import { useQueryClient } from '@tanstack/react-query';
+import { API_URL } from '@constants';
 
 
 function NotificationItem(props) {
@@ -28,18 +30,36 @@ function NotificationItem(props) {
     const [ timeDifference, setTimeDifference ] = useState(Math.floor((new Date() - new Date(item.created)) / 1000));
     const [ isHover, setIsHover ] = useState(false);
     const { updateNotificationItem, deleteNotificationItem } = useNotification();
-
+    const queryClient = useQueryClient();
     const handleMaskReadNotification = () => {
         updateNotificationItem({
             pathParams: { instanceId: item.id },
+        },
+        {
+            onSuccess: (data) => {
+                console.log(data);
+                queryClient.invalidateQueries({ queryKey: [ `notifications` ] });
+            },
+            onError: (error) => {
+                console.log(error);
+            },
         });
     };
 
     const handleDeleteNotification = () => {
-        deleteNotificationItem({
-            pathParams: { instanceId: item.id },
-            
-        });
+        deleteNotificationItem(
+            {
+                pathParams: { instanceId: item.id },
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                    queryClient.invalidateQueries({ queryKey: [ `notifications` ] });
+                },
+                onError: (error) => {
+                    console.log(error);
+                },
+            });
     };
 
     useEffect(() => {
@@ -245,7 +265,7 @@ function NotificationItem(props) {
                     <Grid.Col span='content' className='ms-3'>
                         <div style={{ position: 'relative' }} >
                             <Avatar
-                                src={sender.avatar}
+                                src={API_URL+sender.avatar.replace(API_URL, '')}
                                 radius={'100%'}
                                 size={55}
                             />

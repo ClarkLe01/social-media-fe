@@ -56,6 +56,11 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        detail: {
+            url: '/friend/list/detail/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
         requests: {
             url: '/friend/requests',
             method: 'GET',
@@ -97,6 +102,52 @@ export default {
             url: '/notification/delete/:instanceId',
             method: 'DELETE',
             headers: headers.json,
+        },
+    },
+    chat: {
+        message: {
+            lastest:{
+                url: '/chat/message/latest/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            list: {
+                url: '/chat/message/list/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            seen: {
+                url: '/chat/message/seen/:messageId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            send: {
+                url: '/chat/message/send',
+                method: 'POST',
+                headers: headers.multipart,
+            },
+        },
+        room: {
+            list: {
+                url: '/chat/room/list',
+                method: 'GET',
+                headers: headers.json,
+            },
+            create: {
+                url: '/chat/room/new',
+                method: 'POST',
+                headers: headers.multipart,
+            },
+            detail: {
+                url: '/chat/room/detail/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            update: {
+                url: '/chat/room/update/:roomId',
+                method: 'PATCH',
+                headers: headers.multipart,
+            },
         },
     },
 };

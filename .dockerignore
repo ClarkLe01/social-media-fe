@@ -4,6 +4,7 @@ Dockerfile
 yarn-error.log
 .env
 .env.*
+.vscode
 coverage
 __snapshots__
 */__snapshots__/
