@@ -4,12 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 function useFriend(userId) {
     const queryClient = useQueryClient();
 
-    function ReValidate() {
-        queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
-        queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
-        queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
-    }
-
     const {
         data: friendList,
         isLoading: friendListLoading,

@@ -12,15 +12,9 @@ function YourRequest() {
     const [ memberList, setMemberList ] = useState([]);
     useEffect(() => {
         if (requestList) {
-            console.log('requestList', requestList);
             setMemberList([ ...requestList.data ]);
         }
     }, [ requestList ]);
-    useEffect(() => {
-        if (memberList.length != 0) {
-            console.log('memberList', memberList);
-        }
-    }, [ memberList ]);
 
     return (
         <div>

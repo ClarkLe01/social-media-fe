@@ -1,33 +1,63 @@
-import React from 'react';
-import { Accordion, ActionIcon, Avatar, Button, Group, Menu, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
+import React, { useState } from 'react';
+import {
+    Accordion,
+    ActionIcon,
+    Avatar,
+    Button,
+    Group,
+    Menu,
+    Text,
+    ThemeIcon,
+    UnstyledButton,
+} from '@mantine/core';
 import {
     IconUserCircle,
     IconAlarmFilled,
     IconBrandYoutube,
     IconPhoto,
     IconSearch,
-    IconBrush,
-    IconPencil,
-    IconMoodHappy,
     IconAbc,
     IconPalette,
     IconPhotoFilled,
     IconDots,
     IconPlus,
-    IconSettings,
     IconMessageCircle,
-    IconArrowsLeftRight,
-    IconTrash,
     IconUser,
     IconLogout,
     IconMessageCircleMinus,
 } from '@tabler/icons-react';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
+import AddPeopleModal from './AddPeopleModal';
+import ChangeChatRoomNameModal from './ChangeChatRoomNameModal';
 import { API_URL } from '@constants';
+
+function CompareRole(item1, item2) {
+    if (item1.role === 'admin' && item2.role !== 'admin') {
+        return -1; // item1 comes first
+    } else if (item1.role !== 'admin' && item2.role === 'admin') {
+        return 1; // item2 comes first
+    } else {
+        return 0; // no change in order
+    }
+}
+
+function IsAdmin(user, members){
+    let isAdmin = false;
+    members.forEach((member) => {
+        if (member.user.id === user.id && member.role === 'admin') {
+            isAdmin = true;
+        }
+    });
+    return isAdmin;
+}
 
 const GroupRoomProfile = (props) => {
     const { roomDetail, currentUser } = props;
+    const [ members, setMembers ] = useState(roomDetail.members);
+    const [ showAddPeople, setShowAddPeople ] = useState(false);
+    const [ showChangeRoomName, setShowChangeRoomName ] = useState(false);
+    const [ showChangeRoomImage, setShowChangeRoomImage ] = useState(false);
     return (
         <div>
             <div className="d-flex justify-content-center align-items-center pt-3 pb-2">
@@ -71,7 +101,7 @@ const GroupRoomProfile = (props) => {
                 </div>
             </div>
             <div>
-                <Accordion classNames={{ content: 'pt-0' }}>
+                <Accordion classNames={{ content: 'pt-0 ps-4' }}>
                     <Accordion.Item value="customization">
                         <Accordion.Control>
                             <Text fw={500}>Customization</Text>
@@ -86,10 +116,15 @@ const GroupRoomProfile = (props) => {
                                         inner: 'justify-content-start align-items-center',
                                     }}
                                     leftIcon={
-                                        <ThemeIcon variant="gradient" gradient={{ from: '#ed6ea0', to: '#ec8c69', deg: 35 }} radius={'100%'}>
+                                        <ThemeIcon
+                                            variant="gradient"
+                                            gradient={{ from: '#ed6ea0', to: '#ec8c69', deg: 35 }}
+                                            radius={'100%'}
+                                        >
                                             <IconAbc size={20} />
                                         </ThemeIcon>
                                     }
+                                    onClick={() => setShowChangeRoomName(true)}
                                 >
                                     Change chat name
                                 </Button>
@@ -101,7 +136,11 @@ const GroupRoomProfile = (props) => {
                                         inner: 'justify-content-start align-items-center',
                                     }}
                                     leftIcon={
-                                        <ThemeIcon variant="gradient" gradient={{ from: 'teal', to: 'blue', deg: 60 }} radius={'100%'}>
+                                        <ThemeIcon
+                                            variant="gradient"
+                                            gradient={{ from: 'teal', to: 'blue', deg: 60 }}
+                                            radius={'100%'}
+                                        >
                                             <IconPalette size={20} />
                                         </ThemeIcon>
                                     }
@@ -116,7 +155,7 @@ const GroupRoomProfile = (props) => {
                                         inner: 'justify-content-start align-items-center',
                                     }}
                                     leftIcon={
-                                        <ThemeIcon variant="gradient" color='blue' radius={'100%'}>
+                                        <ThemeIcon variant="gradient" color="blue" radius={'100%'}>
                                             <IconPhotoFilled size={17} />
                                         </ThemeIcon>
                                     }
@@ -132,53 +171,102 @@ const GroupRoomProfile = (props) => {
                         </Accordion.Control>
                         <Accordion.Panel>
                             <div>
-                                {roomDetail.members.map((member, index) => (
-                                    <div key={index} className='d-flex align-items-center justify-content-between pb-2'>
+                                {members.sort(CompareRole).map((member, index) => (
+                                    <div
+                                        key={index}
+                                        className="d-flex align-items-center justify-content-between pb-2"
+                                    >
                                         <UnstyledButton>
                                             <Group>
-                                                <Avatar size={36} src={API_URL+member.user.avatar.replace(API_URL,'')} radius={"100%"} color="blue" />
+                                                <Avatar
+                                                    size={36}
+                                                    src={
+                                                        API_URL +
+                                                        member.user.avatar.replace(API_URL, '')
+                                                    }
+                                                    radius={'100%'}
+                                                    color="blue"
+                                                />
                                                 <div>
-                                                    <Text>{member.user.first_name} {member.user.last_name}</Text>
-                                                    <Text size="xs" color="dimmed">{member.user.email}</Text>
+                                                    <Text>
+                                                        {member.user.first_name}{' '}
+                                                        {member.user.last_name}
+                                                    </Text>
+                                                    <Text size="xs" color="dimmed">
+                                                        {member.user.email}
+                                                    </Text>
                                                 </div>
                                             </Group>
                                         </UnstyledButton>
-                                        <Menu position="right-start" withArrow arrowPosition="center" width={200}>
+                                        <Menu
+                                            position="right-start"
+                                            withArrow
+                                            arrowPosition="center"
+                                            width={200}
+                                        >
                                             <Menu.Target>
-                                                <ActionIcon size={36} radius={"100%"}>
+                                                <ActionIcon size={36} radius={'100%'}>
                                                     <IconDots />
                                                 </ActionIcon>
                                             </Menu.Target>
                                             <Menu.Dropdown>
-                                                {member.user.id !== currentUser.id && <Menu.Item icon={<IconMessageCircle size={14} />}>Message</Menu.Item>}
-                                                <Menu.Item icon={<IconUser size={14} />}>View Profile</Menu.Item>
-                                                <Menu.Divider />
-                                                {member.user.id !== currentUser.id ? (
-                                                    <Menu.Item color="red" icon={<IconMessageCircleMinus size={14} />}>Remove</Menu.Item>
-                                                ): (
-                                                    <Menu.Item color="red" icon={<IconLogout size={14} />}>Leave</Menu.Item>
+                                                {member.user.id !== currentUser.id && (
+                                                    <Menu.Item
+                                                        icon={<IconMessageCircle size={14} />}
+                                                    >
+                                                        Message
+                                                    </Menu.Item>
+                                                )}
+                                                <Menu.Item icon={<IconUser size={14} />}>
+                                                    View Profile
+                                                </Menu.Item>
+                                                {member.user.id === currentUser.id && (
+                                                    <>
+                                                        <Menu.Divider />
+                                                        <Menu.Item
+                                                            color="red"
+                                                            icon={<IconLogout size={14} />}
+                                                        >
+                                                            Leave
+                                                        </Menu.Item>
+                                                    </>
+                                                )}
+                                                {member.user.id !== currentUser.id && IsAdmin(currentUser, members) && (
+                                                    <>
+                                                        <Menu.Divider />
+                                                        <Menu.Item
+                                                            color="red"
+                                                            icon={<IconMessageCircleMinus size={14} />}
+                                                        >
+                                                            Remove
+                                                        </Menu.Item>
+                                                    </>
                                                 )}
                                             </Menu.Dropdown>
                                         </Menu>
                                     </div>
                                 ))}
-                                <Button
-                                    fullWidth
-                                    variant="subtle"
-                                    leftIcon={
-                                        <ThemeIcon color='gray' radius={"100%"}>
-                                            <IconPlus />
-                                        </ThemeIcon>
-                                    }
-                                    classNames={{
-                                        inner: 'justify-content-start align-items-center',
-                                        root: 'ps-1',
-                                    }}
-                                >
-                                    <Text size={16} color='black'>
-                                        Add people
-                                    </Text>
-                                </Button>
+                                {IsAdmin(currentUser, members) && (
+                                    <Button
+                                        fullWidth
+                                        variant="subtle"
+                                        leftIcon={
+                                            <ThemeIcon color="gray" radius={'100%'}>
+                                                <IconPlus />
+                                            </ThemeIcon>
+                                        }
+                                        classNames={{
+                                            inner: 'justify-content-start align-items-center',
+                                            root: 'ps-1',
+                                        }}
+                                        onClick={() => setShowAddPeople(true)}
+                                    >
+                                        <Text size={16} color="black" >
+                                            Add people
+                                        </Text>
+                                    </Button>
+                                )}
+                                
                             </div>
                         </Accordion.Panel>
                     </Accordion.Item>
@@ -234,6 +322,16 @@ const GroupRoomProfile = (props) => {
                     </Accordion.Item>
                 </Accordion>
             </div>
+            <AddPeopleModal 
+                opened={showAddPeople}
+                onClose={() => setShowAddPeople(false)}
+                roomDetail={roomDetail}
+            />
+            <ChangeChatRoomNameModal 
+                opened={showChangeRoomName}
+                onClose={() => setShowChangeRoomName(false)}
+                roomDetail={roomDetail}
+            />
         </div>
     );
 };

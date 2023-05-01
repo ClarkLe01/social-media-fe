@@ -13,15 +13,10 @@ function FriendList() {
     const [ memberList, setMemberList ] = useState([]);
     useEffect(() => {
         if (friendList) {
-            console.log('friendList', friendList.data);
             setMemberList([ ...friendList.data ]);
         }
     }, [ friendList ]);
-    useEffect(() => {
-        if (memberList.length != 0) {
-            console.log('memberList', memberList);
-        }
-    }, [ memberList ]);
+
     return (
         <div>
             <Pagetitle title="Your Friends" />
