@@ -147,6 +147,7 @@ function CoverComponent(props) {
                                     onClick={() => {
                                         handleCoverUpdate();
                                     }}
+                                    disabled={!updatedCoverSrc}
                                 >
                                     Confirm
                                 </Button>
