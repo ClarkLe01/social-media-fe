@@ -5,8 +5,7 @@ import React, { useEffect } from 'react';
 function ImageGridPreview(props) {
     const files = [ ...props.files ];
 
-    const previewsBelowOneImage = files.map((obj, index) => {
-        const file = obj.file;
+    const previewsBelowOneImage = files.map((file, index) => {
         const fileType = file.type.split('/');
         const fileUrl = URL.createObjectURL(file);
         return (
@@ -53,8 +52,7 @@ function ImageGridPreview(props) {
         );
     });
 
-    const previewsBelowTwoImage = files.map((obj, index) => {
-        const file = obj.file;
+    const previewsBelowTwoImage = files.map((file, index) => {
         const fileType = file.type.split('/');
         const fileUrl = URL.createObjectURL(file);
         return (
@@ -101,8 +99,7 @@ function ImageGridPreview(props) {
         );
     });
 
-    const previewsThreeImage = files.map((obj, index) => {
-        const file = obj.file;
+    const previewsThreeImage = files.map((file, index) => {
         const fileType = file.type.split('/');
         const fileUrl = URL.createObjectURL(file);
         return (
@@ -147,8 +144,7 @@ function ImageGridPreview(props) {
         );
     });
 
-    const previewsFourImage = files.map((obj, index) => {
-        const file = obj.file;
+    const previewsFourImage = files.map((file, index) => {
         const fileType = file.type.split('/');
         const fileUrl = URL.createObjectURL(file);
         return (
@@ -192,8 +188,7 @@ function ImageGridPreview(props) {
         );
     });
 
-    const previewsMoreFourImage = files.map((obj, index) => {
-        const file = obj.file;
+    const previewsMoreFourImage = files.map((file, index) => {
         const fileType = file.type.split('/');
         const fileUrl = URL.createObjectURL(file);
         return (

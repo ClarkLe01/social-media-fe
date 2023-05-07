@@ -17,7 +17,7 @@ import {
 const MemoizedImageComponent = React.memo(Image);
 
 function MediaEditCard(props) {
-    const file = props.objFile.file;
+    const file = props.file;
     const fileType = file.type.split('/');
     const fileUrl = URL.createObjectURL(file);
     
@@ -68,18 +68,6 @@ function MediaEditCard(props) {
                         </ActionIcon>
                     </div>
                 </Box>
-            </Card.Section>
-            <Card.Section>
-                <div className="px-3">
-                    <Text weight={500} size="md" mt="md">
-                        Caption
-                    </Text>
-                    <Textarea
-                        value={props.objFile.caption}
-                        className="pb-3"
-                        onChange={(e) => props.onChange(e.target.value)}
-                    />
-                </div>
             </Card.Section>
         </Card>
     );

@@ -7,17 +7,28 @@ import PostCard from '@common/components/PostCard';
 import Load from '@common/components/Load';
 import { useParams } from 'react-router-dom';
 import { useAuth, useProfile } from '@services/controller';
+import { usePostGeneral } from '@services/controller';
 
 function Profile() {
     const { userId } = useParams();  // get param userId from url
     const { profileId } = useProfile(userId); // profile of user by params userId
     const { profile } = useAuth(); // current user
+    const { MyPostList, MyPostListError, MyPostListLoading } = usePostGeneral(); // posts of current user
     const [ user, setUser ] = useState(null);
+    const [ myPosts, setMyPosts ] = useState([]);
     useEffect(() => {
         if (profileId) {
             setUser(profileId.data);
+            console.log(profileId.data);
         }
     }, [ profileId ]);
+
+    useEffect(() => {
+        if(!MyPostListLoading && MyPostList){
+            setMyPosts(MyPostList.data);
+        }
+    }, [ MyPostListLoading, MyPostList ]);
+
     return (
         <div className="row">
             <div className="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
@@ -28,36 +39,22 @@ function Profile() {
                 <ProfilePhoto />
             </div>
             <div className="col-xxl-8 col-xl-8 col-lg-12 py-3">
-                {profile.data.id === profileId && (
+                {profile.data.id == userId && (
                     <CreatePost user={profile.data} defaultAudience="public" />
                 )}
-                <PostCard
-                    id="32"
-                    postvideo=""
-                    postimage="post.png"
-                    avatar="user.png"
-                    user="Surfiya Zakir"
-                    time="22 min ago"
-                    des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus."
-                />
-                <PostCard
-                    id="31"
-                    postvideo=""
-                    postimage="post.png"
-                    avatar="user.png"
-                    user="David Goria"
-                    time="22 min ago"
-                    des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus."
-                />
-                <PostCard
-                    id="33"
-                    postvideo=""
-                    postimage="post.png"
-                    avatar="user.png"
-                    user="Anthony Daugloi"
-                    time="2 hour ago"
-                    des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus."
-                />
+                {myPosts.map((post, index) => (
+                    <PostCard
+                        key={index}
+                        id={post.id}
+                        images={post.images}
+                        avatar={post.owner.avatar}
+                        owner={post.owner}
+                        created={post.created}
+                        content={post.content}
+                        status={post.status}
+                        interactions={post.interactions}
+                    />
+                ))}
                 <Load />
             </div>
         </div>

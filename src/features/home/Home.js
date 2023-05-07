@@ -4,6 +4,7 @@ import CreatePost from '@common/components/CreatePost';
 import PostCard from '@common/components/PostCard';
 import FriendSlider from '@common/components/FriendSlider';
 import Load from '@common/components/Load';
+import { useAuth } from '@services/controller';
 
 const images = [
     { file: 'https://i.pinimg.com/564x/7a/f6/c5/7af6c52b76210f6a09209c78e51940d5.jpg', caption: '' },
@@ -97,10 +98,11 @@ const posts = [
 ];
 
 function Home() {
+    const { profile } = useAuth();
     return (
         <>
             <Storyslider />
-            <CreatePost defaultAudience='private' />
+            <CreatePost user={profile.data} defaultAudience="public" />
             <FriendSlider />
             {posts.map((post, index) => (
                 <PostCard
