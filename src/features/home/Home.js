@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Storyslider from '@common/components/StorySlider';
 import CreatePost from '@common/components/CreatePost';
 import PostCard from '@common/components/PostCard';
 import FriendSlider from '@common/components/FriendSlider';
 import Load from '@common/components/Load';
-import { useAuth } from '@services/controller';
+import { useAuth, usePostGeneral } from '@services/controller';
 
 const images = [
     { file: 'https://i.pinimg.com/564x/7a/f6/c5/7af6c52b76210f6a09209c78e51940d5.jpg', caption: '' },
@@ -99,8 +99,17 @@ const posts = [
 
 function Home() {
     const { profile } = useAuth();
+    const { PostList, PostListLoading, PostListError } = usePostGeneral();
+    const [ posts, setPosts ] = useState([]);
+
+    useEffect(() => {
+        if(!PostListLoading && PostList){
+            setPosts(PostList.data);
+        }
+    }, [ PostListLoading, PostList ]);
+
     return (
-        <>
+        <div className='mx-5'>
             <Storyslider />
             <CreatePost user={profile.data} defaultAudience="public" />
             <FriendSlider />
@@ -108,16 +117,18 @@ function Home() {
                 <PostCard
                     key={index}
                     id={post.id}
-                    postMedia={post.postMedia}
-                    avatar={post.avatar}
-                    user={post.user}
-                    time={post.time}
-                    des={post.des}
+                    images={post.images}
+                    avatar={post.owner.avatar}
+                    owner={post.owner}
+                    created={post.created}
+                    content={post.content}
+                    status={post.status}
+                    interactions={post.interactions}
+                    isDetail={false}
                 />
             ))}
-            
             <Load />
-        </>
+        </div>
     );
 }
 

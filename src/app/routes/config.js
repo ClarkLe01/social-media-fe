@@ -13,7 +13,7 @@ export const navigatePath = {
     chat: '/message/:roomId',
     chatHome: '/message',
     newChat: '/message/new',
-    media: '/media',
+    post: '/post/:postId',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
@@ -22,9 +22,7 @@ export const navigatePath = {
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
-const ErrorLayout = lazy(() => import('@app/layouts/ErrorLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
-const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
 const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 
@@ -55,7 +53,7 @@ const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 const routes = [
     {
-        name: 'First Layout',
+        name: 'Main Layout',
         element: MainLayout,
         path: '/',
         requireAuth: AUTH.REQUIRE,
@@ -81,27 +79,19 @@ const routes = [
                 element: Settings,
             },
             {
-                name: 'Test Page',
-                path: navigatePath.testpage,
-                element: TestPage,
-            },
-        ],
-    },
-    {
-        name: 'Second Layout',
-        element: NoSideBarLayout,
-        path: '/',
-        requireAuth: AUTH.REQUIRE,
-        children: [
-            {
                 name: 'Notification',
                 path: navigatePath.notification,
                 element: Notification,
             },
             {
-                name: 'Post View',
-                path: navigatePath.media,
+                name: 'Post Detail View',
+                path: navigatePath.post,
                 element: PostView,
+            },
+            {
+                name: 'Test Page',
+                path: navigatePath.testpage,
+                element: TestPage,
             },
         ],
     },

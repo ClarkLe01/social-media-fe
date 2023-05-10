@@ -68,7 +68,7 @@ function usePostGeneral() {
         mutate: deletePost,
     } = useMutation({
         mutationFn: (variables) => {
-            return api(endPoints.post.delete);
+            return api(endPoints.post.delete, variables);
         },
         onSuccess: ({ data }) => {
             queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });

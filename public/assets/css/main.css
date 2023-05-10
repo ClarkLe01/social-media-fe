@@ -12212,8 +12212,19 @@ select.sort {
   .emoji-wrap li i {
     font-size: 16px; } }
 
-.list-messengers > .messenger:hover {
-  background-color: #f7f7f7 !important; }
+.list-messengers .messenger:hover {
+  background-color: #c0c0c0 !important; }
 
 .create-post:hover {
   background-color: #dfe3ee !important; }
+
+.cropper-crop-box, .cropper-view-box {
+  border-radius: 50%; }
+
+.cropper-view-box {
+  box-shadow: 0 0 0 1px #39f;
+  outline: 0; }
+
+.input-placeholder span:empty:before {
+  content: attr(placeholder);
+  color: #aaa; }

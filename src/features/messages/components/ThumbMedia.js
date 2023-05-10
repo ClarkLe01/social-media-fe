@@ -136,9 +136,9 @@ function ThumbMedia(props) {
     });
 
     return (
-        <div className='d-flex ms-3'>
+        <div className='d-flex'>
             <ScrollArea w={'100%'}>
-                <Box w={"100%"} className='d-flex pt-4'>
+                <Box w={"100%"} className='d-flex pt-2'>
                     <div className='me-2'>
                         <ActionIcon
                             variant="light"

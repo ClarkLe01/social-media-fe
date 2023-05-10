@@ -51,6 +51,7 @@ function MainChat(props) {
     const dropzoneRef = useRef(null);
     const [ clientSocket, setClientSocket ] = useState(null);
     const [ connected, setConnected ] = useState(false);
+    const [ showEmoji, setShowEmoji ] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -278,7 +279,9 @@ function MainChat(props) {
                         >
                             <div>
                                 {attachFiles.length > 0 && (
-                                    <ThumbMedia files={attachFiles} setFiles={setAttachFiles} openDropZone={() => dropzoneRef.current()}/>
+                                    <div className='ms-3'>
+                                        <ThumbMedia files={attachFiles} setFiles={setAttachFiles} openDropZone={() => dropzoneRef.current()}/>
+                                    </div>
                                 )}
                             </div>
                             <div className="d-flex bd-highlight mb-3">
@@ -326,9 +329,14 @@ function MainChat(props) {
                                                 classNames={{
                                                     dropdown: 'p-0',
                                                 }}
+                                                opened={showEmoji} onChange={setShowEmoji}
                                             >
                                                 <Popover.Target>
-                                                    <ActionIcon className="me-5" radius="xl">
+                                                    <ActionIcon 
+                                                        className="me-5" 
+                                                        radius="xl" 
+                                                        onClick={() => setShowEmoji((o) => !o)}
+                                                    >
                                                         <IconMoodSmileFilled />
                                                     </ActionIcon>
                                                 </Popover.Target>

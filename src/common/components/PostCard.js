@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PostMenuTool from './PostMenuTool';
 import FacebookEmoji from './react-facebook-emoji';
 import {
@@ -10,42 +10,43 @@ import {
     Text,
     Avatar,
     Tooltip,
-    ActionIcon,
     Spoiler,
+    Divider,
+    Textarea,
+    ActionIcon,
+    Popover,
+    Menu,
+    Modal,
 } from '@mantine/core';
 import Lightbox from 'react-18-image-lightbox';
 import 'react-18-image-lightbox/style.css';
-import { ReactHaha, ReactLike, ReactLove } from '@assets/images/reaction';
-import { IconShare3, IconMessage2 } from '@tabler/icons-react';
+import { ReactAngry, ReactHaha, ReactLike, ReactLove, ReactWow, ReactSad } from '@assets/images/reaction';
+import {
+    IconMessage2,
+    IconMoodEmpty,
+    IconCamera,
+    IconSend,
+    IconDots,
+    IconTrash,
+    IconPencil,
+} from '@tabler/icons-react';
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
 import { API_URL } from '@constants';
+import { getIconStatus } from '@common/utils/radioStatus';
+import { useAuth, usePostDetail } from '@services/controller';
+import { Dropzone } from '@mantine/dropzone';
+import { Link, redirect, useLocation, useNavigate } from 'react-router-dom';
+import ThumbMedia from '@features/messages/components/ThumbMedia';
+import usePostComment from '@services/controller/usePostComment';
+import { useQueryClient } from '@tanstack/react-query';
+import { endPoints } from '@services/api';
+import usePostInteraction from '@services/controller/usePostInteraction';
+import { IconThumbUp } from '@tabler/icons-react';
+import { getTimeString } from '@common/utils/converString';
 
 const MemorizedImage = React.memo(Image);
-const getTimeString = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / 1000 / 60 / 60);
-    const diffDays = Math.floor(diffMs / 1000 / 60 / 60 / 24);
-    if (diffMs < 60 * 60 * 1000) {
-        // Less than 1 hour ago
-        const diffMinutes = Math.floor(diffMs / 1000 / 60);
-        return `${diffMinutes} minutes ago`;
-    } else if (diffHours < 24) {
-        // Less than 1 day ago
-        return `${diffHours} hours ago`;
-    } else if (diffDays < 7) {
-        // Less than 1 week ago
-        return `${diffDays} days ago`;
-    } else if (date.getFullYear() === now.getFullYear()) {
-        // Same year
-        const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
-    } else {
-        // Different year
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
-    }
-};
+
 function ImageGridPreview(props) {
     const files = [ ...props.files ];
     const [ photoIndex, setPhotoIndex ] = useState(0);
@@ -164,7 +165,7 @@ function ImageGridPreview(props) {
             </React.Fragment>
         );
     });
-    console.log(files[photoIndex]);
+
     return (
         <Grid>
             {files.length == 1 && previewsOneImage}
@@ -188,21 +189,484 @@ function ImageGridPreview(props) {
     );
 }
 
-function PostCard(props) {
-    const [ isActive, setIsActive ] = useState(false);
+function CommentItem(props) {
+    const { comment, currentUser, postId } = props;
+    const files = [ comment ];
+    const [ photoIndex, setPhotoIndex ] = useState(0);
+    const [ isOpen, setIsOpen ] = useState(false);
+    const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
 
-    const { owner, created, content, images, status, id, interactions } = props;
+    const {
+        updateComment,
+        updateCommentError,
+        updateCommentLoading,
+        deleteComment,
+        deleteCommentError,
+        deleteCommentLoading,
+        commentInstance,
+        commentInstanceError,
+        commentInstanceLoading,
+    } = usePostComment(comment.id);
+
+    const queryClient = useQueryClient();
+
+    const handleDeleteComment = () => {
+        deleteComment(
+            {
+                pathParams: { commentId: comment.id },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
+                },
+            },
+        );
+        setOpenedDeleteModal(false);
+    };
+
+    return (
+        <div className="mt-3 mb-2">
+            <div
+                className="comment d-flex align-items-start justify-content-start"
+                style={{
+                    zIndex: 0,
+                }}
+            >
+                <Avatar src={comment.user.avatar} radius={'100%'} size={32} />
+                <div className="ms-3 d-block">
+                    <div className="comment-content align-items-center d-flex">
+                        <div
+                            className="py-2 ps-3 pe-4"
+                            style={{
+                                backgroundColor: '#f1f3f5',
+                                borderRadius: '10px',
+                                display: 'inline-block',
+                            }}
+                        >
+                            <Text size={13} fw={700}>
+                                <Link
+                                    to={`/profile/${comment.user.id}`}
+                                    style={{
+                                        textDecoration: 'none',
+                                        color: '#000',
+                                    }}
+                                >
+                                    {comment.user.first_name} {comment.user.last_name}
+                                </Link>
+                            </Text>
+                            <Text size={13} fw={500}>
+                                {comment.content}
+                            </Text>
+                        </div>
+                        <div
+                            className="ms-2"
+                            style={{
+                                display: 'inline-block',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '25px',
+                                    height: '25px',
+                                }}
+                            >
+                                {comment.user.id == currentUser.id && (
+                                    <Menu>
+                                        <Menu.Target>
+                                            <ActionIcon size={20}>
+                                                <IconDots />
+                                            </ActionIcon>
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            <Menu.Item icon={<IconPencil size={14} />}>
+                                                Update
+                                            </Menu.Item>
+                                            <Menu.Item
+                                                color="red"
+                                                icon={<IconTrash size={14} />}
+                                                onClick={() => setOpenedDeleteModal(true)}
+                                            >
+                                                Delete
+                                            </Menu.Item>
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                )}
+                            </div>
+                            <Text size={13} c="dimmed">
+                                {getTimeString(comment.created)}
+                            </Text>
+                        </div>
+                    </div>
+
+                    <div className="file-comment ps-1 pt-1 d-flex" onClick={() => setIsOpen(true)}>
+                        <Image src={comment.file} maw={'15rem'} />
+                    </div>
+                </div>
+            </div>
+            <Modal
+                opened={openedDeleteModal}
+                onClose={() => setOpenedDeleteModal(false)}
+                title="Delete Comment"
+                centered
+            >
+                <Text size="sm">
+                    Are you sure you want to delete this comment? This action is destructive and you
+                    will have to contact support to restore your data.
+                </Text>
+                <div className="d-flex justify-content-end pe-2">
+                    <Button
+                        variant="outline"
+                        color="dark"
+                        classNames={{
+                            root: 'me-2',
+                        }}
+                        onClick={() => setOpenedDeleteModal(false)}
+                    >
+                        <Text>No don`&apos;`t delete it</Text>
+                    </Button>
+                    <Button color="red" onClick={handleDeleteComment}>
+                        <Text>Delete comment</Text>
+                    </Button>
+                </div>
+            </Modal>
+            {isOpen && (
+                <Lightbox
+                    mainSrc={API_URL + files[photoIndex].file.replace(API_URL, '')}
+                    nextSrc={files[(photoIndex + 1) % files.length]}
+                    prevSrc={files[(photoIndex + files.length - 1) % files.length]}
+                    onCloseRequest={() => setIsOpen(false)}
+                    onMovePrevRequest={() =>
+                        setPhotoIndex((photoIndex + files.length - 1) % files.length)
+                    }
+                    onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % files.length)}
+                />
+            )}
+        </div>
+    );
+}
+
+function AddComment(props) {
+    const queryClient = useQueryClient();
+    const { currentUser, postId } = props;
+    const [ commentContent, setCommentContent ] = useState('');
+
+    const [ showEmoji, setShowEmoji ] = useState(false);
+    const [ attachFiles, setAttachFiles ] = useState([]);
+    const dropzoneRef = useRef(null);
+
+    const { createComment, createCommentError, createCommentLoading } = usePostComment();
+
+    const handleSendComment = () => {
+        if (commentContent.length == 0 && attachFiles.length == 0) return;
+        const form = new FormData();
+        form.append('content', commentContent);
+        form.append('post', postId);
+        if (attachFiles.length > 0) {
+            attachFiles.map((file) => {
+                form.append('file', file);
+            });
+        }
+        for (let [ key, value ] of form) {
+            console.log('form', key, ':', value);
+        }
+        createComment(
+            {
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
+                },
+            },
+        );
+        setCommentContent('');
+        setAttachFiles([]);
+    };
+
+    const handleEnterPress = (e) => {
+        if (e.code == 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendComment();
+        }
+    };
+
+    return (
+        <div className="mt-1">
+            <Divider my="xs" className="my-0" />
+            <div
+                className="write-your-comment mt-4"
+                style={{
+                    zIndex: 0,
+                }}
+            >
+                <div className="d-flex align-items-start justify-content-center">
+                    <Avatar src={currentUser.avatar} radius={'100%'} size={32} />
+                    <div
+                        className="add-comment ms-3"
+                        style={{
+                            width: '100%',
+                        }}
+                    >
+                        <div
+                            className="p-3"
+                            style={{
+                                backgroundColor: '#f1f3f5',
+                                borderRadius: '10px',
+                            }}
+                        >
+                            <Textarea
+                                placeholder="Write a comment..."
+                                autosize
+                                minRows={1}
+                                maxRows={4}
+                                variant="filled"
+                                classNames={{
+                                    wrapper: 'border-0',
+                                }}
+                                value={commentContent}
+                                onChange={(event) => setCommentContent(event.currentTarget.value)}
+                                onKeyDown={handleEnterPress}
+                            />
+                            <div className="d-flex justify-content-start align-items-center mt-2">
+                                <Popover
+                                    position="top-end"
+                                    shadow="md"
+                                    classNames={{
+                                        dropdown: 'p-0',
+                                    }}
+                                    opened={showEmoji}
+                                    onChange={setShowEmoji}
+                                    withArrow={true}
+                                >
+                                    <Popover.Target>
+                                        <ActionIcon onClick={() => setShowEmoji((o) => !o)}>
+                                            <IconMoodEmpty />
+                                        </ActionIcon>
+                                    </Popover.Target>
+                                    <Popover.Dropdown className="me-4">
+                                        <div>
+                                            <Picker
+                                                data={data}
+                                                onEmojiSelect={(e) =>
+                                                    setCommentContent(commentContent + e.native)
+                                                }
+                                            />
+                                        </div>
+                                    </Popover.Dropdown>
+                                </Popover>
+                                <ActionIcon className="ms-1" onClick={() => dropzoneRef.current()}>
+                                    <IconCamera />
+                                </ActionIcon>
+                                <ActionIcon
+                                    className="ms-auto"
+                                    onClick={() => handleSendComment()}
+                                    disabled={commentContent.length == 0 && attachFiles.length == 0}
+                                >
+                                    <IconSend />
+                                </ActionIcon>
+                            </div>
+                        </div>
+                        <div
+                            className="d-flex justify-content-start align-items-center"
+                            style={{
+                                display: 'block',
+                            }}
+                        >
+                            {attachFiles.length > 0 && (
+                                <ThumbMedia
+                                    files={attachFiles}
+                                    setFiles={setAttachFiles}
+                                    openDropZone={() => dropzoneRef.current()}
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <Dropzone
+                openRef={dropzoneRef}
+                onDrop={setAttachFiles}
+                onReject={(files) => console.log('rejected files', files)}
+                maxSize={3 * 1024 ** 2} // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}
+                accept={{
+                    'image/*': [],
+                    // All images
+                    'video/*': [],
+                }}
+                maxFiles={1}
+                hidden={true}
+            />
+        </div>
+    );
+}
+
+const getIconInteraction = (type) => {
+    switch (type) {
+                    case 'like':
+                        return ReactLike;
+
+                    case 'haha':
+                        return ReactHaha;
+
+                    case 'love':
+                        return ReactLove;
+                    
+                    case 'angry':
+                        return ReactAngry;
+                    
+                    case 'sad':
+                        return ReactSad;
+
+                    case 'wow':
+                        return ReactWow;
+
+                    default:
+                        return; 
+    }
+};
+
+function InteractionSection(props) {
+    const { interactions } = props;
+    const counts = interactions.reduce((acc, curr) => {
+        const type = curr.type;
+        if (type in acc) {
+            acc[type] += 1;
+        } else {
+            acc[type] = 1;
+        }
+        return acc;
+    }, {});
+    const sortedCounts = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([ type, count ]) => ({ type, count }));
+    const totalInteraction = sortedCounts.reduce((acc, curr) => acc + curr.count, 0);
+    const showTotalInteraction = (totalInteraction) => {
+        if (totalInteraction >= 1000000) {
+            let strShow = (totalInteraction / 1000000).toFixed(1).toString()+'M';
+            return strShow;
+        }
+        else if (totalInteraction < 1000000 && totalInteraction >= 1000) {
+            let strShow = (totalInteraction / 1000).toFixed(1).toString()+'K';
+            return strShow;
+        }
+        else{
+            return totalInteraction;
+        }
+    };
+    return (
+        <>
+            <Tooltip.Group openDelay={300} closeDelay={100}>
+                <Avatar.Group spacing={6}>
+                    {sortedCounts.map((item, index) => index<3&&(
+                        <Tooltip key={index} label={item.type.charAt(0).toUpperCase()+item.type.slice(1)} withArrow>
+                            <Avatar src={getIconInteraction(item.type)} size={20} radius="xl" />
+                        </Tooltip>
+                    ))}
+                </Avatar.Group>
+            </Tooltip.Group>
+            <Text className="ps-1">{showTotalInteraction(totalInteraction)}</Text>
+        </>
+    );
+}
+
+function PostCard(props) {
     let timeout;
-    const [ reactType, setReactType ] = useState('Unlike');
+    const queryClient = useQueryClient();
+    const { profile } = useAuth();
+    const [ isActive, setIsActive ] = useState(false);
+    const { owner, created, content, images, status, id, interactions, isDetail } = props;
+    const { CommentList, CommentListLoading } = usePostDetail(id);
+    const {
+        interactInstance,
+        interactInstanceLoading,
+        updateInteraction,
+    } = usePostInteraction(id);
+    const [ comments, setComments ] = useState([]);
+    const [ reactType, setReactType ] = useState('unlike');
+
+    const navigate = useNavigate();
 
     const handleReactClick = (data) => {
-        setReactType(data);
+        // eslint-disable-next-line no-debugger
+        debugger;
+        updateInteraction(
+            {
+                data: {
+                    type: data,
+                },
+                pathParams: { postId: id },
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                    queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                    queryClient.invalidateQueries([ 'post/list' ]);
+                    queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                    queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                    queryClient.invalidateQueries([ 'post/list' ]);
+                    queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                },
+            },
+        );
     };
 
     const handleLikeButtonClick = () => {
         clearTimeout(timeout);
         setIsActive(false);
-        reactType == 'Unlike' ? setReactType('Like') : setReactType('Unlike');
+        reactType == 'unlike' 
+            ? updateInteraction(
+                {
+                    data: {
+                        type: 'like',
+                    },
+                    pathParams: { postId: id },
+                },
+                {
+                    onSuccess: (data) => {
+                        console.log(data);
+                        queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                        queryClient.invalidateQueries([ 'post/list' ]);
+                        queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    },
+                    onError: (error) => {
+                        console.log(error.response.data);
+                        queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                        queryClient.invalidateQueries([ 'post/list' ]);
+                        queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    },
+                },
+            )
+            : updateInteraction(
+                {
+                    data: {
+                        type: 'unlike',
+                    },
+                    pathParams: { postId: id },
+                },
+                {
+                    onSuccess: (data) => {
+                        console.log(data);
+                        queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                        queryClient.invalidateQueries([ 'post/list' ]);
+                        queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    },
+                    onError: (error) => {
+                        console.log(error.response.data);
+                        queryClient.invalidateQueries([ `post/detail/${id}` ]);
+                        queryClient.invalidateQueries([ 'post/list' ]);
+                        queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    },
+                },
+            );
     };
 
     const handleMoveEnter = () => {
@@ -222,21 +686,50 @@ function PostCard(props) {
         setIsActive(true);
     };
 
+    const GoToPostDetail = () => {
+        navigate(endPoints.post.retrieve.url.replace(':postId', id));
+    };
+
     const emojiClass = `${isActive ? ' active' : ''}`;
 
+    useEffect(() => {
+        if (!CommentListLoading && CommentList) {
+            setComments(CommentList.data);
+        }
+    }, [ CommentList, CommentListLoading ]);
+
+    useEffect(() => {
+        if(!interactInstanceLoading && interactInstance){
+            setReactType(interactInstance.data.type);
+        }
+    }, [ interactInstance, interactInstanceLoading ]);
+
     return (
-        <div className="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
+        <div className="card w-100 shadow-xss rounded-xxl border-0 px-4 pt-4 pb-2 mb-3">
             <div className="card-body p-0 d-flex">
                 <Avatar className="avatar me-3" radius={'100%'} src={owner.avatar} size={'md'} />
                 <Text fw={700} size={16}>
                     {' '}
-                    {owner.first_name} {owner.last_name}
-                    <Text className="d-block" c="dimmed" size={13} fw={500}>
-                        {' '}
+                    <Link
+                        to={`/profile/${owner.id}`}
+                        style={{
+                            textDecoration: 'none',
+                            color: '#000',
+                        }}
+                    >
+                        {owner.first_name} {owner.last_name}
+                    </Link>
+                    
+                    <Text className="d-flex" c="dimmed" size={13} fw={500}>
                         {getTimeString(created)}
+                        <div className="d-flex align-items-center ps-2">
+                            <Tooltip label={getIconStatus(status).label}>
+                                {getIconStatus(status).icon}
+                            </Tooltip>
+                        </div>
                     </Text>
                 </Text>
-                <PostMenuTool id={`dropdownToolMenu${id}`} />
+                {profile.data.id == owner.id && <PostMenuTool id={id} />}
             </div>
             <div className="card-body p-0 py-3">
                 <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">
@@ -244,35 +737,35 @@ function PostCard(props) {
                 </Spoiler>
             </div>
             {images && <ImageGridPreview files={images} />}
-            <div className="card-body d-flex p-0 pt-2">
+            <div className="card-body d-flex p-0 pb-2 pt-3">
                 <div className="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
-                    <Tooltip.Group openDelay={300} closeDelay={100}>
-                        <Avatar.Group spacing={4}>
-                            <Tooltip label="Like" withArrow>
-                                <Avatar src={ReactLike} size={18} radius="xl" />
-                            </Tooltip>
-                            <Tooltip label="Haha" withArrow>
-                                <Avatar src={ReactHaha} size={18} radius="xl" />
-                            </Tooltip>
-                            <Tooltip label="Love" withArrow>
-                                <Avatar src={ReactLove} size={18} radius="xl" />
-                            </Tooltip>
-                        </Avatar.Group>
-                    </Tooltip.Group>
-                    <Text className="ps-1">2.8K</Text>
+                    {interactions.length > 0 && <InteractionSection interactions={interactions} />}
                 </div>
                 <div className="d-flex ms-auto fw-600 text-grey-900 text-dark lh-26 font-xssss">
                     <div className="d-flex align-items-center">
-                        <Text className="me-1">22</Text>
-                        <IconMessage2 />
-                    </div>
-                    <div className="d-flex align-items-center ps-3">
-                        <Text className="me-1">22</Text>
-                        <IconShare3 />
+                        {comments.length > 0 && (
+                            <div
+                                className="pe-1"
+                                onClick={GoToPostDetail}
+                                style={{
+                                    display: 'flex',
+                                }}
+                            >
+                                <Text className="me-1">{comments.length}</Text>
+                                <IconMessage2 />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-            <div className="card-body d-grid gap-2 d-flex justify-content-between px-0 py-0">
+            <Divider my="xs" className="my-0" />
+            <div
+                className="card-body px-0 py-0 pt-1"
+                style={{
+                    zIndex: 1,
+                    position: 'relative',
+                }}
+            >
                 <div
                     className={`emoji-wrap pointer ${emojiClass}`}
                     style={{ backgroundColor: 'transparent', padding: '3px' }}
@@ -288,39 +781,69 @@ function PostCard(props) {
                         <FacebookEmoji type="angry" size="sm" onChildData={handleReactClick} />
                     </div>
                 </div>
-                <Button
-                    fullWidth
-                    variant="outline"
-                    leftIcon
-                    classNames={{
-                        root: 'flex-fill border-0',
-                    }}
-                    onClick={handleLikeButtonClick}
-                    onMouseEnter={handleMoveEnter}
-                    onMouseLeave={handleMoveOut}
+                <div
+                    className='d-grid gap-2 d-flex justify-content-between'
                 >
-                    {reactType}
-                </Button>
-                <Button
-                    fullWidth
-                    variant="outline"
-                    leftIcon={<IconMessage2 />}
-                    classNames={{
-                        root: 'flex-fill border-0',
-                    }}
-                >
-                    Comment
-                </Button>
-                <Button
-                    fullWidth
-                    variant="outline"
-                    leftIcon={<IconShare3 />}
-                    classNames={{
-                        root: 'flex-fill border-0',
-                    }}
-                >
-                    Share
-                </Button>
+                    <Button
+                        fullWidth
+                        variant="subtle"
+                        color="gray"
+                        leftIcon={
+                            reactType!='unlike'
+                                ?<Avatar src={getIconInteraction(reactType)} size={20} radius="xl" />
+                                :<IconThumbUp size={20} radius="xl"/>
+                        }
+                        classNames={{
+                            root: 'flex-fill',
+                        }}
+                        onClick={handleLikeButtonClick}
+                        onMouseEnter={handleMoveEnter}
+                        onMouseLeave={handleMoveOut}
+                    >
+                        {reactType!='unlike'
+                            ?(
+                                <Text color='blue'>
+                                    {reactType.charAt(0).toUpperCase()+reactType.slice(1)}
+                                </Text>
+                            )
+                            :(
+                                <Text>
+                                    Like
+                                </Text>
+                            )
+                        }
+                        
+                    </Button>
+                    <Button
+                        fullWidth
+                        variant="subtle"
+                        color="gray"
+                        leftIcon={<IconMessage2/>}
+                        classNames={{
+                            root: 'flex-fill',
+                        }}
+                        onClick={GoToPostDetail}
+                    >
+                        <Text>
+                            Comment
+                        </Text>
+                    </Button>
+                </div>
+            </div>
+            <div>
+                {isDetail && <AddComment currentUser={profile.data} postId={id} />}
+                {isDetail &&
+                    comments.length > 0 &&
+                    comments.map((comment, index) => {
+                        return (
+                            <CommentItem
+                                key={index}
+                                comment={comment}
+                                currentUser={profile.data}
+                                postId={id}
+                            />
+                        );
+                    })}
             </div>
         </div>
     );

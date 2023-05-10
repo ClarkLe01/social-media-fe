@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 
 import {
-    IconLock,
     IconTriangleInvertedFilled,
     IconPhoto,
     IconTag,
@@ -23,6 +22,9 @@ import MediaFileSection from './MediaFileSection';
 import MultiMemberSelector from './MultiMemberSelector';
 import MediaEditCard from './MediaEditCard';
 import { useAuth, useFriend, usePostGeneral } from '@services/controller';
+import { CreateRadioButtons, getIconStatus } from '@common/utils/radioStatus';
+
+
 
 function CreatePost(props) {
     const openMediaFileRef = useRef(null);
@@ -42,38 +44,7 @@ function CreatePost(props) {
         // add more properties as needed
     });
 
-    const radioButtons = [
-        {
-            value: 'public',
-            label: 'Public',
-            description: 'Anyone can see',
-            icon: <IconLock />,
-        },
-        {
-            value: 'friends',
-            label: 'Friends',
-            description: 'All your friends can see',
-            icon: <IconLock />,
-        },
-        {
-            value: 'friendExcepts',
-            label: 'Friend Excepts',
-            description: "Don't show to some friends",
-            icon: <IconLock />,
-        },
-        {
-            value: 'specificFriends',
-            label: 'Specific Friends',
-            description: 'Only show to some friends',
-            icon: <IconLock />,
-        },
-        {
-            value: 'private',
-            label: 'Only Me',
-            description: '',
-            icon: <IconLock />,
-        },
-    ];
+    const radioButtons = CreateRadioButtons();
     
     // Variables for managing modal type
     const createPostModalType = {
@@ -232,15 +203,7 @@ function CreatePost(props) {
             return newFiles;
         });
     }
-    // function updateCaption(index, value) {
-    //     setFiles(prevState => {
-    //         const newState = prevState.map((obj,id) => {
-    //             return id === index ? { ...obj, caption: value } : obj;
-    //         });
-    
-    //         return newState;
-    //     });
-    // }
+
 
     return (
         <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
@@ -308,7 +271,7 @@ function CreatePost(props) {
                                 {' '}
                                 <Button
                                     variant="outline"
-                                    leftIcon={<IconLock size={16} />}
+                                    leftIcon={getIconStatus(lastChoosedValueRadio).icon}
                                     rightIcon={<IconTriangleInvertedFilled size={10} />}
                                     classNames={{
                                         leftSection: 'd-flex align-items-center',

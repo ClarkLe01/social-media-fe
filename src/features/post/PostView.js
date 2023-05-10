@@ -1,51 +1,94 @@
-import React, { useState } from 'react';
-import { Grid, AspectRatio, ActionIcon, Image } from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Grid, AspectRatio, ActionIcon, Image, Text, Button, Modal } from '@mantine/core';
+import { usePostDetail, usePostGeneral } from '@services/controller';
 import Lightbox from 'react-18-image-lightbox';
 import 'react-18-image-lightbox/style.css';
+import { useQueryClient } from '@tanstack/react-query';
+import PostCard from '@common/components/PostCard';
 
-const images = [
-    'https://placekitten.com/1500/500',
-    'https://placekitten.com/4000/3000',
-    'https://placekitten.com/800/1200',
-    'https://placekitten.com/1500/1500',
-];
 
 function PostView() {
-    const navigate = useNavigate();
-    const [ isOpen, setIsOpen ] = useState(false);
-    const [ photoIndex, setPhotoIndex ] = useState(0);
+    let { postId } = useParams();
+    const queryClient = useQueryClient();
+    const { PostDetail, PostDetailError, PostDetailLoading } = usePostDetail(postId);
+    const { deletePost, deletePostError, deletePostLoading  } = usePostGeneral();
+    const [ post, setPost ] = useState(null);
+    const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
+
+    const handleDeletePost = () => {
+        deletePost(
+            {
+                pathParams: { postId: postId },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    setOpenedDeleteModal(false);
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    setOpenedDeleteModal(false);
+                },
+            },
+        );
+    };
+
+    useEffect(() => {
+        if (PostDetail && !PostDetailLoading) {
+            setPost(PostDetail.data);
+        }
+    }, [ PostDetail, PostDetailLoading ]);
+
     return (
-        <div>
-            <Grid>
-                <Grid.Col span={8}>
-                    <div style={{ position: 'relative' }}>
-                        <AspectRatio ratio={16/9}>
-                            <div
-                                className='align-items-stretch'
-                                style={{
-                                    backgroundColor: '#000',
-                                    padding: 4,
-                                }}
-                            >
-                                <Image
-                                    src="https://natureconservancy-h.assetsadobe.com/is/image/content/dam/tnc/nature/en/photos/WOPA160517_D056-resized.jpg?crop=864%2C0%2C1728%2C2304&wid=600&hei=800&scl=2.88"
-                                    alt="Panda"
-                                    fit="contain"
-                                    height={600}
-                                />
-                            </div>
-                        </AspectRatio>
-                        <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                            <ActionIcon variant="fill" radius="xl" onClick={() => navigate(-1)}>
-                                <IconX />
-                            </ActionIcon>
-                        </div>
-                    </div>
-                </Grid.Col>
-                <Grid.Col span={3}> Content </Grid.Col>
-            </Grid>
+        <div
+            className='mx-5'
+        >
+            <Modal
+                opened={openedDeleteModal}
+                onClose={() => setOpenedDeleteModal(false)}
+                title="Delete Post"
+                centered
+            >
+                <Text size="sm">
+                    Are you sure you want to delete this post? 
+                    This action is destructive and you will have to contact support to restore your data.
+                </Text>
+                <div className='d-flex justify-content-end pe-2'>
+                    <Button
+                        variant="outline" color="dark"
+                        classNames={{
+                            root: 'me-2',
+                        }}
+                        onClick={() => setOpenedDeleteModal(false)}
+                    >
+                        <Text>
+                            No dont delete it
+                        </Text>
+                    </Button>
+                    <Button 
+                        color="red"
+                        onClick={handleDeletePost}
+                    >
+                        <Text>
+                            Delete post
+                        </Text>
+                    </Button>
+                </div>
+            </Modal>
+            {post && (
+                <PostCard
+                    id={post.id}
+                    images={post.images}
+                    avatar={post.owner.avatar}
+                    owner={post.owner}
+                    created={post.created}
+                    content={post.content}
+                    status={post.status}
+                    interactions={post.interactions}
+                    isDetail={true}
+                />
+            )}
         </div>
     );
 }

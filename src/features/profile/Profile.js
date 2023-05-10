@@ -8,6 +8,9 @@ import Load from '@common/components/Load';
 import { useParams } from 'react-router-dom';
 import { useAuth, useProfile } from '@services/controller';
 import { usePostGeneral } from '@services/controller';
+import { Avatar, Text, Tooltip } from '@mantine/core';
+import { getTimeString } from '@common/utils/converString';
+import { getIconStatus } from '@common/utils/radioStatus';
 
 function Profile() {
     const { userId } = useParams();  // get param userId from url
@@ -53,9 +56,35 @@ function Profile() {
                         content={post.content}
                         status={post.status}
                         interactions={post.interactions}
+                        isDetail={false}
                     />
                 ))}
-                <Load />
+                {myPosts.length > 0 && (
+                    <Load />
+                )}
+                {user && (
+                    <div className="card w-100 shadow-xss rounded-xxl border-0 px-4 pt-4 pb-2 mb-3">
+                        <div className="card-body p-0 d-flex">
+                            <Avatar className="avatar me-3" radius={'100%'} src={user.avatar} size={'md'} />
+                            <Text fw={700} size={16}>
+                                {' '}
+                                {user.first_name} {user.last_name}
+                                <Text className="d-flex" c="dimmed" size={13} fw={500}>
+                                    {getTimeString(profile.data.created)}
+                                    <div className="d-flex align-items-center ps-2">
+                                        <Tooltip label={getIconStatus("public").label}>
+                                            {getIconStatus("public").icon}
+                                        </Tooltip>
+                                    </div>
+                                </Text>
+                            </Text>
+                        </div>
+                        <div className="card-body p-0 py-3 d-flex justify-content-center">
+                            <iframe src="https://embed.lottiefiles.com/animation/114386"  width={"100%"}/>
+                        </div>
+                    </div>
+                )}
+                
             </div>
         </div>
     );

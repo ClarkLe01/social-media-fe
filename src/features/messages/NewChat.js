@@ -58,6 +58,7 @@ function NewChat() {
     const [ valueInput, setValueInput ] = useState('');
     const [ friendData, setFriendData ] = useState([]);
     const [ members, setMembers ] = useState([]);
+    const [ showEmoji, setShowEmoji ] = useState(false);
     const dropzoneRef = useRef(null);
 
     useEffect(() => {
@@ -264,11 +265,13 @@ function NewChat() {
                                                             classNames={{
                                                                 dropdown: 'p-0',
                                                             }}
+                                                            opened={showEmoji} onChange={setShowEmoji}
                                                         >
                                                             <Popover.Target>
                                                                 <ActionIcon
                                                                     className="me-5"
                                                                     radius="xl"
+                                                                    onClick={() => setShowEmoji((o) => !o)}
                                                                 >
                                                                     <IconMoodSmileFilled />
                                                                 </ActionIcon>

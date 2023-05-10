@@ -177,7 +177,7 @@ export default {
             headers: headers.json,
         },
         delete: {
-            url: '/post/delete/:postId',
+            url: '/post/:postId',
             method: 'DELETE',
             headers: headers.json,
         },
@@ -205,8 +205,20 @@ export default {
         },
         delete: {
             url: '/post/comment/:commentId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
+    interaction: {
+        retrieve: {
+            url: '/post/:postId/interaction',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/post/:postId/interaction',
             method: 'PATCH',
-            headers: headers.multipart,
+            headers: headers.json,
         },
     },
 };

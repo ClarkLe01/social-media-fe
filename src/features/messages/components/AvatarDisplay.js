@@ -4,7 +4,7 @@ import { API_URL } from '@constants';
 
 const AvatarDisplay = (props) => {
     const { members, currentUser, isGroup, size, avatar } = props;
-    const filteredMembers = members.filter((member) => member.id !== currentUser.id);
+    const filteredMembers = members.filter((member) => member.user.id !== currentUser.id).sort((a, b) => a.id - b.id);
     useEffect(() => {
         console.log;
     }, [ avatar ]);

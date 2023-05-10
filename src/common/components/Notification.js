@@ -18,6 +18,7 @@ function Notification() {
     const [ notifications, setNotifications ] = useState([]);
     const socketClientRef = useRef(null);
     const [ waitingToReconnect, setWaitingToReconnect ] = useState(null);
+    const [ openedNotification, setOpenedNotification ] = useState(false);
     
     useEffect(() => {
         if (!notificationListLoading) {
@@ -85,11 +86,12 @@ function Notification() {
                     dropdown: 'pt-0',
                 }}
                 position="bottom-end" 
-                width={370} 
+                width={370}
                 withArrow
+                opened={openedNotification} onChange={setOpenedNotification}
             >
                 <Popover.Target>
-                    <ActionIcon className="ms-auto">
+                    <ActionIcon className="ms-auto" onClick={() => setOpenedNotification((o) => !o)}>
                         <IconBellFilled />
                     </ActionIcon>
                 </Popover.Target>

@@ -27,9 +27,7 @@ function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
-                
                 {createRoute(routes)}
-                
             </Routes>
         </BrowserRouter>
     );
