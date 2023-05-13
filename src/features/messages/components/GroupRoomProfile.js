@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Accordion,
     ActionIcon,
@@ -6,6 +6,7 @@ import {
     Button,
     Group,
     Menu,
+    Modal,
     Text,
     ThemeIcon,
     UnstyledButton,
@@ -31,6 +32,11 @@ import RoomNameDisplay from './RoomNameDisplay';
 import AddPeopleModal from './AddPeopleModal';
 import ChangeChatRoomNameModal from './ChangeChatRoomNameModal';
 import { API_URL } from '@constants';
+import ImageCropper from '@common/components/ImageCropper';
+import { Dropzone } from '@mantine/dropzone';
+import { readFile, base64ToFile } from '@common/utils/canvasUtils';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRoom } from '@services/controller';
 
 function CompareRole(item1, item2) {
     if (item1.role === 'admin' && item2.role !== 'admin') {
@@ -54,39 +60,85 @@ function IsAdmin(user, members){
 
 const GroupRoomProfile = (props) => {
     const { roomDetail, currentUser } = props;
-    const [ members, setMembers ] = useState(roomDetail.members);
+    const { isGroup, members, roomName, roomAvatar } = roomDetail;
     const [ showAddPeople, setShowAddPeople ] = useState(false);
     const [ showChangeRoomName, setShowChangeRoomName ] = useState(false);
-    const [ showChangeRoomImage, setShowChangeRoomImage ] = useState(false);
+    const [ avatarSrc, setAvatarSrc ] = useState(null);
+    const [ updatedAvatarSrc, setUpdatedAvatarSrc ] = useState(null);
+
+    const [ openAvatarModal, setOpenAvatarModal ] = useState(false);
+
+    const openAvatarRef = useRef(null);
+
+    const queryClient = useQueryClient();
+    const { updateRoom } = useRoom();
+
+    const onAvatarChange = async (files) => {
+        if (files && files.length > 0) {
+            const file = files[0];
+            let imageDataUrl = await readFile(file);
+            setAvatarSrc(imageDataUrl);
+        }
+    };
+
+    const handleAvatarUpdate = () => {
+        if(!updatedAvatarSrc) return;
+        const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
+        const form = new FormData();
+        form.append('roomAvatar', file);
+        updateRoom(
+            {
+                pathParams: { roomId: roomDetail.id },
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                },
+                onError: (error) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onError', error);
+                },
+            },
+        );
+        setUpdatedAvatarSrc(null);
+        setAvatarSrc(null);
+        setOpenAvatarModal(false);
+    };
+
+    useEffect(() => {
+        if (avatarSrc) {
+            setOpenAvatarModal(true);
+        }
+        console.log('roomName', roomName);
+    }, [ roomDetail.roomName ]);
+
+    
+
     return (
         <div>
             <div className="d-flex justify-content-center align-items-center pt-3 pb-2">
                 <AvatarDisplay
                     size={81}
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
-                    avatar={roomDetail.roomAvatar}
+                    avatar={roomAvatar}
                 />
             </div>
             <div className="d-flex justify-content-center align-items-center pb-2">
                 <RoomNameDisplay
-                    isGroup={roomDetail.isGroup}
-                    members={roomDetail.members}
+                    isGroup={isGroup}
+                    members={members}
                     currentUser={currentUser}
-                    roomName={roomDetail.roomName}
+                    roomName={roomName}
                     size="md"
                     fw={600}
                     color="dark"
                 />
             </div>
             <div className="d-flex justify-content-center align-items-center pb-2">
-                <div className="justify-content-center px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconUserCircle />
-                    </ActionIcon>
-                    <Text size={13}>Profile</Text>
-                </div>
                 <div className="px-3">
                     <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
                         <IconAlarmFilled />
@@ -159,6 +211,9 @@ const GroupRoomProfile = (props) => {
                                             <IconPhotoFilled size={17} />
                                         </ThemeIcon>
                                     }
+                                    onClick={() => {
+                                        setOpenAvatarModal(true), openAvatarRef.current();
+                                    }}
                                 >
                                     Change image
                                 </Button>
@@ -332,6 +387,67 @@ const GroupRoomProfile = (props) => {
                 onClose={() => setShowChangeRoomName(false)}
                 roomDetail={roomDetail}
             />
+            <Modal
+                opened={openAvatarModal && avatarSrc}
+                size={'xl'}
+                onClose={() => {
+                    setUpdatedAvatarSrc(null),
+                    setAvatarSrc(null),
+                    setOpenAvatarModal(false);
+                }}
+                title="Update Avatar"
+                styles={{
+                    inner: { backgroundColor: 'rgba(253,226,243,0.4)' },
+                }}
+            >
+                <div>
+                    <ImageCropper
+                        imageSrc={avatarSrc}
+                        aspect={1 / 1}
+                        maxZoom={3}
+                        cropShape="round"
+                        setResult={setUpdatedAvatarSrc}
+                        value = {updatedAvatarSrc}
+                        dropZoneOpen={() => openAvatarRef.current()}
+                    />
+                </div>
+                <div className="d-grid gap-5 d-flex justify-content-evenly mt-3 pt-3">
+                    <Button
+                        fullWidth
+                        variant="outline" color="red"
+                        onClick={() => {
+                            setUpdatedAvatarSrc(null),
+                            setAvatarSrc(null),
+                            setOpenAvatarModal(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button
+                        fullWidth
+                        variant="light" color="green"
+                        onClick={() => {
+                            handleAvatarUpdate();
+                        }}
+                        disabled={!updatedAvatarSrc}
+                    >
+                        Confirm
+                    </Button>
+                </div>
+            </Modal>
+            <div hidden>
+                <Dropzone
+                    openRef={openAvatarRef}
+                    onDrop={(files) => {onAvatarChange(files), setUpdatedAvatarSrc(null);}}
+                    onReject={(files) => console.log('rejected files', files)}
+                    maxSize={3 * 1024 ** 2}
+                    accept={{
+                        'image/*': [],
+                    }}
+                    maxFiles={1}
+                />
+            </div>
         </div>
     );
 };

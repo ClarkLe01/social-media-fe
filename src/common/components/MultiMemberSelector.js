@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 
 function MemberBadge(props) {
-    const checkedMember = props.data.find((o) => o.user === props.value);
+    const checkedMember = props.data.find((o) => o.id == props.value);
     const handleClick = () => {
         props.onClick(props.index);
     };
@@ -28,7 +28,7 @@ function MemberBadge(props) {
                 root: 'mx-1 mb-1 p-0 px-2',
             }}
             leftSection={
-                <Avatar src={`assets/images/${checkedMember.imageUrl}`} size={22} radius="xl">
+                <Avatar src={checkedMember.avatar} size={22} radius="xl">
                     BH
                 </Avatar>
             }
@@ -44,8 +44,8 @@ function MemberBadge(props) {
                 </ActionIcon>
             }
         >
-            <Text size={10} color="dark">
-                {checkedMember.name}
+            <Text size={10} color="dark" tt="capitalize">
+                {checkedMember.first_name}{' '}{checkedMember.last_name}
             </Text>
         </Badge>
     );
@@ -56,14 +56,14 @@ function MultiMemberSelector(props) {
     const valueChecked = props.selectedFriend;
     const setValueChecked = props.onDataSelect;
 
-    function handleCheckBox(value) {
-        setValueChecked(value);
-    }
     function handleMemberBadgeClick(index) {
         const updatedItems = [ ...valueChecked ];
         updatedItems.splice(index, 1);
         setValueChecked(updatedItems);
     }
+    useEffect(() => {
+        console.log('valueChecked', valueChecked);
+    }, [ valueChecked ]);
 
     return (
         <Container size="xs" px="xs">
@@ -80,7 +80,7 @@ function MultiMemberSelector(props) {
                 <Checkbox.Group
                     label="Friends"
                     value={valueChecked}
-                    onChange={handleCheckBox}
+                    onChange={setValueChecked}
                     orientation="vertical"
                 >
                     <Group className="">
@@ -91,7 +91,7 @@ function MultiMemberSelector(props) {
                                 size="xl"
                                 leftIcon={
                                     <Avatar
-                                        src={`assets/images/${member.imageUrl}`}
+                                        src={member.avatar}
                                         alt="it's me"
                                         radius="xl"
                                     />
@@ -104,8 +104,8 @@ function MultiMemberSelector(props) {
                                 }}
                             >
                                 <Checkbox
-                                    value={member.user}
-                                    label={member.name}
+                                    value={member.id.toString()}
+                                    label={member.first_name + ' ' + member.last_name}
                                     labelPosition="left"
                                     color={props.color}
                                     radius={props.radius}

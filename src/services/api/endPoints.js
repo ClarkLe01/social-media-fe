@@ -150,4 +150,94 @@ export default {
             },
         },
     },
+    post: {
+        list: {
+            url: '/post/list',
+            method: 'GET',
+            headers: headers.json,
+        },
+        me: {
+            url: '/post/me',
+            method: 'GET',
+            headers: headers.json,
+        },
+        new: {
+            url: '/post/new',
+            method: 'POST',
+            headers: headers.multipart,
+        },
+        update: {
+            url: '/post/update/:postId',
+            method: 'PATCH',
+            headers: headers.multipart,
+        },
+        retrieve: {
+            url: '/post/:postId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        delete: {
+            url: '/post/:postId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
+    comment: {
+        list: {
+            url: '/post/:postId/comments',
+            method: 'GET',
+            headers: headers.json,
+        },
+        new: {
+            url: '/post/comment/new',
+            method: 'POST',
+            headers: headers.multipart,
+        },
+        retrieve: {
+            url: '/post/comment/:commentId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/post/comment/:commentId',
+            method: 'PATCH',
+            headers: headers.multipart,
+        },
+        delete: {
+            url: '/post/comment/:commentId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
+    interaction: {
+        retrieve: {
+            url: '/post/:postId/interaction',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/post/:postId/interaction',
+            method: 'PATCH',
+            headers: headers.json,
+        },
+    },
+    calling: {
+        token: {
+            url: '/calling/token',
+            method: 'GET',
+            headers: headers.json,
+        },
+        room: {
+            new: {
+                url: '/calling/room/new',
+                method: 'POST',
+                headers: headers.json,
+            },
+            validate: {
+                url: '/calling/room/validate',
+                method: 'POST',
+                headers: headers.json,
+            },
+        },
+    },
 };

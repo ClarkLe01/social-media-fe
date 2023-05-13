@@ -37,6 +37,7 @@
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
+        "@videosdk.live/react-sdk": "^0.1.73",
         "apexcharts": "^3.37.0",
         "axios": "^1.2.1",
         "babel-plugin-react-intl-auto": "^3.3.0",

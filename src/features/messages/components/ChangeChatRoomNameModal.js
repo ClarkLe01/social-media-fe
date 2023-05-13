@@ -1,16 +1,44 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Modal, Text, Input, Button, useMantineTheme, Group } from '@mantine/core';
+import { useRoom } from '@services/controller';
+import { useQueryClient } from '@tanstack/react-query';
 
 const ChangeChatRoomNameModal = (props) => {
     const { roomDetail, opened, onClose } = props;
     const [ updateRoomName, setUpdateRoomName ] = useState(roomDetail.roomName);
+
+    const { updateRoom, updateRoomError, updateRoomLoading } = useRoom();
+
     const theme = useMantineTheme();
+    const queryClient = useQueryClient();
+
+    const handleUpdateRoom = () => {
+        const form = new FormData();
+        form.append('roomName', updateRoomName);
+        updateRoom(
+            {
+                pathParams: { roomId: roomDetail.id },
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                },
+                onError: (error) => {
+                    console.log('ChangeChatRoomNameModal handleUpdateRoom onError', error);
+                },
+            },
+        );
+        onClose();
+    };
 
     useEffect(() => {
         return () => {
             setUpdateRoomName(roomDetail.roomName);
         };
-    }, [ roomDetail ]);
+    }, [ ]);
     return (
         <Modal
             opened={opened}
@@ -42,7 +70,9 @@ const ChangeChatRoomNameModal = (props) => {
                 </Button>
                 <Button
                     fullWidth
-                    color="blue" disabled={updateRoomName===roomDetail.roomName}
+                    color="blue" 
+                    onClick={handleUpdateRoom}
+                    disabled={updateRoomName===roomDetail.roomName}
                 >
                     Save
                 </Button>

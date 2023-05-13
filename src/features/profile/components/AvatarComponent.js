@@ -167,6 +167,7 @@ function AvatarComponent(props) {
                                 onClick={() => {
                                     handleAvatarUpdate();
                                 }}
+                                disabled={!updatedAvatarSrc}
                             >
                                 Confirm
                             </Button>

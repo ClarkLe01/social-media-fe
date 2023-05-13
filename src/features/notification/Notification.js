@@ -83,10 +83,9 @@ function Notification() {
                 setWaitingToReconnect(true);
             };
             socketClientRef.current.onmessage = (data) => {
-                console.log('data notification', data);
                 if (data) {
                     data = JSON.parse(data.data);
-                    if (data.value) {
+                    if (data.value && data.type == 'notify') {
                         queryClient.invalidateQueries({ queryKey: [ "notifications" ] });
                         setNotifications([ data.value, ...notifications ]);
                     }

@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 
 import {
-    IconLock,
     IconTriangleInvertedFilled,
     IconPhoto,
     IconTag,
@@ -22,12 +21,8 @@ import {
 import MediaFileSection from './MediaFileSection';
 import MultiMemberSelector from './MultiMemberSelector';
 import MediaEditCard from './MediaEditCard';
-
-const user = {
-    imageUrl: 'user.png',
-    name: 'Aliqa Macale ',
-    user: '@macale343',
-};
+import { useAuth, useFriend, usePostGeneral } from '@services/controller';
+import { CreateRadioButtons, getIconStatus } from '@common/utils/radioStatus';
 
 
 
@@ -38,69 +33,9 @@ function CreatePost(props) {
     const [ files, setFiles ] = useState([]);
     const [ selectedFriend, setSelectedFriend ] = useState([]);
     const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
-    const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
-    const radioButtons = [
-        {
-            value: 'public',
-            label: 'Public',
-            description: 'Anyone can see',
-            icon: <IconLock />,
-        },
-        {
-            value: 'friends',
-            label: 'Friends',
-            description: 'All your friends can see',
-            icon: <IconLock />,
-        },
-        {
-            value: 'friendExcepts',
-            label: 'Friend Excepts',
-            description: "Don't show to some friends",
-            icon: <IconLock />,
-        },
-        {
-            value: 'specificFriends',
-            label: 'Specific Friends',
-            description: 'Only show to some friends',
-            icon: <IconLock />,
-        },
-        {
-            value: 'private',
-            label: 'Only Me',
-            description: '',
-            icon: <IconLock />,
-        },
-    ];
-
-    const memberList = [
-        {
-            imageUrl: 'user.png',
-            name: 'Victor Exrixon ',
-            user: '@macale1',
-        },
-        {
-            imageUrl: 'user.png',
-            name: 'Surfiya Zakir ',
-            user: '@macale2',
-        },
-        {
-            imageUrl: 'user.png',
-            name: 'Goria Coast ',
-            user: '@macale3',
-        },
-        {
-            imageUrl: 'user.png',
-            name: 'Hurin Seary ',
-            user: '@macale4',
-        },
-        {
-            imageUrl: 'user.png',
-            name: 'Aliqa Macale',
-            user: '@macale12',
-        },
-    ];
-
+    
     // Variable for managing modal create post tool
+    const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
     const [ createPostState, setCreatePostState ] = useState({
         isShowDropzone: false,
         isShowTagPeople: false,
@@ -109,6 +44,8 @@ function CreatePost(props) {
         // add more properties as needed
     });
 
+    const radioButtons = CreateRadioButtons();
+    
     // Variables for managing modal type
     const createPostModalType = {
         default: {
@@ -154,14 +91,21 @@ function CreatePost(props) {
             size: 'lg',
         },
     };
+
     const [ showModalType, setShowModalType ] = useState(createPostModalType.default);
     const [ canPost, setcanPost ] = useState(false);
+    const [ memberList, setMemberList ] = useState([]);
+
+    const { createPost, createPostError, createPostLoading } = usePostGeneral();
+    const { profile } = useAuth();
+    const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(profile.data.id);
 
     // Close modal
     const handleClose = () => {
         setShowModalType(createPostModalType.default);
         setSelectedFriend([]);
         setFiles([]);
+        setContent('');
     };
     // Modal 1 status create post
     function handleMediaTool() {
@@ -200,6 +144,40 @@ function CreatePost(props) {
         }
     }
 
+    // Submit New Post
+    function handleSubmitNewPost(){
+        const form = new FormData();
+        form.append('content', content);
+        form.append('status', lastChoosedValueRadio);
+        form.append('canSee', [ selectedFriend ]);
+        form.append('notSee', [ selectedFriend ]);
+        files.map(file => form.append("files", file));
+        createPost(
+            {
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    console.log(data);
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                },
+            },
+        );
+        handleClose();
+    }
+
+    useEffect(() => {
+        if(!friendListDetailLoading && friendListDetail){
+            friendListDetail.data.map(item => {
+                item.requestID.id === profile.data.id 
+                    ? setMemberList(prev => [ ...prev, item.responseID ]) 
+                    : setMemberList(prev => [ ...prev, item.requestID ]);
+            });
+        }
+    }, [ friendListDetailLoading ]);
+
     useEffect(() => {
         content.length > 0 || files.length > 0 ? setcanPost(true) : setcanPost(false);
     }, [ content, files ]);
@@ -225,15 +203,7 @@ function CreatePost(props) {
             return newFiles;
         });
     }
-    function updateCaption(index, value) {
-        setFiles(prevState => {
-            const newState = prevState.map((obj,id) => {
-                return id === index ? { ...obj, caption: value } : obj;
-            });
-    
-            return newState;
-        });
-    }
+
 
     return (
         <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
@@ -289,19 +259,19 @@ function CreatePost(props) {
                     <div className="card-body p-0 d-flex">
                         <figure className="avatar me-3">
                             <img
-                                src={`assets/images/${user.imageUrl}`}
+                                src={profile.data.avatar}
                                 alt="avater"
                                 className="shadow-sm rounded-circle w45"
                             />
                         </figure>
                         <h4 className="fw-700 text-grey-900 font-xssss mt-1">
                             {' '}
-                            {user.name}{' '}
+                            {profile.data.first_name}{' '}{profile.data.last_name}
                             <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
                                 {' '}
                                 <Button
                                     variant="outline"
-                                    leftIcon={<IconLock size={16} />}
+                                    leftIcon={getIconStatus(lastChoosedValueRadio).icon}
                                     rightIcon={<IconTriangleInvertedFilled size={10} />}
                                     classNames={{
                                         leftSection: 'd-flex align-items-center',
@@ -393,14 +363,7 @@ function CreatePost(props) {
                         <Button 
                             fullWidth 
                             disabled={canPost ? false : true}
-                            onClick={
-                                () => console.log({
-                                    content: content, 
-                                    files: files, 
-                                    status: lastChoosedValueRadio, 
-                                    selectedFriend: selectedFriend,
-                                })
-                            }
+                            onClick={handleSubmitNewPost}
                         >
                             Post
                         </Button>
@@ -416,7 +379,6 @@ function CreatePost(props) {
                             value={choosedValueRadio}
                             name="Post audience"
                             label="Who can see your post?"
-                            description="This is anonymous"
                         >
                             <Group mt="xs" className="d-flex d-grid gap-2 flex-fill">
                                 {radioButtons.map((radio, id) => (
@@ -554,13 +516,13 @@ function CreatePost(props) {
                 {/* editMedia Modal */}
                 <div className={`${showModalType.type != 'editMedia' && 'd-none'}`} id="editMedia">
                     <SimpleGrid cols={widthGrid > 1100 ? 3 : widthGrid > 700 ? 2 : 1 }>
-                        {files.map((objFile, index) => {
+                        {files.map((file, index) => {
                             return (
                                 <MediaEditCard
                                     key={index}
-                                    objFile={objFile}
+                                    file={file}
                                     onRemove={() => removeFile(index)}
-                                    onChange={(value) => updateCaption(index, value)}
+                                    // onChange={(value) => updateCaption(index, value)}
                                 />
                             );
                         })}
@@ -581,7 +543,7 @@ function CreatePost(props) {
             >
                 <figure className="avatar position-absolute ms-2 mt-1 top-5">
                     <img
-                        src="assets/images/user.png"
+                        src={props.user.avatar}
                         alt="icon"
                         className="shadow-sm rounded-circle w30"
                     />
@@ -595,7 +557,7 @@ function CreatePost(props) {
                     disabled
                 ></textarea>
             </div>
-            <div className="card-body d-flex p-0 mt-0">
+            <div className="card-body d-flex p-0 mt-0 ps-2">
                 <a
                     href="#video"
                     className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
