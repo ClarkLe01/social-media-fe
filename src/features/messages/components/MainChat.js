@@ -121,7 +121,6 @@ function MainChat(props) {
                 const data = JSON.parse(event.data);
                 console.log(data);
                 if (data.type == 'message') {
-                    
                     const message = data.data;
                     console.log('abc', message);
                     message.senderID.avatar = API_URL + message.senderID.avatar.replace(API_URL,'');

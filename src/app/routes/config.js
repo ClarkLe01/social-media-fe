@@ -1,5 +1,5 @@
 import { AUTH } from '@constants';
-import { lazy } from 'react';
+import React, { lazy } from 'react';
 
 export const navigatePath = {
     login: '/login',
@@ -17,6 +17,7 @@ export const navigatePath = {
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
+    videoCall: '/call/:roomCallId',
     notFound404: '/notfound404',
     testpage: '/test',
 };
@@ -41,6 +42,8 @@ const PostView = lazy(() => import('@features/post/PostView'));
 const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
 const YourRequest = lazy(() => import('@features/friend/YourRequest'));
+
+const VideoCall = lazy(() => import('@features/call/VideoCall'));
 
 const NotFound404 = lazy(() => import('@features/errorsPage/NotFound404'));
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
@@ -87,11 +90,6 @@ const routes = [
                 name: 'Post Detail View',
                 path: navigatePath.post,
                 element: PostView,
-            },
-            {
-                name: 'Test Page',
-                path: navigatePath.testpage,
-                element: TestPage,
             },
         ],
     },
@@ -163,6 +161,16 @@ const routes = [
                 element: ForgetPassword,
             },
         ],
+    },
+    {
+        name: 'Test Page',
+        path: navigatePath.testpage,
+        element: TestPage,
+    },
+    {
+        name: 'Video Call Page',
+        path: navigatePath.videoCall,
+        element: VideoCall,
     },
     {
         name: 'Error 404 NotFound Layout Page',

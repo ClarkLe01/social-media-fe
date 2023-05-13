@@ -221,4 +221,23 @@ export default {
             headers: headers.json,
         },
     },
+    calling: {
+        token: {
+            url: '/calling/token',
+            method: 'GET',
+            headers: headers.json,
+        },
+        room: {
+            new: {
+                url: '/calling/room/new',
+                method: 'POST',
+                headers: headers.json,
+            },
+            validate: {
+                url: '/calling/room/validate',
+                method: 'POST',
+                headers: headers.json,
+            },
+        },
+    },
 };

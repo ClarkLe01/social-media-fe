@@ -40,10 +40,10 @@ import { Link, redirect, useLocation, useNavigate } from 'react-router-dom';
 import ThumbMedia from '@features/messages/components/ThumbMedia';
 import usePostComment from '@services/controller/usePostComment';
 import { useQueryClient } from '@tanstack/react-query';
-import { endPoints } from '@services/api';
 import usePostInteraction from '@services/controller/usePostInteraction';
 import { IconThumbUp } from '@tabler/icons-react';
 import { getTimeString } from '@common/utils/converString';
+import { navigatePath } from '@app/routes/config';
 
 const MemorizedImage = React.memo(Image);
 
@@ -687,7 +687,7 @@ function PostCard(props) {
     };
 
     const GoToPostDetail = () => {
-        navigate(endPoints.post.retrieve.url.replace(':postId', id));
+        navigate(navigatePath.post.replace(':postId', id));
     };
 
     const emojiClass = `${isActive ? ' active' : ''}`;
