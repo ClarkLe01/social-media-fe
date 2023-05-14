@@ -17,87 +17,10 @@ function usePostGeneral() {
         staleTime: 1000,
     });
 
-    const {
-        data: MyPostList,
-        isLoading: MyPostListLoading,
-        error: MyPostListError,
-    } = useQuery({
-        queryKey: [ 'posts/me' ],
-        queryFn: () => api(endPoints.post.me),
-        retryOnMount: true,
-        retry: 5,
-        retryDelay: 1000,
-        staleTime: 1000,
-    });
-
-    const {
-        isLoading: createPostLoading,
-        error: createPostError,
-        mutate: createPost,
-    } = useMutation({
-        mutationFn: (variables) => {
-            return api(endPoints.post.new, variables);
-        },
-        onSuccess: ({ data }) => {
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-        onError: (error) => {     
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-    });
-
-    const {
-        isLoading: updatePostLoading,
-        error: updatePostError,
-        mutate: updatePost,
-    } = useMutation({
-        mutationFn: (variables) => {
-            return api(endPoints.post.update, variables);
-        },
-        onSuccess: ({ data }) => {
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-        onError: (error) => {      
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-    });
-
-    const {
-        isLoading: deletePostLoading,
-        error: deletePostError,
-        mutate: deletePost,
-    } = useMutation({
-        mutationFn: (variables) => {
-            return api(endPoints.post.delete, variables);
-        },
-        onSuccess: ({ data }) => {
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-        onError: (error) => {      
-            queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
-        },
-    });
-
     return {
         PostList,
         PostListLoading,
         PostListError,
-
-        MyPostList,
-        MyPostListLoading,
-        MyPostListError,
-
-        createPostLoading,
-        createPostError,
-        createPost,
-
-        updatePost,
-        updatePostError,
-        updatePostLoading,
-
-        deletePost,
-        deletePostError,
-        deletePostLoading,
     };
 }
 

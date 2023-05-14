@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAuth, useProfile, useUserPost } from '@services/controller';
+
+
 import ProfileCard from '@features/profile/components/ProfileCard';
 import ProfileDetail from '@common/components/ProfileDetail';
 import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';
 import PostCard from '@common/components/PostCard';
 import Load from '@common/components/Load';
-import { useParams } from 'react-router-dom';
-import { useAuth, useProfile } from '@services/controller';
-import { usePostGeneral } from '@services/controller';
 import { Avatar, Text, Tooltip } from '@mantine/core';
 import { getTimeString } from '@common/utils/converString';
 import { getIconStatus } from '@common/utils/radioStatus';
@@ -16,9 +17,10 @@ function Profile() {
     const { userId } = useParams();  // get param userId from url
     const { profileId } = useProfile(userId); // profile of user by params userId
     const { profile } = useAuth(); // current user
-    const { MyPostList, MyPostListError, MyPostListLoading } = usePostGeneral(); // posts of current user
+    const { UserPostList, UserPostListError, UserPostListLoading } = useUserPost(userId); // posts of current user
     const [ user, setUser ] = useState(null);
-    const [ myPosts, setMyPosts ] = useState([]);
+    const [ userPosts, setUserPosts ] = useState([]);
+
     useEffect(() => {
         if (profileId) {
             setUser(profileId.data);
@@ -27,10 +29,10 @@ function Profile() {
     }, [ profileId ]);
 
     useEffect(() => {
-        if(!MyPostListLoading && MyPostList){
-            setMyPosts(MyPostList.data);
+        if(!UserPostListLoading && UserPostList){
+            setUserPosts(UserPostList.data);
         }
-    }, [ MyPostListLoading, MyPostList ]);
+    }, [ UserPostListLoading, UserPostList ]);
 
     return (
         <div className="row">
@@ -45,7 +47,7 @@ function Profile() {
                 {profile.data.id == userId && (
                     <CreatePost user={profile.data} defaultAudience="public" />
                 )}
-                {myPosts.map((post, index) => (
+                {userPosts.map((post, index) => (
                     <PostCard
                         key={index}
                         id={post.id}
@@ -59,7 +61,7 @@ function Profile() {
                         isDetail={false}
                     />
                 ))}
-                {myPosts.length > 0 && (
+                {userPosts.length > 0 && (
                     <Load />
                 )}
                 {user && (

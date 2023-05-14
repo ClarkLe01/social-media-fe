@@ -5,12 +5,12 @@ import {
     IconLock,
 } from '@tabler/icons-react';
 import { Modal, Button, Group, Menu, Text } from '@mantine/core';
-import { usePostGeneral } from '@services/controller';
+import { usePostGeneral, useUserPost } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
 function PostMenuTool(props) {
     const { id } = props;
     const queryClient = useQueryClient();
-    const { deletePost, deletePostError, deletePostLoading  } = usePostGeneral();
+    const { deletePost, deletePostError, deletePostLoading  } = useUserPost();
     const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
     const handleDeletePost = () => {
         deletePost(
@@ -19,11 +19,13 @@ function PostMenuTool(props) {
             },
             {
                 onSuccess: (data) => {
-                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/user' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'post/list' ] });
                     setOpenedDeleteModal(false);
                 },
                 onError: (error) => {
-                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/user' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'post/list' ] });
                     setOpenedDeleteModal(false);
                 },
             },

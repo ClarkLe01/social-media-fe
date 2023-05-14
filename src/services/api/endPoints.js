@@ -156,8 +156,8 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
-        me: {
-            url: '/post/me',
+        userPosts: {
+            url: '/post/user/:userId',
             method: 'GET',
             headers: headers.json,
         },

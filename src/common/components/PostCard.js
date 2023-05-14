@@ -535,6 +535,7 @@ const getIconInteraction = (type) => {
 
 function InteractionSection(props) {
     const { interactions } = props;
+    const [ showInteractionModal, setShowInteractionModal ] = useState(false);
     const counts = interactions.reduce((acc, curr) => {
         const type = curr.type;
         if (type in acc) {
@@ -561,16 +562,29 @@ function InteractionSection(props) {
     };
     return (
         <>
-            <Tooltip.Group openDelay={300} closeDelay={100}>
-                <Avatar.Group spacing={6}>
-                    {sortedCounts.map((item, index) => index<3&&(
-                        <Tooltip key={index} label={item.type.charAt(0).toUpperCase()+item.type.slice(1)} withArrow>
-                            <Avatar src={getIconInteraction(item.type)} size={20} radius="xl" />
-                        </Tooltip>
-                    ))}
-                </Avatar.Group>
-            </Tooltip.Group>
-            <Text className="ps-1">{showTotalInteraction(totalInteraction)}</Text>
+            <div className='d-flex' onClick={() => setShowInteractionModal(true)}>
+                <Tooltip.Group openDelay={300} closeDelay={100}>
+                    <Avatar.Group spacing={6}>
+                        {sortedCounts.map((item, index) => index<3&&(
+                            <Tooltip key={index} label={item.type.charAt(0).toUpperCase()+item.type.slice(1)} withArrow>
+                                <Avatar src={getIconInteraction(item.type)} size={20} radius="xl" />
+                            </Tooltip>
+                        ))}
+                    </Avatar.Group>
+                </Tooltip.Group>
+                <Text className="ps-1">{showTotalInteraction(totalInteraction)}</Text>
+            </div>
+            <Modal
+                opened={showInteractionModal}
+                onClose={() => setShowInteractionModal(false)}
+                title="Interaction Detail"
+                centered
+            >
+                <Text size="sm">
+                    Are you sure you want to delete this comment? This action is destructive and you
+                    will have to contact support to restore your data.
+                </Text>
+            </Modal>
         </>
     );
 }
@@ -593,8 +607,6 @@ function PostCard(props) {
     const navigate = useNavigate();
 
     const handleReactClick = (data) => {
-        // eslint-disable-next-line no-debugger
-        debugger;
         updateInteraction(
             {
                 data: {
@@ -608,12 +620,14 @@ function PostCard(props) {
                     queryClient.invalidateQueries([ `post/detail/${id}` ]);
                     queryClient.invalidateQueries([ 'post/list' ]);
                     queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                 },
                 onError: (error) => {
                     console.log(error.response.data);
                     queryClient.invalidateQueries([ `post/detail/${id}` ]);
                     queryClient.invalidateQueries([ 'post/list' ]);
                     queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                    queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                 },
             },
         );
@@ -636,12 +650,14 @@ function PostCard(props) {
                         queryClient.invalidateQueries([ `post/detail/${id}` ]);
                         queryClient.invalidateQueries([ 'post/list' ]);
                         queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                        queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                     },
                     onError: (error) => {
                         console.log(error.response.data);
                         queryClient.invalidateQueries([ `post/detail/${id}` ]);
                         queryClient.invalidateQueries([ 'post/list' ]);
                         queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                        queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                     },
                 },
             )
@@ -658,12 +674,14 @@ function PostCard(props) {
                         queryClient.invalidateQueries([ `post/detail/${id}` ]);
                         queryClient.invalidateQueries([ 'post/list' ]);
                         queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                        queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                     },
                     onError: (error) => {
                         console.log(error.response.data);
                         queryClient.invalidateQueries([ `post/detail/${id}` ]);
                         queryClient.invalidateQueries([ 'post/list' ]);
                         queryClient.invalidateQueries([ `myInteraction/${id}` ]);
+                        queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
                     },
                 },
             );

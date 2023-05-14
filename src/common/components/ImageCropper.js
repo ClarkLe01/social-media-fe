@@ -71,11 +71,11 @@ function ImageCropper(props) {
                 </Group>
             </Grid.Col>
             <Grid.Col span={4} className='justify-content-center'>
-                <div className='pb-3'>
+                <div className='pb-3 d-flex justify-content-center'>
                     {value ? (
                         <>
                             {cropShape=='round'?(
-                                <AspectRatio w={"15vw"} h={'15vw'} className='d-flex justify-content-center border p-0 m-0'>
+                                <AspectRatio w={230} h={230} className='d-flex justify-content-center border p-0 m-0'>
                                     <Avatar
                                         radius={"100%"}
                                         w={"100%"}
