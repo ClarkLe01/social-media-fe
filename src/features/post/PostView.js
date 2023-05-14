@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Grid, AspectRatio, ActionIcon, Image, Text, Button, Modal } from '@mantine/core';
-import { usePostDetail, usePostGeneral } from '@services/controller';
+import { usePostDetail, useUserPost } from '@services/controller';
 import Lightbox from 'react-18-image-lightbox';
 import 'react-18-image-lightbox/style.css';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ function PostView() {
     let { postId } = useParams();
     const queryClient = useQueryClient();
     const { PostDetail, PostDetailError, PostDetailLoading } = usePostDetail(postId);
-    const { deletePost, deletePostError, deletePostLoading  } = usePostGeneral();
+    const { deletePost, deletePostError, deletePostLoading  } = useUserPost();
     const [ post, setPost ] = useState(null);
     const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
 
@@ -23,11 +23,13 @@ function PostView() {
             },
             {
                 onSuccess: (data) => {
-                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/user' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'post/list' ] });
                     setOpenedDeleteModal(false);
                 },
                 onError: (error) => {
-                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/user' ] });
+                    queryClient.invalidateQueries({ queryKey: [ 'post/list' ] });
                     setOpenedDeleteModal(false);
                 },
             },

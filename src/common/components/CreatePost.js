@@ -21,7 +21,7 @@ import {
 import MediaFileSection from './MediaFileSection';
 import MultiMemberSelector from './MultiMemberSelector';
 import MediaEditCard from './MediaEditCard';
-import { useAuth, useFriend, usePostGeneral } from '@services/controller';
+import { useAuth, useFriend, usePostGeneral, useUserPost } from '@services/controller';
 import { CreateRadioButtons, getIconStatus } from '@common/utils/radioStatus';
 
 
@@ -96,7 +96,7 @@ function CreatePost(props) {
     const [ canPost, setcanPost ] = useState(false);
     const [ memberList, setMemberList ] = useState([]);
 
-    const { createPost, createPostError, createPostLoading } = usePostGeneral();
+    const { createPost, createPostError, createPostLoading } = useUserPost();
     const { profile } = useAuth();
     const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(profile.data.id);
 
@@ -149,20 +149,12 @@ function CreatePost(props) {
         const form = new FormData();
         form.append('content', content);
         form.append('status', lastChoosedValueRadio);
-        form.append('canSee', [ selectedFriend ]);
-        form.append('notSee', [ selectedFriend ]);
+        form.append('canSee', selectedFriend);
+        form.append('notSee', selectedFriend);
         files.map(file => form.append("files", file));
         createPost(
             {
                 data: form,
-            },
-            {
-                onSuccess: (data) => {
-                    console.log(data);
-                },
-                onError: (error) => {
-                    console.log(error.response.data);
-                },
             },
         );
         handleClose();
