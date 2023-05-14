@@ -4,12 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 function useFriend(userId) {
     const queryClient = useQueryClient();
 
-    function ReValidate() {
-        queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
-        queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
-        queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
-    }
-
     const {
         data: friendList,
         isLoading: friendListLoading,
@@ -17,6 +11,20 @@ function useFriend(userId) {
     } = useQuery({
         queryKey: [ 'friend/list', userId ],
         queryFn: () => publicApi(endPoints.friend.list, { pathParams: { userId: userId } }),
+        enabled: !!userId,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        staleTime: 1000,
+    });
+
+    const {
+        data: friendListDetail,
+        isLoading: friendListDetailLoading,
+        error: friendListDetailError,
+    } = useQuery({
+        queryKey: [ 'friend/listDetail', userId ],
+        queryFn: () => publicApi(endPoints.friend.detail, { pathParams: { userId: userId } }),
         enabled: !!userId,
         retryOnMount: true,
         retry: 5,
@@ -118,6 +126,10 @@ function useFriend(userId) {
         friendList,
         friendListLoading,
         friendListError,
+
+        friendListDetail,
+        friendListDetailLoading,
+        friendListDetailError,
 
         requestList,
         requestListLoading,

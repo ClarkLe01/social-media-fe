@@ -33,9 +33,7 @@ function MediaFileSection(props) {
     }, []);
 
     const handleOnDrop = (newFiles) => {
-        newFiles.map( obj => {
-            setFiles(oldfiles => [ ...oldfiles, { file: obj, caption: '' } ]);
-        });
+        setFiles(oldfiles => [ ...oldfiles, ...newFiles ]);
     };
 
     return (

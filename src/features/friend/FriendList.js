@@ -13,15 +13,10 @@ function FriendList() {
     const [ memberList, setMemberList ] = useState([]);
     useEffect(() => {
         if (friendList) {
-            console.log('friendList', friendList.data);
             setMemberList([ ...friendList.data ]);
         }
     }, [ friendList ]);
-    useEffect(() => {
-        if (memberList.length != 0) {
-            console.log('memberList', memberList);
-        }
-    }, [ memberList ]);
+
     return (
         <div>
             <Pagetitle title="Your Friends" />
@@ -43,7 +38,7 @@ function FriendList() {
                                 <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
                                     <CardItem
                                         idFriendInstance={value.id}
-                                        idProfile={value.requestID}
+                                        idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
                                         type='friend'
                                     />
                                 </Grid.Col>

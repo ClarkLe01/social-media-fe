@@ -56,6 +56,11 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        detail: {
+            url: '/friend/list/detail/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
         requests: {
             url: '/friend/requests',
             method: 'GET',
@@ -97,6 +102,142 @@ export default {
             url: '/notification/delete/:instanceId',
             method: 'DELETE',
             headers: headers.json,
+        },
+    },
+    chat: {
+        message: {
+            lastest:{
+                url: '/chat/message/latest/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            list: {
+                url: '/chat/message/list/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            seen: {
+                url: '/chat/message/seen/:messageId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            send: {
+                url: '/chat/message/send',
+                method: 'POST',
+                headers: headers.multipart,
+            },
+        },
+        room: {
+            list: {
+                url: '/chat/room/list',
+                method: 'GET',
+                headers: headers.json,
+            },
+            create: {
+                url: '/chat/room/new',
+                method: 'POST',
+                headers: headers.multipart,
+            },
+            detail: {
+                url: '/chat/room/detail/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            update: {
+                url: '/chat/room/update/:roomId',
+                method: 'PATCH',
+                headers: headers.multipart,
+            },
+        },
+    },
+    post: {
+        list: {
+            url: '/post/list',
+            method: 'GET',
+            headers: headers.json,
+        },
+        me: {
+            url: '/post/me',
+            method: 'GET',
+            headers: headers.json,
+        },
+        new: {
+            url: '/post/new',
+            method: 'POST',
+            headers: headers.multipart,
+        },
+        update: {
+            url: '/post/update/:postId',
+            method: 'PATCH',
+            headers: headers.multipart,
+        },
+        retrieve: {
+            url: '/post/:postId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        delete: {
+            url: '/post/:postId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
+    comment: {
+        list: {
+            url: '/post/:postId/comments',
+            method: 'GET',
+            headers: headers.json,
+        },
+        new: {
+            url: '/post/comment/new',
+            method: 'POST',
+            headers: headers.multipart,
+        },
+        retrieve: {
+            url: '/post/comment/:commentId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/post/comment/:commentId',
+            method: 'PATCH',
+            headers: headers.multipart,
+        },
+        delete: {
+            url: '/post/comment/:commentId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+    },
+    interaction: {
+        retrieve: {
+            url: '/post/:postId/interaction',
+            method: 'GET',
+            headers: headers.json,
+        },
+        update: {
+            url: '/post/:postId/interaction',
+            method: 'PATCH',
+            headers: headers.json,
+        },
+    },
+    calling: {
+        token: {
+            url: '/calling/token',
+            method: 'GET',
+            headers: headers.json,
+        },
+        room: {
+            new: {
+                url: '/calling/room/new',
+                method: 'POST',
+                headers: headers.json,
+            },
+            validate: {
+                url: '/calling/room/validate',
+                method: 'POST',
+                headers: headers.json,
+            },
         },
     },
 };

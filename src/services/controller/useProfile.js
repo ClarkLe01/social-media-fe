@@ -10,7 +10,7 @@ function useProfile(userId) {
         refetch: profileIdRefetch,
     } = useQuery({
         queryKey: [ `profile/${userId}` ],
-        queryFn: () => publicApi(endPoints.user.getProfileById, { pathParams: { userId: userId } }),
+        queryFn: () => api(endPoints.user.getProfileById, { pathParams: { userId: userId } }),
         enabled: !!userId,
         retryOnMount: false,
         staleTime: 1000,

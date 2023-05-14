@@ -1,28 +1,31 @@
 import { AUTH } from '@constants';
-import { lazy } from 'react';
+import React, { lazy } from 'react';
 
 export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
-    profile: '/:userId',
     editPage: '/edit',
-    home: '/',
+    helpbox: 'helpbox',
+    profile: '/profile/:userId',
+    home: '',
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
-    messages: '/messages',
-    helpbox: 'helpbox',
-    media: '/media',
+    chat: '/message/:roomId',
+    chatHome: '/message',
+    newChat: '/message/new',
+    post: '/post/:postId',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
+    videoCall: '/call/:roomCallId',
+    notFound404: '/notfound404',
     testpage: '/test',
 };
 
 const NoAuthLayout = lazy(() => import('@app/layouts/NoAuthLayout'));
 const MainLayout = lazy(() => import('@app/layouts/MainLayout'));
-const NoSideBarLayout = lazy(() => import('@app/layouts/NoSideBarLayout'));
 const MessageLayout = lazy(() => import('@app/layouts/MessageLayout'));
 const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 
@@ -37,13 +40,16 @@ const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
-const Messages = lazy(() => import('@features/messages/Messages'));
+const Chat = lazy(() => import('@features/messages/Chat'));
+const NewChat = lazy(() => import('@features/messages/NewChat'));
 const PostView = lazy(() => import('@features/post/PostView'));
 const FriendRequest = lazy(() => import('@features/friend/FriendRequest'));
 const FriendList = lazy(() => import('@features/friend/FriendList'));
 const YourRequest = lazy(() => import('@features/friend/YourRequest'));
 
+const VideoCall = lazy(() => import('@features/call/VideoCall'));
 
+const NotFound404 = lazy(() => import('@features/errorsPage/NotFound404'));
 const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 /*
@@ -54,7 +60,7 @@ const TestPage = lazy(() => import('@features/TestPage/TestPage'));
 
 const routes = [
     {
-        name: 'First Layout',
+        name: 'Main Layout',
         element: MainLayout,
         path: '/',
         requireAuth: AUTH.REQUIRE,
@@ -108,22 +114,32 @@ const routes = [
                 element: Notification,
             },
             {
-                name: 'Post View',
-                path: navigatePath.media,
+                name: 'Post Detail View',
+                path: navigatePath.post,
                 element: PostView,
             },
         ],
     },
     {
-        name: 'Message Layout',
+        name: 'Chat Layout',
         element: MessageLayout,
         path: '/',
         requireAuth: AUTH.REQUIRE,
         children: [
             {
-                name: 'Messages',
-                path: navigatePath.messages,
-                element: Messages,
+                name: 'Chat',
+                path: navigatePath.chat,
+                element: Chat,
+            },
+            {
+                name: 'Home Chat',
+                path: navigatePath.chatHome,
+                element: Chat,
+            },
+            {
+                name: 'New Room Chat',
+                path: navigatePath.newChat,
+                element: NewChat,
             },
         ],
     },
@@ -173,6 +189,23 @@ const routes = [
             },
         ],
     },
+    {
+        name: 'Test Page',
+        path: navigatePath.testpage,
+        element: TestPage,
+    },
+    {
+        name: 'Video Call Page',
+        path: navigatePath.videoCall,
+        element: VideoCall,
+    },
+    {
+        name: 'Error 404 NotFound Layout Page',
+        element: NotFound404,
+        path: '*',
+        requireAuth: AUTH.BOTH,
+    },
+    
 ];
 
 export default routes;

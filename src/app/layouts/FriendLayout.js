@@ -1,36 +1,26 @@
 import React, { useState } from 'react';
 import {
     AppShell,
-    Navbar,
     Header,
+    Aside,
     MediaQuery,
     Burger,
     useMantineTheme,
-    NavLink,
+    ScrollArea,
     Transition,
     TextInput,
     ActionIcon,
 } from '@mantine/core';
-import { Link, Outlet } from 'react-router-dom';
-import {
-    IconSearch,
-    IconMoon,
-    IconMessageCircle,
-    IconSettings,
-    IconUser,
-    IconHome,
-    IconFriends,
-    IconArrowLeft,
-} from '@tabler/icons-react';
+import { Outlet } from 'react-router-dom';
+import { IconSearch, IconArrowLeft } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
 
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
-import Notification from '@common/components/Notification';
+import RightChat from '@app/layouts/common/RightChat';
 import NavBar from './common/NavBar';
-import FriendNavBar from './common/FriendNavBar';
 import MainHeader from './common/MainHeader';
-
+import FriendNavBar from './common/FriendNavBar';
 
 export default function FriendLayout() {
     const scaleY = {
@@ -58,7 +48,7 @@ export default function FriendLayout() {
                 },
             }}
             navbar={
-                <FriendNavBar 
+                <FriendNavBar
                     opened={opened}
                     p="sm"
                     hiddenBreakpoint="md"
@@ -70,6 +60,22 @@ export default function FriendLayout() {
                         sm: 500,
                     }}
                 />
+            }
+            aside={
+                <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
+                    <Aside
+                        className="me-0 position-fixed"
+                        grow="true"
+                        component={ScrollArea}
+                        mx="-xs"
+                        px="xs"
+                        p="md"
+                        hiddenBreakpoint="sm"
+                        width={{ sm: 50, md: 270, lg: 310 }}
+                    >
+                        <RightChat />
+                    </Aside>
+                </MediaQuery>
             }
             header={
                 <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
@@ -131,7 +137,7 @@ export default function FriendLayout() {
                                 </Transition>
                             </div>
                         </MediaQuery>
-                        
+
                         <MainHeader />
 
                         <MediaQuery largerThan="md" styles={{ display: 'none' }}>

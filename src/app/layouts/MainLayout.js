@@ -52,7 +52,7 @@ export default function MainLayout() {
                     p="sm"
                     hiddenBreakpoint="md"
                     width={{
-                        sm: 65,
+                        sm: 40,
                         xl: 240,
                     }}
                     height={{

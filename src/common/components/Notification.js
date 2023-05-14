@@ -3,23 +3,28 @@ import {
 } from '@tabler/icons-react';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollArea, Popover, ActionIcon, Grid } from '@mantine/core';
+import { ScrollArea, Popover, ActionIcon, Image, AspectRatio } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
 import Socket, { connections } from '@services/socket';
 import NotificationItem from './NotificationItem';
+import { useQueryClient } from '@tanstack/react-query';
+import EmptyStateIllustration from '@assets/svgs/empty-state.svg';
 
 function Notification() {
+
+    const queryClient = useQueryClient();
     const { notificationList, notificationListLoading } = useNotification();
     const [ notifications, setNotifications ] = useState([]);
     const socketClientRef = useRef(null);
     const [ waitingToReconnect, setWaitingToReconnect ] = useState(null);
+    const [ openedNotification, setOpenedNotification ] = useState(false);
     
     useEffect(() => {
         if (!notificationListLoading) {
             setNotifications([ ...notificationList.data ]);
         }
-    }, [ notificationListLoading ]);
+    }, [ notificationList ]);
     
     
 
@@ -55,18 +60,23 @@ function Notification() {
             socket.onmessage = (data) => {
                 if(data){
                     data = JSON.parse(data.data);
-                    if(data.value){
-                        !notifications.includes(data.value) && setNotifications([ data.value, ...notifications ]);
+                    if(data.value && data.type == 'notify'){
+                        queryClient.invalidateQueries({ queryKey: [ "notifications" ] });
+                        setNotifications([ data.value, ...notifications ]);
                     }
                 }
                 
             };
+
+            const alertOnlineInterval = setInterval(() => {
+                socket.send(JSON.stringify({ type: 'ping' }));
+            }, 2000);
             
             return () => {
                 console.log('Cleanup');
                 // Dereference, so it will set up next time
+                clearInterval(alertOnlineInterval);
                 socketClientRef.current = null;
-        
                 socket.close();
             };
         }
@@ -80,11 +90,12 @@ function Notification() {
                     dropdown: 'pt-0',
                 }}
                 position="bottom-end" 
-                width={370} 
+                width={370}
                 withArrow
+                opened={openedNotification} onChange={setOpenedNotification}
             >
                 <Popover.Target>
-                    <ActionIcon className="ms-auto">
+                    <ActionIcon className="ms-auto" onClick={() => setOpenedNotification((o) => !o)}>
                         <IconBellFilled />
                     </ActionIcon>
                 </Popover.Target>
@@ -96,7 +107,10 @@ function Notification() {
                         </Link>
                     </div>
                     {notifications.length == 0 ? (
-                        <div>no item</div>
+                        <AspectRatio ratio={4/3}>
+                            <Image src={EmptyStateIllustration}/>
+                        </AspectRatio>
+                        
                     ) : (
                         <ScrollArea
                             style={{ height: 500 }}

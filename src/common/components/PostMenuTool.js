@@ -1,36 +1,101 @@
-import { Menu } from '@mantine/core';
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    IconPin,
     IconEdit,
-    IconBookmark,
     IconTrash,
     IconLock,
 } from '@tabler/icons-react';
-
+import { Modal, Button, Group, Menu, Text } from '@mantine/core';
+import { usePostGeneral } from '@services/controller';
+import { useQueryClient } from '@tanstack/react-query';
 function PostMenuTool(props) {
     const { id } = props;
+    const queryClient = useQueryClient();
+    const { deletePost, deletePostError, deletePostLoading  } = usePostGeneral();
+    const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
+    const handleDeletePost = () => {
+        deletePost(
+            {
+                pathParams: { postId: id },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    setOpenedDeleteModal(false);
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ 'posts/me' ] });
+                    setOpenedDeleteModal(false);
+                },
+            },
+        );
+    };
     return (
-        <Menu position="left-start" withArrow arrowPosition="center" key={id}>
-            <Menu.Target>
-                <div className='ms-auto pointer'>
-                    <i className="ti-more-alt text-grey-900 font-xss btn-round-md bg-greylight" />
+        <>
+            <Menu position="left-start" withArrow arrowPosition="center" key={id}>
+                <Menu.Target>
+                    <div className='ms-auto pointer'>
+                        <i className="ti-more-alt text-grey-900 font-xss btn-round-md bg-greylight" />
+                    </div>
+                </Menu.Target>
+                <Menu.Dropdown>
+                    <Menu.Item 
+                        icon={<IconEdit size={24} />}
+                        onClick={() => console.log(`edit post ${id}`)}
+                    >
+                        Edit post
+                    </Menu.Item>
+                    <Menu.Item 
+                        icon={<IconLock size={24} />}
+                        onClick={() => console.log(`edit audience ${id}`)}
+                    >
+                        Edit audience
+                    </Menu.Item>
+
+                    <Menu.Divider />
+
+                    <Menu.Label>Danger zone</Menu.Label>
+                    <Menu.Item 
+                        color="red" 
+                        icon={<IconTrash size={24} />}
+                        onClick={() => setOpenedDeleteModal(true)}
+                    >
+                        Delete post
+                    </Menu.Item>
+                </Menu.Dropdown>
+            </Menu>
+            <Modal
+                opened={openedDeleteModal}
+                onClose={() => setOpenedDeleteModal(false)}
+                title="Delete Post"
+                centered
+            >
+                <Text size="sm">
+                    Are you sure you want to delete this post? 
+                    This action is destructive and you will have to contact support to restore your data.
+                </Text>
+                <div className='d-flex justify-content-end pe-2'>
+                    <Button
+                        variant="outline" color="dark"
+                        classNames={{
+                            root: 'me-2',
+                        }}
+                        onClick={() => setOpenedDeleteModal(false)}
+                    >
+                        <Text>
+                            No dont delete it
+                        </Text>
+                    </Button>
+                    <Button 
+                        color="red"
+                        onClick={handleDeletePost}
+                    >
+                        <Text>
+                            Delete post
+                        </Text>
+                    </Button>
                 </div>
-            </Menu.Target>
-            <Menu.Dropdown>
-                <Menu.Item icon={<IconPin size={24} />}>Pin post</Menu.Item>
-                <Menu.Item icon={<IconBookmark size={24} />}>Save link</Menu.Item>
-                <Menu.Item icon={<IconEdit size={24} />}>Edit post</Menu.Item>
-                <Menu.Item icon={<IconLock size={24} />}>Edit audience</Menu.Item>
-
-                <Menu.Divider />
-
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item color="red" icon={<IconTrash size={24} />}>
-                    Delete post
-                </Menu.Item>
-            </Menu.Dropdown>
-        </Menu>
+            </Modal>
+        </>
     );
 }
 

@@ -14,6 +14,7 @@ function createRoute(routes) {
                 </AccessControl>
             }
             {...route.props}
+            
         >
             {route.children && createRoute(route.children)}
         </Route>
@@ -25,7 +26,9 @@ function createRoute(routes) {
 function AppRoutes() {
     return (
         <BrowserRouter>
-            <Routes>{createRoute(routes)}</Routes>
+            <Routes>
+                {createRoute(routes)}
+            </Routes>
         </BrowserRouter>
     );
 }
