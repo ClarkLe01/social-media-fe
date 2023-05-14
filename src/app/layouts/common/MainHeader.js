@@ -8,6 +8,7 @@ import { Avatar, ActionIcon, Menu } from '@mantine/core';
 
 import { navigatePath } from '@app/routes/config';
 import { API_URL } from '@constants';
+import DarkLightTheme from '@common/components/DarkLightTheme';
 function MainHeader() {
     const { logout, profile } = useAuth();
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ function MainHeader() {
     return (
         <>
             <Notification />
+            <div className="p-2 text-center ms-3 menu-icon chat-active-btn">
+                <DarkLightTheme/>
+            </div>
             <Link
                 to="/messages"
                 className="p-2 text-center ms-3 menu-icon chat-active-btn"

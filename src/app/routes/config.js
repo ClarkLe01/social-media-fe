@@ -9,6 +9,7 @@ export const navigatePath = {
     home: '',
     findpeople: '/people',
     settings: '/settings',
+    helpbox: 'helpbox',
     notification: '/notification',
     chat: '/message/:roomId',
     chatHome: '/message',
@@ -30,7 +31,7 @@ const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
 const Settings = lazy(() => import('@features/settings/Settings'));
-
+const HelpBox = lazy(() => import('@features/settings/helpbox/HelpBox'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
@@ -80,6 +81,11 @@ const routes = [
                 name: 'Settings',
                 path: navigatePath.settings,
                 element: Settings,
+            },
+            {
+                name: 'Help box',
+                path: navigatePath.helpbox,
+                element: HelpBox,
             },
             {
                 name: 'Notification',

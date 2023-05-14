@@ -19,7 +19,7 @@ function Home() {
 
     return (
         <div className='mx-5'>
-            <Storyslider />
+            {/* <Storyslider /> */}
             <CreatePost user={profile.data} defaultAudience="public" />
             <FriendSlider />
             {posts.map((post, index) => (

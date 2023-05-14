@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
     IconUserPlus,
     IconUserCheck,
@@ -10,6 +11,9 @@ import {
     IconBrandYoutube,
     IconPhoto,
     IconId,
+    IconUser,
+    IconCake,
+    IconGenderMale,
 } from '@tabler/icons-react';
 import {
     Button,
@@ -17,25 +21,67 @@ import {
     Group,
     Menu,
     Modal,
+    Divider,
 } from '@mantine/core';
 
-import { useAuth, useFriend } from '@services/controller';
+import { useAuth, useFriend, useProfile } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
+
 import AvatarComponent from './AvatarComponent';
 import CoverComponent from './CoverComponent';
+import Input from '@common/components/Input';
+import DateTimePicker from '@common/components/DatetimePicker';
+import Selector from '@common/components/Selector';
+
 
 function ProfileCard(props) {
     const queryClient = useQueryClient();
 
     const { user } = props;
     const { profile } = useAuth();
-
     const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(profile.data.id);
-
     const [ dimensions, setDimensions ] = useState({ width: 400, height: 182 });
     const isHide = dimensions.width < 405 ? true : false;
-
     const [ groupButtonType, setGroupButtonType ] = useState(null);
+
+
+    const [ openedEditProfile, setOpenedEditProfile ] = useState(false);
+    const { saveLoading } = useAuth();
+    const { updateProfile } = useProfile(profile.data.id);
+    const [ firstName, setFirstName ] = useState(profile.data.first_name);
+    const [ lastName, setLastName ] = useState(profile.data.last_name);
+    const [ gender, setGender ] = useState(profile.data.gender);
+    const [ birthday, setBirthday ] = useState(new Date(profile.data.birthday));
+
+
+    // console.log(profile.data);
+
+    const genderOptions = [ 
+        { value: 'male', label: 'Male' },
+        { value: 'female', label: 'Female' },
+        { value: 'nonbinary', label: 'Non-binary' },
+    ];
+
+    const dateString = birthday.getFullYear() + "-" +
+        ("0" + (birthday.getMonth() + 1)).slice(-2) + "-" +
+        ("0" + birthday.getDate()).slice(-2);
+
+    const handleChangeGender = (e) => {
+        setGender(e);
+    };
+
+    const handleUpdateProfile = () => {
+        const form = new FormData();
+        if (firstName != "") form.append('first_name', firstName);
+        if (lastName != "") form.append('last_name', lastName);
+        if (gender != "") form.append('gender', gender);
+        if (dateString != "") form.append('birthday', dateString);
+        updateProfile({
+            data: form,
+        });
+        setOpenedEditProfile(false);
+    };
+
 
     const updateDimensions = () => {
         let update_width = window.innerWidth - 100;
@@ -71,13 +117,13 @@ function ProfileCard(props) {
         });
     }, [ user ]);
 
-    const getGroupButtonNum = useCallback(() => {
+    const getGroupButtonNum = () => {
         switch (groupButtonType) {
                         case 'friend':
                             return (
                                 <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
                                     <Button color="green" leftIcon={<IconUserCheck size={23} />}>
-                            Friend
+                                        Friend
                                     </Button>
                                     <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
                                 </Group>
@@ -90,7 +136,7 @@ function ProfileCard(props) {
                                         color="red"
                                         leftIcon={<IconUserCheck size={23} />}
                                     >
-                            Cancel Request
+                                        Cancel Request
                                     </Button>
                                     <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
                                 </Group>
@@ -101,7 +147,7 @@ function ProfileCard(props) {
                                     <Menu>
                                         <Menu.Target>
                                             <Button color="violet" leftIcon={<IconUserCheck size={23} />}>
-                                    Respond
+                                                Respond
                                             </Button>
                                         </Menu.Target>
                                         <Menu.Dropdown>
@@ -114,12 +160,86 @@ function ProfileCard(props) {
                             );
                         case 'me':
                             return (
-                                <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
-                                    <Button leftIcon={<IconPlus size={23} />}>Add your story</Button>
-                                    <Button color="pink" leftIcon={<IconPencil size={23} />}>
-                            Edit profile
-                                    </Button>
-                                </Group>
+                                <>
+                                    <Modal
+                                        opened={openedEditProfile}
+                                        onClose={() => setOpenedEditProfile(false)}
+                                        title={<div
+                                            className="d-flex justify-content-center">
+                                            <h1 className="fw-bold mx-auto">
+                                                Edit Your Profile
+                                            </h1>
+                                        </div>
+                                        }
+                                        classNames={{
+                                            header: 'd-flex justify-content-between',
+                                            title: 'flex-fill mx-auto pe-3 my-1',
+                                            body: '',
+                                        }}
+                                    >
+
+                                        <form onSubmit={handleUpdateProfile}>
+                                            <div style={{ display: 'flex', gap: '5px' }}>
+                                                <div>
+                                                    <Divider my="xs" label="First name" />
+                                                    <Input
+                                                        name="firstName"
+                                                        icon={<IconUser />}
+                                                        type="text"
+                                                        placeHolder="First Name"
+                                                        value={firstName}
+                                                        onChange={e => setFirstName(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Divider my="xs" label="Last name" />
+                                                    <Input
+                                                        name="lastName"
+                                                        icon={<IconUser />}
+                                                        type="text"
+                                                        placeHolder="Last Name"
+                                                        value={lastName}
+                                                        onChange={e => setLastName(e.target.value)}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <Divider my="xs" label="Birthday" />
+                                            <DateTimePicker
+                                                name="birthday"
+                                                icon={<IconCake />}
+                                                placeHolder="Pick your birthday"
+                                                value={birthday}
+                                                onChange={e => setBirthday(e)}
+                                            />
+                                            <Divider my="xs" label="Gender" />
+                                            <Selector
+                                                name="gender"
+                                                icon={<IconGenderMale />}
+                                                placeHolder="Choose your gender"
+                                                options={genderOptions}
+                                                value={gender}
+                                                onChange={e => handleChangeGender(e)}
+                                            />
+
+                                            <div className="col-sm-12 p-0 text-left">
+                                                <Button
+                                                    // type="submit"
+                                                    className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
+                                                    loading={saveLoading}
+                                                    onClick={handleUpdateProfile}
+                                                >
+                                                    {saveLoading ? 'Save...' : 'Save'}
+                                                </Button>
+                                            </div>
+                                        </form>
+                                    </Modal>
+                                    <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
+                                        <Button onClick={() => console.log(openedEditProfile)} leftIcon={<IconPlus size={23} />}>Add your story</Button>
+                                        <Button onClick={() => setOpenedEditProfile(true)} color="pink" leftIcon={<IconPencil size={23} />}>
+                                            Edit your profile
+                                        </Button>
+                                    </Group>
+                                </>
                             );
                         case 'no':
                             return (
@@ -129,7 +249,7 @@ function ProfileCard(props) {
                                         color="gray"
                                         leftIcon={<IconUserPlus size={23} />}
                                     >
-                            Add Friend
+                                        Add Friend
                                     </Button>
                                     <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
                                 </Group>
@@ -137,7 +257,7 @@ function ProfileCard(props) {
                         default:
                             return <></>;
         }
-    }, [ groupButtonType ]);
+    };
 
     useEffect(() => {
         if (friendList && requestList && responseList) {
@@ -166,7 +286,7 @@ function ProfileCard(props) {
         updateDimensions();
         window.addEventListener('resize', updateDimensions);
         return () => window.removeEventListener('resize', updateDimensions);
-    }, []);
+    }, [  ]);
     return (
         <div className="card w-100 border-0 p-0 bg-white shadow-xss rounded-xxl">
             <div className="card-body h250 p-0 rounded-xxl m-3">
@@ -177,7 +297,7 @@ function ProfileCard(props) {
 
                 <h4 className="d-inline-block fw-700 font-sm mt-2 mb-lg-2 mb-0 pl-15 me-2">
                     {user.first_name} {user.last_name}
-                    {}{' '}
+                    { }{' '}
                     <span className="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block">
                         {user.email}
                     </span>
