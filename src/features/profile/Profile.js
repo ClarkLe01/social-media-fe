@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAuth, useProfile } from '@services/controller';
+
+
 import ProfileCard from '@features/profile/components/ProfileCard';
 import ProfileDetail from '@common/components/ProfileDetail';
 import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';
 import PostCard from '@common/components/PostCard';
 import Load from '@common/components/Load';
-import { useParams } from 'react-router-dom';
-import { useAuth, useProfile } from '@services/controller';
 
 function Profile() {
     const { userId } = useParams();  // get param userId from url
     const { profileId } = useProfile(userId); // profile of user by params userId
     const { profile } = useAuth(); // current user
     const [ user, setUser ] = useState(null);
+
     useEffect(() => {
         if (profileId) {
             setUser(profileId.data);
         }
     }, [ profileId ]);
+
+    // console.log(profileId.data);
+
     return (
         <div className="row">
             <div className="col-xxl-12 col-xl-12 col-lg-12 col-md-12">

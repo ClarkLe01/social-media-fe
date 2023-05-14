@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { IconMessageCircle, IconLogout, IconAddressBook } from '@tabler/icons-react';
+import { IconMessageCircle, IconLogout, IconAddressBook, IconMessageCircle2 } from '@tabler/icons-react';
 
 import { useAuth } from '@services/controller';
 import Notification from '@common/components/Notification';
 import { Avatar, ActionIcon, Menu } from '@mantine/core';
 
 import { navigatePath } from '@app/routes/config';
+import DarkLightTheme from '@common/components/DarkLightTheme';
 function MainHeader() {
     const { logout, profile } = useAuth();
     const navigate = useNavigate();
@@ -18,11 +19,15 @@ function MainHeader() {
     return (
         <>
             <Notification />
+            <div className="p-2 text-center ms-3 menu-icon chat-active-btn">
+
+                <DarkLightTheme/>
+            </div>
             <Link
                 to="/messages"
                 className="p-2 text-center ms-3 menu-icon chat-active-btn"
             >
-                <IconMessageCircle />
+                <IconMessageCircle/>
             </Link>
             <Menu position="bottom-end" width={150} withArrow>
                 <Menu.Target>

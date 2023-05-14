@@ -14,6 +14,7 @@ import {
     IconLogout,
 } from '@tabler/icons-react';
 import { useAuth } from '@services/controller';
+import DarkLightTheme from '@common/components/DarkLightTheme';
 
 function NavBar(props) {
     const { logout, profile } = useAuth();
@@ -53,14 +54,6 @@ function NavBar(props) {
                 to="/friendlist"
                 label="Friend"
                 icon={<IconFriends size={16} stroke={1.5} />}
-                classNames={{
-                    root: 'nav-content-bttn open-font fw-600 px-0',
-                    icon: 'me-3',
-                }}
-            />
-            <NavLink
-                label="Light/Dark"
-                icon={<IconMoon size={16} stroke={1.5} />}
                 classNames={{
                     root: 'nav-content-bttn open-font fw-600 px-0',
                     icon: 'me-3',

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
     IconUserPlus,
     IconUserCheck,
@@ -21,21 +22,27 @@ import {
 
 import { useAuth, useFriend } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
+import { useDisclosure } from '@mantine/hooks';
+
 import AvatarComponent from './AvatarComponent';
 import CoverComponent from './CoverComponent';
+
 
 function ProfileCard(props) {
     const queryClient = useQueryClient();
 
     const { user } = props;
     const { profile } = useAuth();
-
+    const [ openedEditProfile,  setOpenedEditProfile ] = useState(false);
     const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(profile.data.id);
-
     const [ dimensions, setDimensions ] = useState({ width: 400, height: 182 });
     const isHide = dimensions.width < 405 ? true : false;
-
     const [ groupButtonType, setGroupButtonType ] = useState(null);
+
+    const handleTest = () => {
+        setOpenedEditProfile(preState => !preState);
+        console.log(openedEditProfile);
+    };
 
     const updateDimensions = () => {
         let update_width = window.innerWidth - 100;
@@ -114,12 +121,35 @@ function ProfileCard(props) {
                             );
                         case 'me':
                             return (
-                                <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
-                                    <Button leftIcon={<IconPlus size={23} />}>Add your story</Button>
-                                    <Button color="pink" leftIcon={<IconPencil size={23} />}>
-                            Edit profile
-                                    </Button>
-                                </Group>
+                                <>
+                                    <Modal opened={openedEditProfile}    title="Edit your profile" >
+                                        <div>
+
+                                            <h2>
+                                                Profile asPicture
+                                                <AvatarComponent user={user}/>
+                                            </h2>
+                                        </div>
+                                        <h2>
+                                            Cover Photo
+                                            {/* <CoverComponent user={user}/> */}
+                                        </h2>
+                                        <h2>
+                                            Bio
+                                        </h2>
+                                        <h2>
+                                            Custom your intro
+                                        </h2>
+                                        
+                                    </Modal>
+                                    <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
+                                        <Button onClick={() => console.log(openedEditProfile) } leftIcon={<IconPlus size={23} />}>Add your story</Button>
+                                        <Button onClick={() => handleTest()} color="pink" leftIcon={<IconPencil size={23} />}>
+                                            Edit your profile
+                                            <Link to="/edit">Edit</Link>
+                                        </Button>
+                                    </Group>
+                                </>
                             );
                         case 'no':
                             return (

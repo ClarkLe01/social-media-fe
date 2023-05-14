@@ -6,11 +6,13 @@ export const navigatePath = {
     register: '/register',
     forgetPassword: '/forgot',
     profile: '/:userId',
+    editPage: '/edit',
     home: '/',
     findpeople: '/people',
     settings: '/settings',
     notification: '/notification',
     messages: '/messages',
+    helpbox: 'helpbox',
     media: '/media',
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
@@ -26,7 +28,9 @@ const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
+const EditPage = lazy(() => import('@features/profile/editPage/EditPage'));
 const Settings = lazy(() => import('@features/settings/Settings'));
+const HelpBox = lazy(() => import('@features/settings/helpbox/Helpbox'));
 
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
@@ -67,6 +71,11 @@ const routes = [
             },
             {
                 name: 'Find People',
+                path: navigatePath.editPage,
+                element: EditPage,
+            },
+            {
+                name: 'Find People',
                 path: navigatePath.findpeople,
                 element: FindPeople,
             },
@@ -74,6 +83,11 @@ const routes = [
                 name: 'Settings',
                 path: navigatePath.settings,
                 element: Settings,
+            },
+            {
+                name: 'Help box',
+                path: navigatePath.helpbox,
+                element: HelpBox,
             },
             {
                 name: 'Test Page',
