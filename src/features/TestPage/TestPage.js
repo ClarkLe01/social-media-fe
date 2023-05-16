@@ -217,13 +217,12 @@ const MeetingView = (props) => {
   
     const handleToggleMic = () => {
         // Toggling Mic
+        console.log('toggle mic');
         toggleMic();
     };
     //Method to get the mics and load in our state
     const handleGetMics = async () => {
         const mics = await getMics();
-        // eslint-disable-next-line no-debugger
-        debugger;
         console.log('mics ', mics);
         setMics(mics);
     };
@@ -235,7 +234,7 @@ const MeetingView = (props) => {
   
     const handleJoinMeeting = () => {
         // Joining Meeting
-        window.open(navigatePath.videoCall+"?has_video=True", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        window.open(navigatePath.videoCall+"?hasVideo=True&isGroup=True", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=600");
         // setJoined("JOINING");
         // join();
     };
@@ -306,29 +305,6 @@ function TestPage() {
         console.log('newMeetingId: ', newMeetingId);
         setToken(newToken);
         setMeetingId(newMeetingId);
-        // const config = {
-        //     name: profile.data.first_name+' '+profile.data.last_name,
-        //     meetingId: newMeetingId,
-        //     apiKey: CALL_API_KEY,
-        //     token: newToken,
-        //     containerId: null,
-        
-        //     micEnabled: true,
-        //     webcamEnabled: true,
-        //     participantCanToggleSelfWebcam: true,
-        //     participantCanToggleSelfMic: true,
-        
-        //     chatEnabled: true,
-        //     screenShareEnabled: true,
-        
-        //     /*
-        
-        //     Other Feature Properties
-            
-        //     */
-        // };
-        // const meeting = new VideoSDKMeeting();
-        // meeting.init(config);
     };
 
     useEffect(() => {

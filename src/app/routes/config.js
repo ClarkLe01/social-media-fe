@@ -18,7 +18,7 @@ export const navigatePath = {
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
-    videoCall: '/call/:roomCallId',
+    videoCall: '/call/:roomCallId/:roomCallToken',
     notFound404: '/notfound404',
     testpage: '/test',
 };
