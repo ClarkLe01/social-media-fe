@@ -20,7 +20,9 @@ function Settings() {
     const [ differentNewPassword, setDifferentNewPassword ] = useState(false);
     
     const handleChangePassword = () => {
-        // if(currentPassword != profile.data.)
+        // if(currentPassword != profile.data){
+            
+        // }
     };
 
     return (
