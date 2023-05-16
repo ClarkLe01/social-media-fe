@@ -49,6 +49,21 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        requestResetPassword: {
+            url: '/user/password/reset/request',
+            method: 'POST',
+            headers: headers.json,
+        },
+        validateResetPassword: {
+            url: '/user/password/reset/:uid/:token',
+            method: 'GET',
+            headers: headers.json,
+        },
+        resetPassword: {
+            url: '/user/password/reset/:uid/:token',
+            method: 'POST',
+            headers: headers.json,
+        },
     },
     friend: {
         list: {
