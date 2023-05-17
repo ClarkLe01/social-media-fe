@@ -50,6 +50,8 @@ function Settings() {
                                 updateProfile({
                                     data: form1,
                                 });
+                                console.log("Success");
+                                setOpenedChangePassword(false);
                             }
                             else
                                 console.log("Wrong current password");
