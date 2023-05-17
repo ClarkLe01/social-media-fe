@@ -35,6 +35,16 @@ function useProfile(userId) {
         },
 
     });
+
+    const {
+        isLoading: updateProfileLoadingTest,
+        error: updateProfileErrorTest,
+        mutate: checkValidatePassword,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.user.validatePassword, variables);
+        },
+    });
     
     return {
         profileId,
@@ -45,6 +55,8 @@ function useProfile(userId) {
         updateProfile,
         updateProfileLoading,
         updateProfileError,
+
+        checkValidatePassword,
     };
 }
 

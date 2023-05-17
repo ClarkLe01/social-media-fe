@@ -165,21 +165,21 @@ function ProfileCard(props) {
                                         opened={openedEditProfile}
                                         onClose={() => setOpenedEditProfile(false)}
                                         title={<div
-                                            className="d-flex justify-content-center">
-                                            <h1 className="fw-bold mx-auto">
+                                            className="d-flex justify-content-center ">
+                                            <h1 className="fw-bold mx-auto pt-2">
                                                 Edit Your Profile
                                             </h1>
                                         </div>
                                         }
                                         classNames={{
                                             header: 'd-flex justify-content-between',
-                                            title: 'flex-fill mx-auto pe-3 my-1',
-                                            body: '',
+                                            title: 'flex-fill mx-auto pe-2 mt-1',
                                         }}
                                     >
 
-                                        <form onSubmit={handleUpdateProfile}>
-                                            <div style={{ display: 'flex', gap: '5px' }}>
+                                        <form onSubmit={handleUpdateProfile}
+                                            className='pt-5 pb-1'>
+                                            <div className='pb-4' style={{ display: 'flex', gap: '5px' }}>
                                                 <div>
                                                     <Divider my="xs" label="First name" />
                                                     <Input
@@ -203,14 +203,16 @@ function ProfileCard(props) {
                                                     />
                                                 </div>
                                             </div>
-                                            <Divider my="xs" label="Birthday" />
-                                            <DateTimePicker
-                                                name="birthday"
-                                                icon={<IconCake />}
-                                                placeHolder="Pick your birthday"
-                                                value={birthday}
-                                                onChange={e => setBirthday(e)}
-                                            />
+                                            <div className='pb-4'>
+                                                <Divider my="xs" label="Birthday" />
+                                                <DateTimePicker
+                                                    name="birthday"
+                                                    icon={<IconCake />}
+                                                    placeHolder="Pick your birthday"
+                                                    value={birthday}
+                                                    onChange={e => setBirthday(e)}
+                                                />
+                                            </div>
                                             <Divider my="xs" label="Gender" />
                                             <Selector
                                                 name="gender"

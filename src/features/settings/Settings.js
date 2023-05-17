@@ -1,6 +1,7 @@
 import Input from '@common/components/Input';
 import { Button, Divider, Group, Modal } from '@mantine/core';
-import { useAuth } from '@services/controller';
+import { useForm } from '@mantine/form';
+import { useAuth, useProfile } from '@services/controller';
 import { IconUser } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,17 +13,59 @@ function Settings() {
     
     const { logout, profile } = useAuth();
     const [ openedChangePassword, setOpenedChangePassword ] = useState(false);
-
+    const { checkValidatePassword } = useProfile();
+    const { updateProfile } = useProfile(profile.data.id);
     const [ currentPassword, setCurrentPassword ] = useState("");
     const [ newPassword, setNewPassword ] = useState("");
     const [ confirmNewPassword, setConfirmNewPassword ] = useState("");
 
     const [ differentNewPassword, setDifferentNewPassword ] = useState(false);
     
-    const handleChangePassword = () => {
-        // if(currentPassword != profile.data){
-            
-        // }
+    const form = useForm({
+        initialValues: { password: '' },
+
+        // functions will be used to validate values at corresponding key
+        validate: {
+            password: (value) => (value === '' ? 'This field is required' : null),
+        },
+    });
+    const handleChangePassword = (values) => {
+        const form1 = new FormData();
+        
+        if (newPassword === "" || confirmNewPassword === "") {
+            console.log("need to field");
+        }
+        else{
+            if(newPassword.localeCompare(confirmNewPassword) == 0){
+                form1.append('password', newPassword);
+                checkValidatePassword(
+                    { data:{
+                        password: values.password,
+                    } },
+                    {
+                        onSuccess: (data) => {
+                            if(data.data.status){
+                                //console.log(data.data.status);
+        
+                                updateProfile({
+                                    data: form1,
+                                });
+                            }
+                            else
+                                console.log("Wrong current password");
+                        },
+                        onError: (error) => {
+        
+                            console.log(error.response.data);
+                            //form.setFieldError('email', error.response.data);
+                        },
+                    });
+            }
+            else
+                console.log("New password != confirm password");
+        } 
+        
+        
     };
 
     return (
@@ -74,7 +117,7 @@ function Settings() {
                                     }}
                                 >
 
-                                    <form onSubmit={handleChangePassword}>
+                                    <form onSubmit={form.onSubmit(handleChangePassword)}>
                                         <div>
                                             <Divider my="xs" label="Current password" />
                                             <Input
@@ -83,6 +126,8 @@ function Settings() {
                                                 type="password"
                                                 placeHolder="Current Password"
                                                 onChange={e => setCurrentPassword(e.target.value)}
+                                                {...form.getInputProps('password')}
+
                                             />
                                         </div>
                                         <div>
@@ -112,7 +157,7 @@ function Settings() {
                                                 // type="submit"
                                                 className="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
                                                 loading={saveLoading}
-                                                onClick={handleChangePassword}
+                                                type="submit"
                                             >
                                                 {saveLoading ? 'Save...' : 'Save'}
                                             </Button>

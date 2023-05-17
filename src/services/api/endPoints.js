@@ -49,6 +49,11 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        validatePassword: {
+            url: '/user/validate/password',
+            method: 'POST',
+            headers: headers.json,
+        },
     },
     friend: {
         list: {
