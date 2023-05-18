@@ -7,11 +7,13 @@ import {
 import { Modal, Button, Group, Menu, Text } from '@mantine/core';
 import { usePostGeneral, useUserPost } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
+import CreatePost from './CreatePost';
 function PostMenuTool(props) {
-    const { id } = props;
+    const { id, user, status, images, content } = props;
     const queryClient = useQueryClient();
     const { deletePost, deletePostError, deletePostLoading  } = useUserPost();
     const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
+    const [ openedEditPost, setOpenedEditPost ] = useState(false);
     const handleDeletePost = () => {
         deletePost(
             {
@@ -31,6 +33,9 @@ function PostMenuTool(props) {
             },
         );
     };
+
+
+
     return (
         <>
             <Menu position="left-start" withArrow arrowPosition="center" key={id}>
@@ -42,13 +47,13 @@ function PostMenuTool(props) {
                 <Menu.Dropdown>
                     <Menu.Item 
                         icon={<IconEdit size={24} />}
-                        onClick={() => console.log(`edit post ${id}`)}
+                        onClick={() => setOpenedEditPost(!openedEditPost)}
                     >
                         Edit post
                     </Menu.Item>
                     <Menu.Item 
                         icon={<IconLock size={24} />}
-                        onClick={() => console.log(`edit audience ${id}`)}
+                        onClick={() => console.log(`edit post ${id}`)}
                     >
                         Edit audience
                     </Menu.Item>
@@ -97,6 +102,15 @@ function PostMenuTool(props) {
                     </Button>
                 </div>
             </Modal>
+            {openedEditPost && 
+            <CreatePost 
+                user={user} 
+                defaultAudience={status} 
+                id={id} 
+                setOpenedEditPost={setOpenedEditPost}
+                contentPost={content}
+                images={images}
+            />}
         </>
     );
 }

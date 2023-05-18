@@ -4,7 +4,7 @@ import { IconMoodEmpty, IconCamera, IconSend } from '@tabler/icons-react';
 import { Picker } from 'emoji-mart';
 import ThumbMedia from '@features/messages/components/ThumbMedia';
 import { Dropzone } from '@mantine/dropzone';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import data from '@emoji-mart/data';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -16,9 +16,6 @@ function AddComment(props) {
     const [ showEmoji, setShowEmoji ] = useState(false);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const dropzoneRef = useRef(null);
-
-    //console.log(fileComment);
-
     const { createComment, createCommentError, createCommentLoading, updateComment } = usePostComment();
 
     const handleSendComment = () => {
@@ -99,7 +96,7 @@ function AddComment(props) {
 
     return ( 
         <div className="mt-1">
-            <Divider my="xs" className="my-0" />
+            {valueComment?false:true &&<Divider my="xs" className="my-0" />}
             <div
                 className="write-your-comment mt-4"
                 style={{
@@ -192,6 +189,7 @@ function AddComment(props) {
             </div>
             <Dropzone
                 openRef={dropzoneRef}
+                // onFileDialogOpen
                 onDrop={setAttachFiles}
                 onReject={(files) => console.log('rejected files', files)}
                 maxSize={3 * 1024 ** 2} // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}

@@ -596,7 +596,16 @@ function PostCard(props) {
                         </div>
                     </Text>
                 </Text>
-                {profile.data.id == owner.id && <PostMenuTool id={id} />}
+                {profile.data.id == owner.id && 
+                <PostMenuTool  
+                    user={profile.data} 
+                    defaultAudience="public" 
+                    id={id} 
+                    status={status}
+                    // owner={owner} 
+                    content={content}
+                    images={images}
+                />}
             </div>
             <div className="card-body p-0 py-3">
                 <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">
