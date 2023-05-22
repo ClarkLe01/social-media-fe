@@ -236,7 +236,7 @@ function ProfileCard(props) {
                                         </form>
                                     </Modal>
                                     <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
-                                        <Button onClick={() => console.log(openedEditProfile)} leftIcon={<IconPlus size={23} />}>Add your story</Button>
+                                        {/* <Button onClick={() => console.log(openedEditProfile)} leftIcon={<IconPlus size={23} />}>Add your story</Button> */}
                                         <Button onClick={() => setOpenedEditProfile(true)} color="pink" leftIcon={<IconPencil size={23} />}>
                                             Edit your profile
                                         </Button>
@@ -314,22 +314,20 @@ function ProfileCard(props) {
                     role="tablist"
                 >
                     <li className="active list-inline-item me-5">
-                        <a
-                            className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block active"
-                            href="#navtabs1"
-                            data-toggle="tab"
+                        <Link
+                            className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                            to={`/profile/${user.id}`}
                         >
                             Posts
-                        </a>
+                        </Link>
                     </li>
                     <li className="list-inline-item me-5">
-                        <a
+                        <Link
                             className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                            href="#navtabs2"
-                            data-toggle="tab"
+                            to={`/profile/${user.id}/about`}
                         >
                             About
-                        </a>
+                        </Link>
                     </li>
                     {isHide ? (
                         <li className="list-inline-item me-5">
@@ -351,31 +349,21 @@ function ProfileCard(props) {
                     ) : (
                         <>
                             <li className="list-inline-item me-5">
-                                <a
+                                <Link
                                     className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                                    href="#navtabs3"
-                                    data-toggle="tab"
+                                    to={`/profile/${user.id}/friends`}
+                                   
                                 >
                                     Friends
-                                </a>
+                                </Link>
                             </li>
                             <li className="list-inline-item me-5">
-                                <a
+                                <Link
                                     className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                                    href="#navtabs4"
-                                    data-toggle="tab"
+                                    to={`/profile/${user.id}/photos`}
                                 >
                                     Photos
-                                </a>
-                            </li>
-                            <li className="list-inline-item me-5">
-                                <a
-                                    className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                                    href="#navtabs3"
-                                    data-toggle="tab"
-                                >
-                                    Videos
-                                </a>
+                                </Link>
                             </li>
                         </>
                     )}

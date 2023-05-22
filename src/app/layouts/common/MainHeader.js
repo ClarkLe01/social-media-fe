@@ -24,7 +24,7 @@ function MainHeader() {
                 <DarkLightTheme/>
             </div>
             <Link
-                to="/messages"
+                to="/message"
                 className="p-2 text-center ms-3 menu-icon chat-active-btn"
             >
                 <IconMessageCircle />

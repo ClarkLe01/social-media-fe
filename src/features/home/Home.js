@@ -21,7 +21,7 @@ function Home() {
         <div className='mx-5'>
             {/* <Storyslider /> */}
             <CreatePost user={profile.data} defaultAudience="public" />
-            <FriendSlider />
+            {/* <FriendSlider /> */}
             {posts.map((post, index) => (
                 <PostCard
                     key={index}

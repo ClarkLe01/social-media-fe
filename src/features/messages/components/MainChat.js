@@ -284,11 +284,11 @@ function MainChat(props) {
                                 )}
                             </div>
                             <div className="d-flex bd-highlight mb-3">
-                                <div className="p-2 bd-highlight align-self-end">
+                                {/* <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon color="blue" variant="subtle">
                                         <IconMicrophone />
                                     </ActionIcon>
-                                </div>
+                                </div> */}
                                 <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon
                                         color="blue"

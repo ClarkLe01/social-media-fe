@@ -12,7 +12,7 @@ function AddComment(props) {
     const queryClient = useQueryClient();
     const { currentUser, postId, valueComment, commentId, setShowEditComment } = props;
     const [ commentContent, setCommentContent ] = useState(valueComment?valueComment:'');
-    const flag = valueComment?true:false;
+    const flag = commentId?true:false;
     const [ showEmoji, setShowEmoji ] = useState(false);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const dropzoneRef = useRef(null);
@@ -96,7 +96,7 @@ function AddComment(props) {
 
     return ( 
         <div className="mt-1">
-            {valueComment?false:true &&<Divider my="xs" className="my-0" />}
+            {commentId?false:true &&<Divider my="xs" className="my-0" />}
             <div
                 className="write-your-comment mt-4"
                 style={{
