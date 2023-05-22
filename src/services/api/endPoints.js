@@ -250,6 +250,28 @@ export default {
             },
             validate: {
                 url: '/calling/room/validate',
+                method: 'GET',
+                headers: headers.json,
+            },
+            deactivate: {
+                url: '/calling/room/end',
+                method: 'GET',
+                headers: headers.json,
+            },
+            accept: {
+                url: '/calling/room/accept',
+                method: 'GET',
+                headers: headers.json,
+            },
+            reject: {
+                url: '/calling/room/reject',
+                method: 'GET',
+                headers: headers.json,
+            },
+        },
+        participants: {
+            remove: {
+                url: '/calling/sessions/participants/remove',
                 method: 'POST',
                 headers: headers.json,
             },

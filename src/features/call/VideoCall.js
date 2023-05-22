@@ -1,252 +1,192 @@
-import { ActionIcon, Avatar, BackgroundImage, Box, Center, Group, Text, Tooltip } from '@mantine/core';
+import useWindowSize from '@common/hooks/useWindowSize';
+import { ActionIcon, Avatar, BackgroundImage, Box, Center, Container, Group, Modal, Select, Tabs, Text, ThemeIcon, Tooltip } from '@mantine/core';
 import { useScrollLock } from '@mantine/hooks';
-import { useAuth } from '@services/controller';
-import { IconMicrophone, IconMicrophoneOff, IconPhoneCall, IconPhoneFilled, IconPhoneIncoming, IconPhoneOff, IconSettings, IconVideo, IconVideoOff } from '@tabler/icons-react';
-import React, { useRef, useState } from 'react';
+import { useAuth, useMessage } from '@services/controller';
+import { IconMessageCircle } from '@tabler/icons-react';
+import { IconCheck, IconCircleCheck, IconMicrophone, IconMicrophoneOff, IconPhoneCall, IconPhoneFilled, IconPhoneIncoming, IconPhoneOff, IconPhoto, IconSettings, IconVideo, IconVideoOff } from '@tabler/icons-react';
+import { Constants, MeetingProvider } from '@videosdk.live/react-sdk';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import SettingModal from './components/SettingModal';
+import { EndCallScreen } from './components/EndCallScreen';
+import AvatarDisplay from '@features/messages/components/AvatarDisplay';
+import RoomNameDisplay from '@features/messages/components/RoomNameDisplay';
+import Socket, { connections } from '@services/socket';
+import useCall from '@services/controller/useCall.';
+import WaitingScreen from './components/WaitingScreen';
+import MeetingPeer2PeerScreen from './components/MeetingPeer2PeerScreen';
 
-const ButtonWithTooltip = ({ onClick, onState, OnIcon, OffIcon, mic }) => {
-    const btnRef = useRef();
 
+const VideoCall = () => {
+    const { roomCallId, roomCallToken } = useParams();
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const [ token, setToken ] = useState(roomCallToken);
+    const [ meetingId, setMeetingId ] = useState(roomCallId);
+    const { profile, profileLoading } = useAuth();
+    const [ participantName, setParticipantName ] = useState(null);
+    const [ micOn, setMicOn ] = useState(true);
+    const [ webcamOn, setWebcamOn ] = useState(true);
+    const [ selectedMic, setSelectedMic ] = useState({ id: null });
+    const [ selectedWebcam, setSelectedWebcam ] = useState({ id: null });
+    const [ selectWebcamDeviceId, setSelectWebcamDeviceId ] = useState(
+        selectedWebcam.id,
+    );
+    const [ meetingMode, setMeetingMode ] = useState(Constants.modes.CONFERENCE);
+    const [ selectMicDeviceId, setSelectMicDeviceId ] = useState(selectedMic.id);
+    const [ isMeetingStarted, setMeetingStarted ] = useState(false);
+    const [ isMeetingLeft, setIsMeetingLeft ] = useState(false);
+    
+    const socketClientRef = useRef(null);
+    const [ waitingToReconnect, setWaitingToReconnect ] = useState(null);
+    const { endMeeting } = useCall();
+
+    useEffect(() => {
+        if(!profileLoading && profile.data) {
+            setParticipantName(profile.data.id);
+        }
+    }, [ profileLoading, profile ]);
+        
+    useEffect(() => {
+        if (waitingToReconnect) {
+            return;
+        }
+        
+        if (!socketClientRef.current) {
+            const socket = new Socket(connections.call, {
+                pathParams: {
+                    roomId: roomCallId,
+                    token: roomCallToken,
+                },
+            } ).private();
+            socketClientRef.current = socket;
+
+            socket.onerror = (e) => console.error(e);
+            socket.onopen = () => {
+                console.log('open connection');
+            };
+            
+            socket.close = () => {
+                if (socketClientRef.current) {
+                    // Connection failed
+                    console.log('ws closed by server');
+                } else {
+                    // Cleanup initiated from app side, can return here, to not attempt a reconnect
+                    console.log('ws closed by app component unmount');
+                    return;
+                }
+                if (waitingToReconnect) {
+                    return;
+                }
+                console.log('ws closed');
+                setWaitingToReconnect(true);
+            };
+            socket.onmessage = (data) => {
+                if(data){
+                    data = JSON.parse(data.data);
+                    if(data.value && data.type == 'rejectCall'){
+                        setIsMeetingLeft(true);
+                        setMeetingStarted(false);
+                        endMeeting(roomCallToken, roomCallId);
+                    }
+                    if(data.value && data.type == 'acceptCall'){
+                        if(data.value.fromUser == profile.data.id){
+                            setIsMeetingLeft(false);
+                            setMeetingStarted(true);
+                            setParticipantName(profile.data.id);
+                        }
+                    }
+                    if(data.value && data.type == 'joinCall'){
+                        if(data.value.fromUser != profile.data.id){
+                            setIsMeetingLeft(false);
+                            setMeetingStarted(true);
+                            setParticipantName(profile.data.id);
+                        }
+                    }
+                }
+                
+            };
+            
+            return () => {
+                console.log('Cleanup');
+                socketClientRef.current = null;
+                socket.close();
+                setWebcamOn(false);
+                setMicOn(false);
+                setMeetingStarted(false);
+            };
+        }
+    
+    }, [ waitingToReconnect ]);
     return (
         <>
-            {onState ? (
-                <Tooltip label={mic?"Turn off mic": "Turn off webcam"}>
-                    <ActionIcon ref={btnRef} onClick={onClick} variant="filled" size={45} radius={"100%"}>
-                        {OnIcon}
-                    </ActionIcon>
-                </Tooltip>
-            ): (
-                <Tooltip label={mic?"Turn on mic": "Turn on webcam"}>
-                    <ActionIcon ref={btnRef} onClick={onClick} variant="filled" color='red' size={45} radius={"100%"}>
-                        {OffIcon}
-                    </ActionIcon>
-                </Tooltip>
+            {isMeetingStarted ? (
+                <MeetingProvider
+                    config={{
+                        meetingId,
+                        micEnabled: micOn,
+                        webcamEnabled: webcamOn,
+                        name: participantName,
+                        mode: meetingMode,
+                        multiStream: true,
+                    }}
+                    token={token}
+                    reinitialiseMeetingOnConfigChange={true}
+                    joinWithoutUserInteraction={true}
+                >
+                    <MeetingPeer2PeerScreen
+                        onMeetingLeave={() => {
+                            setToken("");
+                            setMeetingId("");
+                            setParticipantName("");
+                            setWebcamOn(false);
+                            setMicOn(false);
+                            setMeetingStarted(false);
+                        }}
+                        setIsMeetingLeft={setIsMeetingLeft}
+                        selectedMic={selectedMic}
+                        selectedWebcam={selectedWebcam}
+                        selectWebcamDeviceId={selectWebcamDeviceId}
+                        setSelectWebcamDeviceId={setSelectWebcamDeviceId}
+                        selectMicDeviceId={selectMicDeviceId}
+                        setSelectMicDeviceId={setSelectMicDeviceId}
+                        micEnabled={micOn}
+                        setMicOn={setMicOn}
+                        webcamEnabled={webcamOn}
+                        setWebcamOn={setWebcamOn}
+                        roomChatId={searchParams.get("roomChatId")}
+                        meetingMode={meetingMode}
+                        setSelectedMic={setSelectedMic}
+                        setSelectedWebcam={setSelectedWebcam}
+                    />
+                </MeetingProvider>
+            ) : isMeetingLeft ? (
+                <EndCallScreen />
+            ) : (
+                <WaitingScreen
+                    // participantName={participantName}
+                    // setParticipantName={setParticipantName}
+                    setMeetingId={setMeetingId}
+                    setToken={setToken}
+                    setMicOn={setMicOn}
+                    micEnabled={micOn}
+                    webcamEnabled={webcamOn}
+                    setSelectedMic={setSelectedMic}
+                    setSelectedWebcam={setSelectedWebcam}
+                    setWebcamOn={setWebcamOn}
+                    onClickStartMeeting={() => {
+                        setMeetingStarted(true);
+                    }}
+                    startMeeting={isMeetingStarted}
+                    setIsMeetingLeft={setIsMeetingLeft}
+                    meetingMode={meetingMode}
+                    setMeetingMode={setMeetingMode}
+                    roomChatId={searchParams.get("roomChatId")}
+                    hasVideo={searchParams.get("hasVideo")}
+                />
             )}
-            
         </>
     );
-
 };
 
-const VideoCall = (props) => {
-    useScrollLock(true);
-    const { profile } = useAuth();
-    const [ searchParams, setSearchParams ] = useSearchParams();
-    const { roomCallId, roomCallToken } = useParams();
-    console.log(searchParams.get('hasVideo'));
-    console.log(searchParams.get('isGroup'));
-
-    const videoTrackRef = useRef();
-    const audioTrackRef = useRef();
-    const audioAnalyserIntervalRef = useRef();
-
-    const [ audioTrack, setAudioTrack ] = useState(null);
-    const [ micOn, setMicOn ] = useState(false);
-    const [ webcamOn, setWebcamOn  ] = useState(false);
-
-    const _handleTurnOffMic = () => {
-        // const audioTrack = audioTrackRef.current;
-    
-        // if (audioTrack) {
-        //     audioTrack.stop();
-
-        //     setAudioTrack(null);
-        //     setMicOn(false);
-        // }
-        setMicOn(false);
-    };
-
-    const _handleTurnOnMic = () => {
-        // const audioTrack = audioTrackRef.current;
-    
-        // if (!audioTrack) {
-        //     getDefaultMediaTracks({ mic: true, webcam: false });
-        //     setMicOn(true);
-        // }
-        setMicOn(true);
-    };
-
-    const _handleToggleMic = () => {
-        // const audioTrack = audioTrackRef.current;
-    
-        // if (audioTrack) {
-        //     _handleTurnOffMic();
-        // } else {
-        //     _handleTurnOnMic();
-        // }
-
-        if (micOn) {
-            _handleTurnOffMic();
-        } else {
-            _handleTurnOnMic();
-        }
-    };
-
-
-    const _handleTurnOffWebcam = () => {
-        // const videoTrack = videoTrackRef.current;
-    
-        // if (videoTrack) {
-        //     videoTrack.stop();
-        //     setVideoTrack(null);
-        //     setWebcamOn(false);
-        // }
-        setWebcamOn(false);
-    };
-
-    const _handleTurnOnWebcam = () => {
-        // const videoTrack = videoTrackRef.current;
-    
-        // if (!videoTrack) {
-        //     getDefaultMediaTracks({ mic: false, webcam: true });
-        //     setWebcamOn(true);
-        // }
-        setWebcamOn(true);
-    };
-
-    const _toggleWebcam = () => {
-        // const videoTrack = videoTrackRef.current;
-    
-        // if (videoTrack) {
-        //     _handleTurnOffWebcam();
-        // } else {
-        //     _handleTurnOnWebcam();
-        // }
-
-        if (webcamOn) {
-            _handleTurnOffWebcam();
-        } else {
-            _handleTurnOnWebcam();
-        }
-    };
-
-    // const changeMic = async (deviceId) => {
-    //     const currentAudioTrack = audioTrackRef.current;
-    //     currentAudioTrack && currentAudioTrack.stop();
-    //     const stream = await navigator.mediaDevices.getUserMedia({
-    //         audio: { deviceId },
-    //     });
-    //     const audioTracks = stream.getAudioTracks();
-    
-    //     const audioTrack = audioTracks.length ? audioTracks[0] : null;
-    //     clearInterval(audioAnalyserIntervalRef.current);
-    
-    //     setAudioTrack(audioTrack);
-    // };
-    // const getDefaultMediaTracks = async ({ mic, webcam, firstTime }) => {
-    //     if (mic) {
-    //         const audioConstraints = {
-    //             audio: true,
-    //         };
-
-    //         const stream = await navigator.mediaDevices.getUserMedia(
-    //             audioConstraints,
-    //         );
-    //         const audioTracks = stream.getAudioTracks();
-
-    //         const audioTrack = audioTracks.length ? audioTracks[0] : null;
-
-    //         setAudioTrack(audioTrack);
-    //         if (firstTime) {
-    //             setSelectedMic({
-    //                 id: audioTrack?.getSettings()?.deviceId,
-    //             });
-    //         }
-    //     }
-    
-    //     if (webcam) {
-    //         const videoConstraints = {
-    //             video: {
-    //                 width: 1280,
-    //                 height: 720,
-    //             },
-    //         };
-    
-    //         const stream = await navigator.mediaDevices.getUserMedia(
-    //             videoConstraints,
-    //         );
-    //         const videoTracks = stream.getVideoTracks();
-    
-    //         const videoTrack = videoTracks.length ? videoTracks[0] : null;
-    //         setVideoTrack(videoTrack);
-    //         if (firstTime) {
-    //             setSelectedWebcam({
-    //                 id: videoTrack?.getSettings()?.deviceId,
-    //             });
-    //         }
-    //     }
-    // };
-
-    return (
-        <div style={{ 
-            backgroundImage: 'linear-gradient(315deg, #000000 0%, #7f8c8d 74%)', 
-            backgroundColor: "#000000", 
-            height: "100vh",
-        }}>
-            <div
-                className='pt-3 pe-3'
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                }}
-            >
-                <ActionIcon>
-                    <IconSettings />
-                </ActionIcon>
-            </div>
-            <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh" }}>
-                <div className='px-auto pt-5'>
-                    <Group position="center">
-                        <Avatar
-                            className='blob white'
-                            radius={"100%"} 
-                            src="avatar.png" 
-                            alt="it's me"
-                            size={"xl"}
-                        />
-                    </Group>
-                    <Group position="center" className='mt-3'>
-                        <Text fw={700} color='white'>Bold</Text>
-                    </Group>
-                    <Group position="center" className='pt-3'>
-                        <Text c="dimmed" size={"xs"} color='white'>Calling...</Text>
-                    </Group>
-                    
-                    <div className='d-flex justify-content-center pt-5'>
-                        <Group position="center">
-                            <ButtonWithTooltip
-                                onClick={_handleToggleMic}
-                                onState={micOn}
-                                mic={true}
-                                OnIcon={<IconMicrophone size={24} />}
-                                OffIcon={<IconMicrophoneOff size={24} />}
-                            />
-                            <Tooltip label="Accept Call">
-                                <ActionIcon variant="filled" size={45} radius={"100%"} color="teal">
-                                    <IconPhoneIncoming size={24} />
-                                </ActionIcon>
-                            </Tooltip>
-                            <Tooltip label="End Call">
-                                <ActionIcon variant="filled" size={45} radius={"100%"} color="red">
-                                    <IconPhoneOff size={24} />
-                                </ActionIcon>
-                            </Tooltip>
-                            <ButtonWithTooltip
-                                onClick={_toggleWebcam}
-                                onState={webcamOn}
-                                mic={false}
-                                OnIcon={<IconVideo size={24} />}
-                                OffIcon={<IconVideoOff size={24} />}
-                            />
-                        </Group>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    );
-};
 
 export default VideoCall;

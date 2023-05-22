@@ -2,7 +2,7 @@ import {
     IconBellFilled, 
 } from '@tabler/icons-react';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ScrollArea, Popover, ActionIcon, Image, AspectRatio } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
@@ -10,6 +10,8 @@ import Socket, { connections } from '@services/socket';
 import NotificationItem from './NotificationItem';
 import { useQueryClient } from '@tanstack/react-query';
 import EmptyStateIllustration from '@assets/svgs/empty-state.svg';
+import InComingCall from '@features/call/components/InComingCall';
+import useCall from '@services/controller/useCall.';
 
 function Notification() {
 
@@ -19,6 +21,10 @@ function Notification() {
     const socketClientRef = useRef(null);
     const [ waitingToReconnect, setWaitingToReconnect ] = useState(null);
     const [ openedNotification, setOpenedNotification ] = useState(false);
+
+    const [ incomingCallModal, setIncomingCallModal ] = useState(false);
+
+    const [ callData, setCallData ] = useState(null);
     
     useEffect(() => {
         if (!notificationListLoading) {
@@ -26,8 +32,6 @@ function Notification() {
         }
     }, [ notificationList ]);
     
-    
-
     useEffect(() => {
         if (waitingToReconnect) {
             return;
@@ -64,13 +68,23 @@ function Notification() {
                         queryClient.invalidateQueries({ queryKey: [ "notifications" ] });
                         setNotifications([ data.value, ...notifications ]);
                     }
+                    if(data.value && data.type == 'calling'){
+                        if(callData == null){
+                            setCallData(data.value);
+                            setIncomingCallModal(true);
+                        } 
+                    }
+                    if(data.value && data.type == 'endCall' && callData.roomId == data.value.roomId){
+                        setCallData(null);
+                        setIncomingCallModal(false);
+                    }
                 }
                 
             };
 
             const alertOnlineInterval = setInterval(() => {
                 socket.send(JSON.stringify({ type: 'ping' }));
-            }, 2000);
+            }, 20000);
             
             return () => {
                 console.log('Cleanup');
@@ -85,6 +99,22 @@ function Notification() {
     if (notificationListLoading) return <div>Loading...</div>;
     return (
         <React.Fragment>
+            {callData && socketClientRef.current && (
+                <InComingCall 
+                    opened={incomingCallModal}
+                    setOpened={setIncomingCallModal}
+                    roomId={callData.roomId}
+                    roomChatId={callData.toRoomChat}
+                    token={callData.token}
+                    fromUser={callData.fromUser}
+                    sessionId={callData.sessionId}
+                    hasVideo={true}
+                    isGroup={false}
+                    socket={socketClientRef.current}
+                    callData={callData}
+                />
+            )}
+            
             <Popover 
                 classNames = {{
                     dropdown: 'pt-0',
