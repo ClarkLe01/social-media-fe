@@ -313,7 +313,7 @@ function CommentItem(props) {
                     </div>
                 </div>
             </div>}
-            {showEditComment && <AddComment currentUser={currentUser} postId={postId} valueComment={comment.content} commentId={comment.id} setShowEditComment={setShowEditComment} />}
+            {showEditComment && <AddComment currentUser={currentUser} postId={postId} commentFile={comment.file} valueComment={comment.content} commentId={comment.id} setShowEditComment={setShowEditComment} />}
             <Modal
                 opened={openedDeleteModal}
                 onClose={() => setOpenedDeleteModal(false)}

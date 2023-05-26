@@ -1,81 +1,114 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@mantine/core';
+import { Avatar, Button, Image } from '@mantine/core';
 import Pagetitle from '@common/components/PageTitle';
 import { Grid, Group, Text, ScrollArea } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
-import { useFriend, useAuth, useMessage, useRoom } from '@services/controller';
+import { useFriend, useAuth, useMessage, useRoom, useProfile } from '@services/controller';
 import { API_URL } from '@constants';
 import RightChatItem from '@common/components/RightChatItem';
 import { Rooms } from '@features/messages/components';
 
-function FriendRequest() {
-    return (
-        <div className="section full  pt-4 position-relative feed-body">
-            <div className="card-body d-flex align-items-center p-1">
-                <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
-                    Friend Request
-                </h4>
-                <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
-                    See all
-                </Link>
-            </div>
-            <div className="wrap mb-3">
-                <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
-                    <div className="col col-md-2">
-                        <figure className="avatar me-3">
-                            <img
-                                src="assets/images/user.png"
-                                alt="avater"
-                                className="shadow-sm rounded-circle w45"
-                            />
-                        </figure>
-                    </div>
-                    <div className="col col-md-9 px-2">
-                        <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">
-                            Anthony Daugloi
-                            <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-                                12 mutual friends
-                            </span>
-                        </h4>
-                        <div className="card-body d-flex align-items-center justify-content-start p-0 flex-md-wrap">
-                            <Button
-                                classNames={{
-                                    root: 'lh-20 w75 bg-primary-gradiant me-2 p-0 text-white text-center font-xssss fw-600 ls-1 rounded-xxxxl',
-                                }}
-                            >
-                                Confirm
-                            </Button>
-                            <Button
-                                classNames={{
-                                    root: 'lh-20 w75 bg-grey me-2 text-grey-800 p-0 text-center font-xssss fw-600 ls-1 rounded-xxxxl',
-                                }}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+// function FriendRequest(props) {
+//     // const [ user, setUser ] = useState(null);
+//     const{ user } = props;
+    
+//     const { responseList } = useFriend();
+//     const [ memberList, setMemberList ] = useState([]);
+//     // const { acceptRequest } = useFriend(user.data.id);
+//     useEffect(() => {
+//         if (responseList) {
+//             setMemberList([ ...responseList.data ]);
+//         }
+//     }, [ responseList ]);
+
+    
+//     // if (memberList.length > 0) {
+//     //     setUser(memberList[0].requestID);
+//     // }
+
+//     // const handleAccept= () => {
+//     //     acceptRequest({
+//     //         pathParams: { instanceId: idFriendInstance },
+//     //     });
+//     // };
+
+//     return (
+//         <div className="section full  pt-4 position-relative feed-body">
+//             <div className="card-body d-flex align-items-center p-1">
+//                 <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+//                     Friend Request
+//                 </h4>
+//                 <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
+//                     See all
+//                 </Link>
+//             </div>
+//             {memberList.length == 0 ? (
+//                 <Group
+//                     className="d-grid justify-content-center align-items-center"
+//                     position="center"
+//                 >
+//                     {/* <DataArrangingLogo /> */}
+//                     <Text className="d-flex justify-content-center align-items-center">
+//                         No Request
+//                     </Text>
+//                 </Group>
+//             ) : (
+//                 <div className="wrap mb-3">
+//                     <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
+//                         <div className="col col-md-2">
+//                             <Avatar src={API_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />
+//                         </div>
+//                         <div className="col col-md-9 px-2">
+//                             <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">
+//                                 {user.first_name} {user.last_name}
+//                             </h4>
+//                             <div className="card-body d-flex align-items-center justify-content-start p-0 flex-md-wrap">
+//                                 <Button
+//                                     classNames={{
+//                                         root: 'lh-20 w75 bg-primary-gradiant me-2 p-0 text-white text-center font-xssss fw-600 ls-1 rounded-xxxxl',
+//                                     }}
+//                                 >
+//                                     Confirm
+//                                 </Button>
+//                                 <Button
+//                                     classNames={{
+//                                         root: 'lh-20 w75 bg-grey me-2 text-grey-800 p-0 text-center font-xssss fw-600 ls-1 rounded-xxxxl',
+//                                     }}
+//                                 >
+//                                     Cancel
+//                                 </Button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>)}
+//         </div>
+//     );
+// }
 
 const SideBar = () => {
     const { RoomList, RoomListLoading } = useRoom();
     
     const { profile } = useAuth();
+    const { profileId } = useProfile(profile.data.id);
+    const [ user, setUser ] = useState(null);
+
     const { friendList } = useFriend(profile.data.id);
     const [ memberList, setMemberList ] = useState([]);
+    
+    useEffect(() => {
+        if (profileId) {
+            setUser(profileId.data);
+        }
+    }, [ profileId ]);
+
     useEffect(() => {
         if (friendList) {
             setMemberList([ ...friendList.data ]);
         }
     }, [ friendList ]);
 
-
-    console.log(RoomList);
 
     const [ isOpen, setIsOpen ] = useState(false);
 
@@ -85,8 +118,8 @@ const SideBar = () => {
 
     return (
         <>
-            <FriendRequest />
-            <hr />
+            {/* {user && <FriendRequest user={user}/>} */}
+            {/* <hr /> */}
             <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
                 <div className="section full px-0 pt-4 position-relative feed-body">
                     <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>

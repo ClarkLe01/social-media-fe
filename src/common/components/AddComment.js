@@ -4,19 +4,55 @@ import { IconMoodEmpty, IconCamera, IconSend } from '@tabler/icons-react';
 import { Picker } from 'emoji-mart';
 import ThumbMedia from '@features/messages/components/ThumbMedia';
 import { Dropzone } from '@mantine/dropzone';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import data from '@emoji-mart/data';
 import { useQueryClient } from '@tanstack/react-query';
 
 function AddComment(props) {
     const queryClient = useQueryClient();
-    const { currentUser, postId, valueComment, commentId, setShowEditComment } = props;
+    const { currentUser, postId, valueComment, commentId, setShowEditComment, commentFile } = props;
     const [ commentContent, setCommentContent ] = useState(valueComment?valueComment:'');
     const flag = commentId?true:false;
     const [ showEmoji, setShowEmoji ] = useState(false);
     const [ attachFiles, setAttachFiles ] = useState([]);
     const dropzoneRef = useRef(null);
     const { createComment, createCommentError, createCommentLoading, updateComment } = usePostComment();
+
+    useEffect(() => {
+        // 👇️ only runs once
+        if(commentFile){
+            // console.log("asdas");
+            let tempFiles = [];
+            
+            const url = commentFile;
+            const toDataURL = url => fetch(url)
+                .then(response => response.blob())
+                .then(blob => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                }));
+
+            toDataURL(url)
+                .then(dataUrl => {
+                    var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+                    // console.log("Here is JavaScript File Object", [ fileData ]);
+                    tempFiles.push(fileData);
+                });
+                
+            setAttachFiles( tempFiles );
+        }
+    }, [  ]); 
+
+    function dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[ 1 ]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([ u8arr ], filename, { type: mime });
+    }
 
     const handleSendComment = () => {
         if (commentContent.length == 0 && attachFiles.length == 0) return;
@@ -54,10 +90,14 @@ function AddComment(props) {
         if (commentContent.length == 0 && attachFiles.length == 0) return;
         const form = new FormData();
         form.append('content', commentContent);
+        //console.log(attachFiles.length);
         if (attachFiles.length > 0) {
             attachFiles.map((file) => {
                 form.append('file', file);
             });
+        }
+        else {
+            form.append('file', '');
         }
         for (let [ key, value ] of form) {
             console.log('form', key, ':', value);
@@ -84,7 +124,7 @@ function AddComment(props) {
     const handleEnterPress = (e) => {
         if (e.code == 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            console.log(flag);
+            //console.log(flag);
             if(!flag) handleSendComment();
             else handleUpdateComment();
         }
@@ -190,7 +230,7 @@ function AddComment(props) {
             <Dropzone
                 openRef={dropzoneRef}
                 // onFileDialogOpen
-                onDrop={setAttachFiles}
+                onDrop={(file) => { setAttachFiles(file); }}
                 onReject={(files) => console.log('rejected files', files)}
                 maxSize={3 * 1024 ** 2} // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}
                 accept={{

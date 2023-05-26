@@ -6,7 +6,11 @@ export const navigatePath = {
     register: '/register',
     forgetPassword: '/forgot',
     profile: '/profile/:userId',
+    about: '/profile/:userId/about',
+    profileFriendList: '/profile/:userId/friends',
+    photos: '/profile/:userId/photos',
     home: '',
+    profilePost: '/profile/:userId',
     findpeople: '/people',
     settings: '/settings',
     helpbox: 'helpbox',
@@ -30,6 +34,10 @@ const FriendLayout = lazy(() => import('@app/layouts/FriendLayout'));
 
 const Home = lazy(() => import('@features/home/Home'));
 const Profile = lazy(() => import('@features/profile/Profile'));
+const ProfilePost = lazy(() => import('@features/profile/components/Post'));
+const About = lazy(() => import('@features/profile/components/About'));
+const ProfileFriendList = lazy(() => import('@features/profile/components/ListFriendProfile'));
+const Photos = lazy(() => import('@features/profile/components/Photos'));
 const Settings = lazy(() => import('@features/settings/Settings'));
 const HelpBox = lazy(() => import('@features/settings/helpbox/HelpBox'));
 const Register = lazy(() => import('@features/register/Register'));
@@ -71,6 +79,29 @@ const routes = [
                 name: 'Profile',
                 path: navigatePath.profile,
                 element: Profile,
+                requireAuth: AUTH.REQUIRE,
+                children: [
+                    {
+                        name: 'About',
+                        path: navigatePath.about,
+                        element: About,
+                    },
+                    {
+                        name: 'Profile Friend List',
+                        path: navigatePath.profileFriendList,
+                        element: ProfileFriendList,
+                    },
+                    {
+                        name: 'Profile Post',
+                        path: navigatePath.profilePost,
+                        element: ProfilePost,
+                    },
+                    {
+                        name: 'Photos',
+                        path: navigatePath.photos,
+                        element: Photos,
+                    },
+                ],
             },
             {
                 name: 'Find People',
