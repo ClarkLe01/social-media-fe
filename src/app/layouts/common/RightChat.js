@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Avatar, Button, Image } from '@mantine/core';
 import Pagetitle from '@common/components/PageTitle';
 import { Grid, Group, Text, ScrollArea } from '@mantine/core';
@@ -9,83 +9,117 @@ import { useFriend, useAuth, useMessage, useRoom, useProfile } from '@services/c
 import { API_URL } from '@constants';
 import RightChatItem from '@common/components/RightChatItem';
 import { Rooms } from '@features/messages/components';
+import { navigatePath } from '@app/routes/config';
 
-// function FriendRequest(props) {
-//     // const [ user, setUser ] = useState(null);
-//     const{ user } = props;
+function ShowFriendRequest(props){
+    const { friendRequest, profile } = props;
+    const { profileId } = useProfile(friendRequest.requestID);
+    const [ user, setUser ] = useState();
+
+    const { deleteFriend, acceptRequest } = useFriend(profile.id);
+
+
+    const handleCancel = () => {
+        deleteFriend({
+            pathParams: { instanceId: friendRequest.id },
+        });
+    };
+
+    const handleAccept= () => {
+        acceptRequest({
+            pathParams: { instanceId: friendRequest.id },
+        });
+    };
+
+    const goToProfile = () => {
+        Navigate(navigatePath.profile.replace(':userId', friendRequest.requestID), { state: { from: location.pathname } });
+    };
+
+    useEffect(() => {
+        if (profileId) {
+            setUser(profileId.data);
+        }
+    }, [ profileId ]);
     
-//     const { responseList } = useFriend();
-//     const [ memberList, setMemberList ] = useState([]);
-//     // const { acceptRequest } = useFriend(user.data.id);
-//     useEffect(() => {
-//         if (responseList) {
-//             setMemberList([ ...responseList.data ]);
-//         }
-//     }, [ responseList ]);
+    return (
+        <div className="wrap mb-3">
+            <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
+                <div className="col col-md-2">
+                    {user && <Avatar src={API_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />}
+                </div>
+                <div className="col col-md-9 px-2">
+                    <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">
+                        {user && user.first_name + ' ' + user.last_name}
+                    </h4>
+                    <div className="card-body d-flex align-items-center justify-content-start p-0 flex-md-wrap">
+                        <Button
+                            classNames={{
+                                root: 'lh-20 w75 bg-primary-gradiant me-2 p-0 text-white text-center font-xssss fw-600 ls-1 rounded-xxxxl',
+                            }}
+                            onClick={handleAccept}
+                        >
+                            Confirm
+                        </Button>
+                        <Button
+                            classNames={{
+                                root: 'lh-20 w75 bg-grey me-2 text-grey-800 p-0 text-center font-xssss fw-600 ls-1 rounded-xxxxl',
+                            }}
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function FriendRequest(props) {
+
+    const { user } = props;
+
+    const [ friendRequest, setFriendRequest ] = useState();
+    const { responseList } = useFriend();
+    const [ memberList, setMemberList ] = useState([]);
+
+    // const { acceptRequest } = useFriend(user.data.id);
+    useEffect(() => {
+        if (responseList) {
+            setMemberList([ ...responseList.data ]);
+        }
+
+        if (memberList.length > 0) {
+            setFriendRequest(memberList[0]);
+        }
+    }, [ responseList ]);
 
     
-//     // if (memberList.length > 0) {
-//     //     setUser(memberList[0].requestID);
-//     // }
-
-//     // const handleAccept= () => {
-//     //     acceptRequest({
-//     //         pathParams: { instanceId: idFriendInstance },
-//     //     });
-//     // };
-
-//     return (
-//         <div className="section full  pt-4 position-relative feed-body">
-//             <div className="card-body d-flex align-items-center p-1">
-//                 <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
-//                     Friend Request
-//                 </h4>
-//                 <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
-//                     See all
-//                 </Link>
-//             </div>
-//             {memberList.length == 0 ? (
-//                 <Group
-//                     className="d-grid justify-content-center align-items-center"
-//                     position="center"
-//                 >
-//                     {/* <DataArrangingLogo /> */}
-//                     <Text className="d-flex justify-content-center align-items-center">
-//                         No Request
-//                     </Text>
-//                 </Group>
-//             ) : (
-//                 <div className="wrap mb-3">
-//                     <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
-//                         <div className="col col-md-2">
-//                             <Avatar src={API_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />
-//                         </div>
-//                         <div className="col col-md-9 px-2">
-//                             <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">
-//                                 {user.first_name} {user.last_name}
-//                             </h4>
-//                             <div className="card-body d-flex align-items-center justify-content-start p-0 flex-md-wrap">
-//                                 <Button
-//                                     classNames={{
-//                                         root: 'lh-20 w75 bg-primary-gradiant me-2 p-0 text-white text-center font-xssss fw-600 ls-1 rounded-xxxxl',
-//                                     }}
-//                                 >
-//                                     Confirm
-//                                 </Button>
-//                                 <Button
-//                                     classNames={{
-//                                         root: 'lh-20 w75 bg-grey me-2 text-grey-800 p-0 text-center font-xssss fw-600 ls-1 rounded-xxxxl',
-//                                     }}
-//                                 >
-//                                     Cancel
-//                                 </Button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>)}
-//         </div>
-//     );
-// }
+    return (
+        <div className="section full  pt-4 position-relative feed-body">
+            <div className="card-body d-flex align-items-center p-1">
+                <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+                    Friend Request
+                </h4>
+                <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
+                    See all
+                </Link>
+            </div>
+            {memberList.length == 0 ? (
+                <Group
+                    className="d-grid justify-content-center align-items-center"
+                    position="center"
+                >
+                    <Text className="d-flex justify-content-center align-items-center">
+                        No Request
+                    </Text>
+                </Group>
+            ) : (
+                friendRequest && <ShowFriendRequest friendRequest={friendRequest} profile={user}/>
+            )}
+        </div>
+    );
+}
 
 const SideBar = () => {
     const { RoomList, RoomListLoading } = useRoom();
@@ -118,8 +152,8 @@ const SideBar = () => {
 
     return (
         <>
-            {/* {user && <FriendRequest user={user}/>} */}
-            {/* <hr /> */}
+            {user && <FriendRequest user={user}/>}
+            <hr />
             <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
                 <div className="section full px-0 pt-4 position-relative feed-body">
                     <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>

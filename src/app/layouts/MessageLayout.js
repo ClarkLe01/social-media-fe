@@ -56,7 +56,7 @@ export default function MessageLayout() {
                     p="md"
                     hiddenBreakpoint="md"
                     hidden={!opened}
-                    width={{ sm: 45 }}
+                    width={{ sm: 50 }}
                     height={{ sm: 500 }}
                     classNames={{
                         root: 'p-0 ps-1 pe-2',

@@ -27,7 +27,6 @@ function Photos (props) {
 
     const GoToPostDetail = (id) => {
         navigate(navigatePath.post.replace(':postId', id));
-        // console.log(id);
     };
 
     return (
