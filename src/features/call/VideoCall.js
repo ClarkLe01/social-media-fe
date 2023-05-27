@@ -131,7 +131,7 @@ const VideoCall = () => {
                     }}
                     token={token}
                     reinitialiseMeetingOnConfigChange={true}
-                    joinWithoutUserInteraction={true}
+                    joinWithoutUserInteraction={false}
                 >
                     <MeetingPeer2PeerScreen
                         onMeetingLeave={() => {
@@ -157,6 +157,7 @@ const VideoCall = () => {
                         meetingMode={meetingMode}
                         setSelectedMic={setSelectedMic}
                         setSelectedWebcam={setSelectedWebcam}
+                        socket={socketClientRef.current}
                     />
                 </MeetingProvider>
             ) : isMeetingLeft ? (

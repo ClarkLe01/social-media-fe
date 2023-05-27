@@ -34,6 +34,7 @@ export default function MeetingPeer2PeerScreen({
     meetingMode,
     setSelectedMic,
     setSelectedWebcam,
+    socket,
 }) {
     const [ localParticipantAllowedJoin, setLocalParticipantAllowedJoin ] =useState(null);
     const [ meetingErrorVisible, setMeetingErrorVisible ] = useState(false);
@@ -76,7 +77,7 @@ export default function MeetingPeer2PeerScreen({
 
     async function onMeetingJoined() {
         const { changeWebcam, changeMic, muteMic, disableWebcam } = mMeetingRef.current;
-
+        setJoined("JOINED");
         if (webcamEnabled && selectedWebcam.id) {
             await new Promise((resolve) => {
                 disableWebcam();
@@ -132,6 +133,8 @@ export default function MeetingPeer2PeerScreen({
         });
     };
 
+    const [ joined, setJoined ] = useState(null);
+
     const mMeeting = useMeeting({
         onParticipantJoined,
         onEntryResponded,
@@ -143,17 +146,18 @@ export default function MeetingPeer2PeerScreen({
 
     useEffect(() => {
         mMeetingRef.current = mMeeting;
+        return () => {
+            mMeetingRef.current = null;
+        };
     }, [ mMeeting ]);
 
-    console.log("mMeeting participants", mMeeting.participants);
-    console.log("mMeeting local", mMeeting.localParticipant);
-    console.log("mMeeting other", [ ...mMeeting.participants.keys() ].length);
-    const [ otherParticipant, setOtherParticipant ] = useState(null);
     useEffect(() => {
-        if([ ...mMeeting.participants.keys() ].length > 2){
-            setOtherParticipant([ ...mMeeting.participants.keys() ][1]);
-        }
-    }, [ mMeetingRef.current, otherParticipant ]);
+        mMeeting.join();
+        return () => {
+            mMeeting.leave();
+        };
+    }, [ ]);
+
     const [ webcams, setWebcams ] = useState([]);
     const changeWebcam = mMeeting?.changeWebcam;
     const [ mics, setMics ] = useState([]);
@@ -189,7 +193,6 @@ export default function MeetingPeer2PeerScreen({
     useEffect(() => {
         getDevices();
     }, []);
-
 
     const ButtonWithTooltip = ({ onClick, onState, OnIcon, OffIcon, mic }) => {
         const btnRef = useRef();
@@ -262,19 +265,31 @@ export default function MeetingPeer2PeerScreen({
                 </div>
                 <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh" }}>
                     <div className='px-auto pt-5'>
-                        {otherParticipant && (
-                            <MemoizedParticipant
-                                participantId={otherParticipant.id}
-                                style={{
-                                    backgroundColor: "#1c1c1c",
-                                    width: "30vw",
-                                    borderRadius: "10px",
-                                    height: "34vh",
-                                }}
-                            />
-                        )}
-                        
+                        <MemoizedParticipant
+                            participantId={mMeetingRef.current?.localParticipant?.id}
+                            style={{
+                                backgroundColor: "#1c1c1c",
+                                width: "30vw",
+                                borderRadius: "10px",
+                                height: "34vh",
+                            }}
+                        />
                         <div className='d-flex justify-content-center pt-5'>
+                            {[ ...mMeeting.participants.keys() ].map((participantId) => {
+                                if(participantId === mMeeting.localParticipant.id) return;
+                                return (
+                                    <MemoizedParticipant
+                                        key={participantId}
+                                        participantId={participantId}
+                                        style={{
+                                            backgroundColor: "#1c1c1c",
+                                            width: "30vw",
+                                            borderRadius: "10px",
+                                            height: "34vh",
+                                        }}
+                                    />
+                                );
+                            })}
                             <Group position="center">
                                 <ButtonWithTooltip
                                     onClick={_handleToggleMic}

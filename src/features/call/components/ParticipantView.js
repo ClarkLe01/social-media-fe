@@ -148,6 +148,26 @@ function ParticipantView({ participantId, ...other }) {
                     </Avatar>
                 </div>
             )}
+            <div
+                className='d-flex pb-3 pe-4'
+                style={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                }}
+            >
+                {micOn ? (
+                    <IconMicrophone size={20} color='white'/>
+                ): (
+                    <IconMicrophoneOff size={20} color='red'/>
+                )}
+                {webcamOn ? (
+                    <IconVideo className='ms-2' size={20} color='white'/>
+                ): (
+                    <IconVideoOff className='ms-2' size={20} color='red'/>
+                )}
+                
+            </div>
         </div>
     );
 
