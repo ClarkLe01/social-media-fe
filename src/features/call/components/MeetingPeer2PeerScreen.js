@@ -61,20 +61,6 @@ export default function MeetingPeer2PeerScreen({
         participant && participant.setQuality("high");
     }
 
-    function onEntryResponded(participantId, name) {
-    // console.log(" onEntryResponded", participantId, name);
-        if (mMeetingRef.current?.localParticipant?.id === participantId) {
-            if (name === "allowed") {
-                setLocalParticipantAllowedJoin(true);
-            } else {
-                setLocalParticipantAllowedJoin(false);
-                setTimeout(() => {
-                    _handleMeetingLeft();
-                }, 3000);
-            }
-        }
-    }
-
     async function onMeetingJoined() {
         const { changeWebcam, changeMic, muteMic, disableWebcam } = mMeetingRef.current;
         setJoined("JOINED");
@@ -137,7 +123,6 @@ export default function MeetingPeer2PeerScreen({
 
     const mMeeting = useMeeting({
         onParticipantJoined,
-        onEntryResponded,
         onMeetingJoined,
         onMeetingLeft,
         onError: _handleOnError,
@@ -244,39 +229,10 @@ export default function MeetingPeer2PeerScreen({
                         </Tooltip>
                     )}
                 </div>
-                <div
-                    className='pt-3 px-2'
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                    }}
-                
-                >
-                    <MemoizedParticipant
-                        participantId={mMeetingRef.current?.localParticipant?.id}
-                        style={{
-                            backgroundColor: "#1c1c1c",
-                            width: "30vw",
-                            borderRadius: "10px",
-                            height: "34vh",
-                        }}
-                    />
-                </div>
                 <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh" }}>
                     <div className='px-auto pt-5'>
-                        <MemoizedParticipant
-                            participantId={mMeetingRef.current?.localParticipant?.id}
-                            style={{
-                                backgroundColor: "#1c1c1c",
-                                width: "30vw",
-                                borderRadius: "10px",
-                                height: "34vh",
-                            }}
-                        />
                         <div className='d-flex justify-content-center pt-5'>
                             {[ ...mMeeting.participants.keys() ].map((participantId) => {
-                                if(participantId === mMeeting.localParticipant.id) return;
                                 return (
                                     <MemoizedParticipant
                                         key={participantId}
@@ -290,42 +246,43 @@ export default function MeetingPeer2PeerScreen({
                                     />
                                 );
                             })}
-                            <Group position="center">
-                                <ButtonWithTooltip
-                                    onClick={_handleToggleMic}
-                                    onState={micEnabled}
-                                    mic={true}
-                                    OnIcon={<IconMicrophone size={24} />}
-                                    OffIcon={<IconMicrophoneOff size={24} />}
-                                />
-                                <Tooltip label="Accept Call">
-                                    <ActionIcon variant="filled" size={45} radius={"100%"} color="teal">
-                                        <IconPhoneIncoming size={24} />
-                                    </ActionIcon>
-                                </Tooltip>
-                                <Tooltip label="End Call">
-                                    <ActionIcon 
-                                        variant="filled" 
-                                        size={45} 
-                                        radius={"100%"} 
-                                        color="red"
-                                        onClick={() => setIsMeetingLeft(true)}
-                                    >
-                                        <IconPhoneOff size={24} />
-                                    </ActionIcon>
-                                </Tooltip>
-                                <ButtonWithTooltip
-                                    onClick={_toggleWebcam}
-                                    onState={webcamEnabled}
-                                    mic={false}
-                                    OnIcon={<IconVideo size={24} />}
-                                    OffIcon={<IconVideoOff size={24} />}
-                                />
-                                
-                            </Group>
+
                         </div>
+                        <Group className="d-flex pt-5" position="center">
+                            <ButtonWithTooltip
+                                onClick={_handleToggleMic}
+                                onState={micEnabled}
+                                mic={true}
+                                OnIcon={<IconMicrophone size={24} />}
+                                OffIcon={<IconMicrophoneOff size={24} />}
+                            />
+                            <Tooltip label="Accept Call">
+                                <ActionIcon variant="filled" size={45} radius={"100%"} color="teal">
+                                    <IconPhoneIncoming size={24} />
+                                </ActionIcon>
+                            </Tooltip>
+                            <Tooltip label="End Call">
+                                <ActionIcon 
+                                    variant="filled" 
+                                    size={45} 
+                                    radius={"100%"} 
+                                    color="red"
+                                    onClick={() => setIsMeetingLeft(true)}
+                                >
+                                    <IconPhoneOff size={24} />
+                                </ActionIcon>
+                            </Tooltip>
+                            <ButtonWithTooltip
+                                onClick={_toggleWebcam}
+                                onState={webcamEnabled}
+                                mic={false}
+                                OnIcon={<IconVideo size={24} />}
+                                OffIcon={<IconVideoOff size={24} />}
+                            />
+                        </Group>
                     </div>
                 </div>
+                
             </div>
             {settingDialogueOpen && mics.length > 0 && webcams.length > 0 ? (
                 <SettingModal

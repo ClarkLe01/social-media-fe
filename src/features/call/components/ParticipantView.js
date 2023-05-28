@@ -27,20 +27,14 @@ const LocalVideoComponent = ({ webcamMediaStream, ...other }) => {
 };
 
 function ParticipantView({ participantId, ...other }) {
-    const {
-        displayName,
-        webcamStream,
-        micStream,
-        webcamOn,
-        micOn,
-        isLocal,
-    } = useParticipant(participantId);
+
+    const micRef = useRef(null);
+    const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } = useParticipant(participantId);
 
     const { profile } = useAuth();
     const { profileId, profileIdLoading, profileIdError } = useProfile(displayName);
     const [ participantProfile, setParticipantProfile ] = useState(null);
-  
-    const micRef = useRef(null);
+
 
     useEffect(() => {
         if (!profileIdLoading && profileId) {
@@ -64,6 +58,7 @@ function ParticipantView({ participantId, ...other }) {
             }
         }
     }, [ micStream, micOn ]);
+    
     const webcamMediaStream = useMemo(() => {
         if (webcamOn && webcamStream) {
             const mediaStream = new MediaStream();
@@ -73,60 +68,17 @@ function ParticipantView({ participantId, ...other }) {
     }, [ webcamStream, webcamOn ]);
     
 
-    return profile.data.id == displayName ? (
+    return (
         <div
             className='px-2'
             style={{
-                position: "absolute",
+                position: "relative",
                 top: 0,
                 left: 0,
             }}
         
         >
-            {webcamOn ? (
-                <LocalVideoComponent 
-                    webcamMediaStream={webcamMediaStream}
-                    {...other}
-                />
-            ): (
-                <div
-                    className='d-flex justify-content-center align-items-center'
-                    {...other}
-                >
-                    <Avatar
-                        radius={"100%"}
-                        size={"lg"}
-                        src={participantProfile ? participantProfile.avatar : null}
-                    >
-                        <Text tt="uppercase">
-                            {participantProfile ? participantProfile.first_name[0]+participantProfile.last_name[0] : null}
-                        </Text>
-                    </Avatar>
-                </div>
-            )}
-            <div
-                className='d-flex pb-3 pe-4'
-                style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                }}
-            >
-                {micOn ? (
-                    <IconMicrophone size={20} color='white'/>
-                ): (
-                    <IconMicrophoneOff size={20} color='red'/>
-                )}
-                {webcamOn ? (
-                    <IconVideo className='ms-2' size={20} color='white'/>
-                ): (
-                    <IconVideoOff className='ms-2' size={20} color='red'/>
-                )}
-                
-            </div>
-        </div>
-    ) : (
-        <div>
+            <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
                 <LocalVideoComponent 
                     webcamMediaStream={webcamMediaStream}
@@ -170,28 +122,6 @@ function ParticipantView({ participantId, ...other }) {
             </div>
         </div>
     );
-
-    // return (
-    //     <div>
-    //         <audio ref={micRef} autoPlay muted={isLocal} />
-    //         {webcamOn && (
-    //             <ReactPlayer
-    //                 playsinline // very very imp prop
-    //                 pip={false}
-    //                 light={false}
-    //                 controls={false}
-    //                 muted={true}
-    //                 playing={true}
-    //                 url={webcamMediaStream}
-    //                 height={"300px"}
-    //                 width={"300px"}
-    //                 onError={(err) => {
-    //                     console.log(err, "participant video error");
-    //                 }}
-    //             />
-    //         )}
-    //     </div>
-    // );
 }
 
 export default ParticipantView;
