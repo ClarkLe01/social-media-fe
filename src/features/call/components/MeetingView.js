@@ -6,11 +6,9 @@ import {
 } from "@videosdk.live/react-sdk";
 import ReactPlayer from "react-player";
 import useCall from "@services/controller/useCall.";
-
 function ParticipantView(props) {
     const micRef = useRef(null);
     const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } = useParticipant(props.participantId);
-  
     const videoStream = useMemo(() => {
         if (webcamOn && webcamStream) {
             const mediaStream = new MediaStream();
@@ -18,7 +16,6 @@ function ParticipantView(props) {
             return mediaStream;
         }
     }, [ webcamStream, webcamOn ]);
-  
     useEffect(() => {
         if (micRef.current) {
             if (micOn && micStream) {
@@ -46,13 +43,16 @@ function ParticipantView(props) {
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn && (
                 <ReactPlayer
+                    //
                     playsinline // very very imp prop
                     pip={false}
                     light={false}
                     controls={false}
                     muted={true}
                     playing={true}
+                    //
                     url={videoStream}
+                    //
                     height={"300px"}
                     width={"300px"}
                     onError={(err) => {
@@ -64,11 +64,69 @@ function ParticipantView(props) {
     );
 }
 
-const MemorizedParticipantView = React.memo(ParticipantView);
+// function ParticipantView(props) {
+//     const webcamRef = useRef(null);
+//     const micRef = useRef(null);
+//     const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } = useParticipant(props.participantId);
+  
+//     const mediaStream = new MediaStream();
+//     mediaStream.addTrack(webcamStream.track);
+
+//     webcamRef.current.srcObject = mediaStream;
+//     webcamRef.current
+//         .play()
+//         .catch((error) => console.error("videoElem.current.play() failed", error));
+
+    
+//     useEffect(() => {
+//         if (micRef.current) {
+//             if (micOn && micStream) {
+//                 const mediaStream = new MediaStream();
+//                 mediaStream.addTrack(micStream.track);
+  
+//                 micRef.current.srcObject = mediaStream;
+//                 micRef.current
+//                     .play()
+//                     .catch((error) =>
+//                         console.error("videoElem.current.play() failed", error),
+//                     );
+//             } else {
+//                 micRef.current.srcObject = null;
+//             }
+//         }
+//     }, [ micStream, micOn ]);
+  
+//     return (
+//         <div>
+//             <p>
+//                 Participant: {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic:{" "}
+//                 {micOn ? "ON" : "OFF"}
+//             </p>
+//             <audio ref={micRef} autoPlay muted={isLocal} />
+//             {webcamOn && (
+//                 <ReactPlayer
+//                     playsinline // very very imp prop
+//                     pip={false}
+//                     light={false}
+//                     controls={false}
+//                     muted={true}
+//                     playing={true}
+//                     url={videoStream}
+//                     height={"300px"}
+//                     width={"300px"}
+//                     onError={(err) => {
+//                         console.log(err, "participant video error");
+//                     }}
+//                 />
+//             )}
+//         </div>
+//     );
+// }
+
 
 const MeetingView = (props) => {
     const { token, roomId, onMeetingLeave } = props;
-    const [ joined, setJoined ] = useState(null);
+    const [ joined, setJoined ] = useState("JOINED");
 
     const { endMeeting } = useCall();
 
@@ -101,8 +159,6 @@ const MeetingView = (props) => {
         onMeetingLeft,
         onParticipantLeft,
     });
-
-    console.log(participants, "participants");
 
     const handleEnableWebcam = () => {
     // Enabling camera
@@ -150,9 +206,10 @@ const MeetingView = (props) => {
     // Ending Meeting
         setJoined(null);
         await endMeeting(token, roomId);
-        onMeetingLeave();
+        // onMeetingLeave();
     // end();
     };
+
 
     return (
         <>
@@ -164,15 +221,27 @@ const MeetingView = (props) => {
             <button onClick={handleEnableWebcam}>Enable Webcam</button>
             <button onClick={handleDisableWebcam}>Disable Webcam</button>
             <button onClick={handleToggleWebcam}>Toggle Webcam</button>
+
             <div className="container">
-                <div>
-                    {[ ...participants.keys() ].map((participantId) => (
-                        <MemorizedParticipantView
-                            participantId={participantId}
-                            key={participantId}
-                        />
-                    ))}
-                </div>
+                {joined && joined === "JOINED" 
+                    ? (
+                        <div>
+                            {[ ...participants.keys() ].map((participantId) => (
+                                <ParticipantView
+                                    participantId={participantId}
+                                    key={participantId}
+                                />
+                            ))}
+                        </div>
+                    ) 
+                    : joined && joined === "JOINING" 
+                        ? (
+                            <p>Joining the meeting...</p>
+                        ) 
+                        : (
+                            <button onClick={handleJoinMeeting}>Join the meeting</button>
+                        )
+                }
             </div>
         </>
     );

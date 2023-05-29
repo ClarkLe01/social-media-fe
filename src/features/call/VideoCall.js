@@ -15,6 +15,7 @@ import Socket, { connections } from '@services/socket';
 import useCall from '@services/controller/useCall.';
 import WaitingScreen from './components/WaitingScreen';
 import MeetingPeer2PeerScreen from './components/MeetingPeer2PeerScreen';
+import MeetingView from './components/MeetingView';
 
 
 const VideoCall = () => {
@@ -102,6 +103,15 @@ const VideoCall = () => {
                             setParticipantName(profile.data.id);
                         }
                     }
+                    if(data.type == 'endCall'){
+                        setToken("");
+                        setMeetingId("");
+                        setParticipantName("");
+                        setWebcamOn(false);
+                        setMicOn(false);
+                        setMeetingStarted(false);
+                        setIsMeetingLeft(true);
+                    }
                 }
                 
             };
@@ -119,16 +129,18 @@ const VideoCall = () => {
     }, [ waitingToReconnect ]);
     return (
         <>
-            {isMeetingStarted ? (
+            {isMeetingStarted && token && meetingId ? (
                 <MeetingProvider
                     config={{
                         meetingId,
                         micEnabled: micOn,
                         webcamEnabled: webcamOn,
                         name: participantName,
+                        apiKey: "cced7187-ed8c-497d-a2ed-1128ad907b5b",
                         mode: meetingMode,
                         multiStream: true,
                     }}
+                    
                     token={token}
                     reinitialiseMeetingOnConfigChange={true}
                     joinWithoutUserInteraction={false}
@@ -141,6 +153,7 @@ const VideoCall = () => {
                             setWebcamOn(false);
                             setMicOn(false);
                             setMeetingStarted(false);
+                            setIsMeetingLeft(true);
                         }}
                         setIsMeetingLeft={setIsMeetingLeft}
                         selectedMic={selectedMic}
@@ -159,6 +172,7 @@ const VideoCall = () => {
                         setSelectedWebcam={setSelectedWebcam}
                         socket={socketClientRef.current}
                     />
+                    {/* <MeetingView token={token} roomId={meetingId} /> */}
                 </MeetingProvider>
             ) : isMeetingLeft ? (
                 <EndCallScreen />

@@ -27,8 +27,8 @@ const AppTest = () => {
                 name: participantName,
             }}
             token={token}
-            reinitialiseMeetingOnConfigChange={true}
-            joinWithoutUserInteraction={true}
+            // reinitialiseMeetingOnConfigChange={true}
+            // joinWithoutUserInteraction={true}
         >
             <MeetingView token={token} roomId={meetingId} />
         </MeetingProvider>

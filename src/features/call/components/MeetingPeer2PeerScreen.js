@@ -6,7 +6,7 @@ import {
     usePubSub,
 } from "@videosdk.live/react-sdk";
 import SettingModal from "./SettingModal";
-import { ActionIcon, Group, Tooltip } from "@mantine/core";
+import { ActionIcon, Group, LoadingOverlay, Tooltip } from "@mantine/core";
 import { IconMicrophone, IconMicrophoneOff, IconPhoneIncoming, IconPhoneOff, IconSettings, IconVideo, IconVideoOff } from "@tabler/icons-react";
 import ParticipantView from "./ParticipantView";
 
@@ -36,11 +36,9 @@ export default function MeetingPeer2PeerScreen({
     setSelectedWebcam,
     socket,
 }) {
-    const [ localParticipantAllowedJoin, setLocalParticipantAllowedJoin ] =useState(null);
     const [ meetingErrorVisible, setMeetingErrorVisible ] = useState(false);
     const [ meetingError, setMeetingError ] = useState(false);
     const [ settingDialogueOpen, setSettingDialogueOpen ] = useState(false);
-    const [ exactParticipants, setExactParticipants ] = useState([]);
 
     const handleClickOpen = () => {
         setSettingDialogueOpen(true);
@@ -120,6 +118,7 @@ export default function MeetingPeer2PeerScreen({
     };
 
     const [ joined, setJoined ] = useState(null);
+    const [ visible, setVisible ] = useState(false);
 
     const mMeeting = useMeeting({
         onParticipantJoined,
@@ -135,13 +134,6 @@ export default function MeetingPeer2PeerScreen({
             mMeetingRef.current = null;
         };
     }, [ mMeeting ]);
-
-    useEffect(() => {
-        mMeeting.join();
-        return () => {
-            mMeeting.leave();
-        };
-    }, [ ]);
 
     const [ webcams, setWebcams ] = useState([]);
     const changeWebcam = mMeeting?.changeWebcam;
@@ -179,6 +171,7 @@ export default function MeetingPeer2PeerScreen({
         getDevices();
     }, []);
 
+
     const ButtonWithTooltip = ({ onClick, onState, OnIcon, OffIcon, mic }) => {
         const btnRef = useRef();
         return (
@@ -202,8 +195,21 @@ export default function MeetingPeer2PeerScreen({
     
     };
 
+    useEffect(() => {
+        setVisible(true); 
+        const timeOut = setTimeout(() => {
+            mMeetingRef.current?.join();
+            setVisible(false);
+        }, 3000);
+        return () => {
+            clearTimeout(timeOut);
+            mMeetingRef.current?.leave();
+        };
+    }, [ ]);
+
     return (
         <>
+            <LoadingOverlay visible={visible} overlayBlur={2} />  
             <div style={{ 
                 backgroundImage: 'linear-gradient(315deg, #000000 0%, #7f8c8d 74%)', 
                 backgroundColor: "#000000", 
@@ -256,18 +262,21 @@ export default function MeetingPeer2PeerScreen({
                                 OnIcon={<IconMicrophone size={24} />}
                                 OffIcon={<IconMicrophoneOff size={24} />}
                             />
-                            <Tooltip label="Accept Call">
+                            {/* <Tooltip label="Accept Call">
                                 <ActionIcon variant="filled" size={45} radius={"100%"} color="teal">
                                     <IconPhoneIncoming size={24} />
                                 </ActionIcon>
-                            </Tooltip>
+                            </Tooltip> */}
                             <Tooltip label="End Call">
                                 <ActionIcon 
                                     variant="filled" 
                                     size={45} 
                                     radius={"100%"} 
                                     color="red"
-                                    onClick={() => setIsMeetingLeft(true)}
+                                    onClick={() => {
+                                        mMeetingRef.current?.leave();
+                                        socket.send(JSON.stringify({ type: 'endCall' }));
+                                    }}
                                 >
                                     <IconPhoneOff size={24} />
                                 </ActionIcon>
