@@ -122,6 +122,8 @@ function useFriend(userId) {
 
     });
 
+    
+
     return {
         friendList,
         friendListLoading,

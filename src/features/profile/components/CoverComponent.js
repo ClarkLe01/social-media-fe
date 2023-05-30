@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { IconPhoto, IconCamera, IconUpload } from '@tabler/icons-react';
+import { IconPhoto, IconCamera, IconUpload, IconCheck, IconX } from '@tabler/icons-react';
 import { Button, Image, Text, Group, AspectRatio, Menu, Modal } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 
@@ -7,7 +7,7 @@ import { useAuth, useProfile } from '@services/controller';
 import ImageCropper from '../../../common/components/ImageCropper';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
 import { API_URL } from '@constants';
-
+import { notifications } from '@mantine/notifications';
 function CoverComponent(props) {
     const { user } = props;
     const { profile } = useAuth();
@@ -38,9 +38,36 @@ function CoverComponent(props) {
         const file = base64ToFile(updatedCoverSrc, 'cover.jpg');
         const form = new FormData();
         form.append('cover', file);
-        updateProfile({
-            data: form,
-        });
+        updateProfile(
+            {
+                data: form,
+            },
+            {
+                onSuccess: (data) => {
+                    notifications.show({
+                        id: 'notify-success-update-cover',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Success ",
+                        message: 'You updated your cover successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                },
+                onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-update-cover',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Failed",
+                        message: 'You updated your cover unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            });
         setUpdatedCoverSrc(null);
         setCoverSrc(null);
         setOpenCoverModal(false);

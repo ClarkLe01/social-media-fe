@@ -3,7 +3,7 @@ import { DatePicker } from '@mantine/dates';
 import { DatePickerInput } from '@mantine/dates';
 
 function DateTimePicker(props) {
-    const { name, icon, placeHolder, handleInputChange, ...other } = props;  
+    const { name, icon, placeHolder, handleInputChange, value, ...other } = props;  
     return (
         <div className="form-group icon-input mb-3">
             <DatePickerInput
@@ -18,7 +18,8 @@ function DateTimePicker(props) {
                 onChange={handleInputChange}
                 hideOutsideDates
                 defaultLevel="year"
-                error 
+                value={value}
+                // error 
                 {...other}
             />
         </div>

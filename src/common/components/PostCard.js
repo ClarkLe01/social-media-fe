@@ -44,6 +44,7 @@ import usePostInteraction from '@services/controller/usePostInteraction';
 import { IconThumbUp } from '@tabler/icons-react';
 import { getTimeString } from '@common/utils/converString';
 import { navigatePath } from '@app/routes/config';
+import AddComment from './AddComment';
 
 const MemorizedImage = React.memo(Image);
 
@@ -195,7 +196,7 @@ function CommentItem(props) {
     const [ photoIndex, setPhotoIndex ] = useState(0);
     const [ isOpen, setIsOpen ] = useState(false);
     const [ openedDeleteModal, setOpenedDeleteModal ] = useState(false);
-
+    const [ showEditComment, setShowEditComment ] = useState(false);
     const {
         updateComment,
         updateCommentError,
@@ -209,6 +210,10 @@ function CommentItem(props) {
     } = usePostComment(comment.id);
 
     const queryClient = useQueryClient();
+
+    const handleUpdateComment = () => {
+        setShowEditComment(!showEditComment);
+    };
 
     const handleDeleteComment = () => {
         deleteComment(
@@ -229,7 +234,7 @@ function CommentItem(props) {
 
     return (
         <div className="mt-3 mb-2">
-            <div
+            {!showEditComment && <div
                 className="comment d-flex align-items-start justify-content-start"
                 style={{
                     zIndex: 0,
@@ -281,7 +286,9 @@ function CommentItem(props) {
                                             </ActionIcon>
                                         </Menu.Target>
                                         <Menu.Dropdown>
-                                            <Menu.Item icon={<IconPencil size={14} />}>
+                                            <Menu.Item icon={<IconPencil size={14} />}
+                                                onClick={ () => handleUpdateComment()}
+                                            >
                                                 Update
                                             </Menu.Item>
                                             <Menu.Item
@@ -305,7 +312,8 @@ function CommentItem(props) {
                         <Image src={comment.file} maw={'15rem'} />
                     </div>
                 </div>
-            </div>
+            </div>}
+            {showEditComment && <AddComment currentUser={currentUser} postId={postId} valueComment={comment.content} commentId={comment.id} setShowEditComment={setShowEditComment} />}
             <Modal
                 opened={openedDeleteModal}
                 onClose={() => setOpenedDeleteModal(false)}
@@ -344,166 +352,7 @@ function CommentItem(props) {
                     onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % files.length)}
                 />
             )}
-        </div>
-    );
-}
-
-function AddComment(props) {
-    const queryClient = useQueryClient();
-    const { currentUser, postId } = props;
-    const [ commentContent, setCommentContent ] = useState('');
-
-    const [ showEmoji, setShowEmoji ] = useState(false);
-    const [ attachFiles, setAttachFiles ] = useState([]);
-    const dropzoneRef = useRef(null);
-
-    const { createComment, createCommentError, createCommentLoading } = usePostComment();
-
-    const handleSendComment = () => {
-        if (commentContent.length == 0 && attachFiles.length == 0) return;
-        const form = new FormData();
-        form.append('content', commentContent);
-        form.append('post', postId);
-        if (attachFiles.length > 0) {
-            attachFiles.map((file) => {
-                form.append('file', file);
-            });
-        }
-        for (let [ key, value ] of form) {
-            console.log('form', key, ':', value);
-        }
-        createComment(
-            {
-                data: form,
-            },
-            {
-                onSuccess: (data) => {
-                    console.log(data);
-                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
-                },
-                onError: (error) => {
-                    console.log(error.response.data);
-                    queryClient.invalidateQueries({ queryKey: [ `post/${postId}/comments` ] });
-                },
-            },
-        );
-        setCommentContent('');
-        setAttachFiles([]);
-    };
-
-    const handleEnterPress = (e) => {
-        if (e.code == 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendComment();
-        }
-    };
-
-    return (
-        <div className="mt-1">
-            <Divider my="xs" className="my-0" />
-            <div
-                className="write-your-comment mt-4"
-                style={{
-                    zIndex: 0,
-                }}
-            >
-                <div className="d-flex align-items-start justify-content-center">
-                    <Avatar src={currentUser.avatar} radius={'100%'} size={32} />
-                    <div
-                        className="add-comment ms-3"
-                        style={{
-                            width: '100%',
-                        }}
-                    >
-                        <div
-                            className="p-3"
-                            style={{
-                                backgroundColor: '#f1f3f5',
-                                borderRadius: '10px',
-                            }}
-                        >
-                            <Textarea
-                                placeholder="Write a comment..."
-                                autosize
-                                minRows={1}
-                                maxRows={4}
-                                variant="filled"
-                                classNames={{
-                                    wrapper: 'border-0',
-                                }}
-                                value={commentContent}
-                                onChange={(event) => setCommentContent(event.currentTarget.value)}
-                                onKeyDown={handleEnterPress}
-                            />
-                            <div className="d-flex justify-content-start align-items-center mt-2">
-                                <Popover
-                                    position="top-end"
-                                    shadow="md"
-                                    classNames={{
-                                        dropdown: 'p-0',
-                                    }}
-                                    opened={showEmoji}
-                                    onChange={setShowEmoji}
-                                    withArrow={true}
-                                >
-                                    <Popover.Target>
-                                        <ActionIcon onClick={() => setShowEmoji((o) => !o)}>
-                                            <IconMoodEmpty />
-                                        </ActionIcon>
-                                    </Popover.Target>
-                                    <Popover.Dropdown className="me-4">
-                                        <div>
-                                            <Picker
-                                                data={data}
-                                                onEmojiSelect={(e) =>
-                                                    setCommentContent(commentContent + e.native)
-                                                }
-                                            />
-                                        </div>
-                                    </Popover.Dropdown>
-                                </Popover>
-                                <ActionIcon className="ms-1" onClick={() => dropzoneRef.current()}>
-                                    <IconCamera />
-                                </ActionIcon>
-                                <ActionIcon
-                                    className="ms-auto"
-                                    onClick={() => handleSendComment()}
-                                    disabled={commentContent.length == 0 && attachFiles.length == 0}
-                                >
-                                    <IconSend />
-                                </ActionIcon>
-                            </div>
-                        </div>
-                        <div
-                            className="d-flex justify-content-start align-items-center"
-                            style={{
-                                display: 'block',
-                            }}
-                        >
-                            {attachFiles.length > 0 && (
-                                <ThumbMedia
-                                    files={attachFiles}
-                                    setFiles={setAttachFiles}
-                                    openDropZone={() => dropzoneRef.current()}
-                                />
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <Dropzone
-                openRef={dropzoneRef}
-                onDrop={setAttachFiles}
-                onReject={(files) => console.log('rejected files', files)}
-                maxSize={3 * 1024 ** 2} // accept={[ ...IMAGE_MIME_TYPE, MIME_TYPES.mp4 ]}
-                accept={{
-                    'image/*': [],
-                    // All images
-                    'video/*': [],
-                }}
-                maxFiles={1}
-                hidden={true}
-            />
+            
         </div>
     );
 }
@@ -747,7 +596,16 @@ function PostCard(props) {
                         </div>
                     </Text>
                 </Text>
-                {profile.data.id == owner.id && <PostMenuTool id={id} />}
+                {profile.data.id == owner.id && 
+                <PostMenuTool  
+                    user={profile.data} 
+                    defaultAudience="public" 
+                    id={id} 
+                    status={status}
+                    // owner={owner} 
+                    content={content}
+                    images={images}
+                />}
             </div>
             <div className="card-body p-0 py-3">
                 <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">

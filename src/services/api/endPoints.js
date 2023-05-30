@@ -182,7 +182,7 @@ export default {
             headers: headers.multipart,
         },
         update: {
-            url: '/post/update/:postId',
+            url: '/post/:postId',
             method: 'PATCH',
             headers: headers.multipart,
         },

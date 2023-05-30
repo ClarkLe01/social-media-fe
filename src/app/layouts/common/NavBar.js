@@ -59,14 +59,6 @@ function NavBar(props) {
                 }}
             />
             <NavLink
-                label="Light/Dark"
-                icon={<IconMoon size={16} stroke={1.5} />}
-                classNames={{
-                    root: 'nav-content-bttn open-font fw-600 px-0',
-                    icon: 'me-3',
-                }}
-            />
-            <NavLink
                 component={Link}
                 to="/settings"
                 label="Settings"

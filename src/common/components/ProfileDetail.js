@@ -11,16 +11,6 @@ function ProfileDetail() {
                     Proin blandit ac massa sed rhoncus
                 </p>
             </div>
-            <div className="card-body border-top-xs d-flex">
-                <i className="feather-lock text-grey-500 me-3 font-lg"></i>
-                <h4 className="fw-700 text-grey-900 font-xssss mt-0">
-                    Private{' '}
-                    <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-                        What`&apos;`s up, how are you?
-                    </span>
-                </h4>
-            </div>
-
             <div className="card-body d-flex pt-0">
                 <i className="feather-eye text-grey-500 me-3 font-lg"></i>
                 <h4 className="fw-700 text-grey-900 font-xssss mt-0">
@@ -33,10 +23,6 @@ function ProfileDetail() {
             <div className="card-body d-flex pt-0">
                 <i className="feather-map-pin text-grey-500 me-3 font-lg"></i>
                 <h4 className="fw-700 text-grey-900 font-xssss mt-1">Flodia, Austia </h4>
-            </div>
-            <div className="card-body d-flex pt-0">
-                <i className="feather-users text-grey-500 me-3 font-lg"></i>
-                <h4 className="fw-700 text-grey-900 font-xssss mt-1">Genarel Group</h4>
             </div>
         </div>
     );

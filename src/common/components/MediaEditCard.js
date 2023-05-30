@@ -20,7 +20,6 @@ function MediaEditCard(props) {
     const file = props.file;
     const fileType = file.type.split('/');
     const fileUrl = URL.createObjectURL(file);
-    
     return (
         <Card
             shadow="sm"

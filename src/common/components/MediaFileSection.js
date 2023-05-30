@@ -15,6 +15,7 @@ const MemoizedImageGridPreview = React.memo(ImageGridPreview);
 
 function MediaFileSection(props) {
     const openMediaFileRef = props.openMediaFileRef;
+    const id = props.id;
     const theme = useMantineTheme();
     const [ files, setFiles ] = [ props.files, props.setFiles ];
     const [ showEditImageGrid, setShowEditImageGrid ] = useState(false);
@@ -109,7 +110,7 @@ function MediaFileSection(props) {
                                     {basedImageGridWidth > 530 && 'Edit All'} 
                                 </Button>
                                 <Button
-                                    onClick={() => openMediaFileRef.current()}
+                                    onClick={() => id?openMediaFileRef:openMediaFileRef.current()}
                                     leftIcon={<IconUpload/>}
                                     classNames={{
                                         root: basedImageGridWidth < 530 &&'px-1',

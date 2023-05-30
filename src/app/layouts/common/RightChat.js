@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@mantine/core';
+import Pagetitle from '@common/components/PageTitle';
+import { Grid, Group, Text, ScrollArea } from '@mantine/core';
+import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
+import { useScrollLock } from '@mantine/hooks';
+import { useFriend, useAuth, useMessage, useRoom } from '@services/controller';
+import { API_URL } from '@constants';
+import RightChatItem from '@common/components/RightChatItem';
+import { Rooms } from '@features/messages/components';
+
 function FriendRequest() {
     return (
         <div className="section full  pt-4 position-relative feed-body">
@@ -8,7 +17,7 @@ function FriendRequest() {
                 <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
                     Friend Request
                 </h4>
-                <Link to="/requestfriend" className="fw-600 ms-auto font-xssss text-primary">
+                <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
                     See all
                 </Link>
             </div>
@@ -53,18 +62,20 @@ function FriendRequest() {
     );
 }
 
-const chatMember = [
-    { imageUrl: 'user.png', name: 'Hurin Seary', status: 'bg-success' },
-    { imageUrl: 'user.png', name: 'Victor Exrixon', status: 'bg-success' },
-    { imageUrl: 'user.png', name: 'Surfiya Zakir', status: 'bg-warning' },
-    { imageUrl: 'user.png', name: 'Goria Coast', status: 'bg-danger' },
-    { imageUrl: 'user.png', name: 'Hurin Seary', status: 'bg-success' },
-    { imageUrl: 'user.png', name: 'David Goria', status: 'bg-success' },
-    { imageUrl: 'user.png', name: 'Seary Victor', status: 'bg-success' },
-    { imageUrl: 'user.png', name: 'Ana Seary', status: 'bg-success' },
-];
-
 const SideBar = () => {
+    const { RoomList, RoomListLoading } = useRoom();
+    
+    const { profile } = useAuth();
+    const { friendList } = useFriend(profile.data.id);
+    const [ memberList, setMemberList ] = useState([]);
+    useEffect(() => {
+        if (friendList) {
+            setMemberList([ ...friendList.data ]);
+        }
+    }, [ friendList ]);
+
+
+    console.log(RoomList);
 
     const [ isOpen, setIsOpen ] = useState(false);
 
@@ -78,84 +89,22 @@ const SideBar = () => {
             <hr />
             <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
                 <div className="section full px-0 pt-4 position-relative feed-body">
-                    <h4 className="font-xsss text-grey-900 fw-700 ls-3">Contacts</h4>
+                    <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>
                     <ul className="list-group list-group-flush">
-                        {chatMember.map((value, index) => (
-                            // Start Single Demo
-                            <li
-                                key={index}
-                                className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-                            >
-                                <figure className="avatar float-left mb-0 me-2">
-                                    <img
-                                        src={`assets/images/${value.imageUrl}`}
-                                        alt="avater"
-                                        className="w35"
-                                    />
-                                </figure>
-                                <h3 className="fw-700 mb-0 mt-0">
-                                    <span
-                                        className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                        onClick={toggleOpen}
-                                    >
-                                        {value.name}
-                                    </span>
-                                </h3>
-                                <span
-                                    className={`${value.status} ms-auto btn-round-xss`}
-                                ></span>
-                            </li>
-                            // End Single Demo
+                        {memberList.map((value) => (
+                            <RightChatItem 
+                                key={value.id}
+                                idFriendInstance={value.id}
+                                idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
+                                type='friend'    
+                            />
                         ))}
                     </ul>
                 </div>
                 <div className="section full px-0 pt-4 pb-4 position-relative feed-body">
-                    <h4 className="font-xsss text-grey-900 fw-700 ls-3">Groups</h4>
+                    <h4 className="font-xsss text-grey-900 fw-700 ls-3">Contact</h4>
                     <ul className="list-group list-group-flush">
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                UD
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Studio Express
-                                </span>
-                            </h3>
-                            <span className="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss">
-                                2 min
-                            </span>
-                        </li>
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                AR
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    Armany Design
-                                </span>
-                            </h3>
-                            <span className="bg-warning ms-auto btn-round-xss"></span>
-                        </li>
-                        <li className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            <span className="btn-round-sm bg-mini-gradiant me-3 ls-3 text-white font-xssss fw-700">
-                                UD
-                            </span>
-                            <h3 className="fw-700 mb-0 mt-0">
-                                <span
-                                    className="font-xssss text-grey-600 d-block text-dark model-popup-chat pointer"
-                                    onClick={toggleOpen}
-                                >
-                                    De fabous
-                                </span>
-                            </h3>
-                            <span className="bg-success ms-auto btn-round-xss"></span>
-                        </li>
+                        {RoomList && <Rooms rooms={RoomList.data} isRightChat={true}/>}  
                     </ul>
                 </div>
             </div>
