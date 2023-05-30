@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
+    Constants,
     MeetingProvider,
     useMeeting,
     useParticipant,
@@ -12,6 +13,7 @@ import { CALL_API_KEY } from "@constants";
 import { IconAt } from "@tabler/icons-react";
 import { endPoints } from "@services/api";
 import { navigatePath } from "@app/routes/config";
+import InComingCall from "@features/call/components/InComingCall";
 
 const getToken = async () => {
     const response = await fetch(`http://localhost:8000/calling/token`, {
@@ -217,13 +219,12 @@ const MeetingView = (props) => {
   
     const handleToggleMic = () => {
         // Toggling Mic
+        console.log('toggle mic');
         toggleMic();
     };
     //Method to get the mics and load in our state
     const handleGetMics = async () => {
         const mics = await getMics();
-        // eslint-disable-next-line no-debugger
-        debugger;
         console.log('mics ', mics);
         setMics(mics);
     };
@@ -235,7 +236,7 @@ const MeetingView = (props) => {
   
     const handleJoinMeeting = () => {
         // Joining Meeting
-        window.open(navigatePath.videoCall+"?has_video=True", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        window.open(navigatePath.videoCall+"?hasVideo=true&isGroup=True", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=600");
         // setJoined("JOINING");
         // join();
     };
@@ -294,66 +295,46 @@ const MeetingView = (props) => {
 };
 
 function TestPage() {
-    const [ meetingId, setMeetingId ] = useState();
-    const [ token, setToken ] = useState();
+    const [ token, setToken ] = useState("");
+    const [ meetingId, setMeetingId ] = useState("");
+    const [ participantName, setParticipantName ] = useState("");
+    const [ micOn, setMicOn ] = useState(false);
+    const [ webcamOn, setWebcamOn ] = useState(true);
+    const [ selectedMic, setSelectedMic ] = useState({ id: null });
+    const [ selectedWebcam, setSelectedWebcam ] = useState({ id: null });
+    const [ selectWebcamDeviceId, setSelectWebcamDeviceId ] = useState(
+        selectedWebcam.id,
+    );
+    const [ meetingMode, setMeetingMode ] = useState(Constants.modes.CONFERENCE);
+    const [ selectMicDeviceId, setSelectMicDeviceId ] = useState(selectedMic.id);
+    const [ isMeetingStarted, setMeetingStarted ] = useState(false);
+    const [ isMeetingLeft, setIsMeetingLeft ] = useState(false);
     const { profile } = useAuth();
+    
+    const [ opened, setOpened ] = useState(false);
 
-    const fetchMeetingIdAndToken = async () => {
-    //We will fetch token and meetingId and update it in the state
+    const handleCalling = async () => {
+        //We will fetch token and meetingId and update it in the state
         const newToken = await getToken();
         const newMeetingId = await createMeeting(newToken);
-        console.log('newToken: ', newToken);
-        console.log('newMeetingId: ', newMeetingId);
-        setToken(newToken);
-        setMeetingId(newMeetingId);
-        // const config = {
-        //     name: profile.data.first_name+' '+profile.data.last_name,
-        //     meetingId: newMeetingId,
-        //     apiKey: CALL_API_KEY,
-        //     token: newToken,
-        //     containerId: null,
-        
-        //     micEnabled: true,
-        //     webcamEnabled: true,
-        //     participantCanToggleSelfWebcam: true,
-        //     participantCanToggleSelfMic: true,
-        
-        //     chatEnabled: true,
-        //     screenShareEnabled: true,
-        
-        //     /*
-        
-        //     Other Feature Properties
-            
-        //     */
-        // };
-        // const meeting = new VideoSDKMeeting();
-        // meeting.init(config);
+        // const url = navigatePath.videoCall.replace(":roomCallId", newMeetingId).replace(":roomCallToken", newToken)+"?hasVideo=true&isGroup=false";
+        // window.open(url,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=600");
+        setOpened(true);
+
     };
 
-    useEffect(() => {
-    //We will first load the token and generate a meeting id and pass it to the Meeting Provider
-        fetchMeetingIdAndToken();
-    }, []);
-
-    return token && meetingId ? (
-        <MeetingProvider
-            config={{
-            // Pass the generated meeting id
-                meetingId: meetingId,
-                name: profile.data.first_name+' '+profile.data.last_name,
-                micEnabled: true,
-                webcamEnabled: true,
-                apiKey: CALL_API_KEY,
-            }}
-            // Pass the generated token
-            token={token}
-            joinWithoutInteraction={true}
-        >
-            <MeetingView token={token} roomId={meetingId} />
-        </MeetingProvider>
-    ) : (
-        <>aaaa</>
+    return (
+        <>
+            <Button
+                onClick={() => handleCalling()}
+            >
+                Call
+            </Button>
+            <InComingCall 
+                opened={opened}
+                setOpened={setOpened}
+            />
+        </>
     );
 }
 export default TestPage;
