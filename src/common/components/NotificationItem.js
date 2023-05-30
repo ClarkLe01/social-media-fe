@@ -228,8 +228,17 @@ function NotificationItem(props) {
 
         <>
             {sender && (
-                <Grid gutter="xs" className='border-bottom'>
-                    <div 
+                <Grid
+                    gutter="xs" 
+                    className='ps-3 py-2 border-bottom'
+                    onClick={() => console.log(item)}
+                    style={{
+                        background: isHover && '#F5F5F5',
+                    }}
+                    onMouseEnter={() => setIsHover(true)}
+                    onMouseLeave={() => setIsHover(false)}
+                >
+                    {/* <div 
                         className='d-flex align-items-center justify-content-center py-2'
                         onClick={() => console.log(item)}
                         style={{
@@ -238,35 +247,36 @@ function NotificationItem(props) {
                         onMouseEnter={() => setIsHover(true)}
                         onMouseLeave={() => setIsHover(false)}
                     >
-                        <Grid.Col span={2}>
-                            <div style={{ position: 'relative' }}>
-                                <Avatar
-                                    src={API_URL+sender.avatar.replace(API_URL,'')}
-                                    radius={'100%'}
-                                    size={55}
-                                />
-                                {getIconCorrespondingToType(item.type)}
-                            </div>
-                        </Grid.Col>
-                        <Grid.Col span={8} className='ps-3'>
-                            <Text fz={12} c={item.read&&"dimmed"} fw={!item.read&&600} lineClamp={3}>
-                                <Text fw={700} fz={13} className="d-inline">
-                                    {sender.first_name} {sender.last_name}
-                                </Text>
-                                {' '}
-                                {item.content}
-                            </Text>
-                            <Text c={item.read?"dimmed":"blue"} size={11} className='d-block pt-1' fw={700}>
-                                {timeDifference !== null && formatDuration(timeDifference)}
-                            </Text>
-                        </Grid.Col>
-                        <Grid.Col span={1} className='ps-3'>
-                            <Badge size={5}>
-                                {item.read?(<IconBellCheck color='green' size={13}/>):(<IconBellRinging size={13}/>)}
-                            </Badge>
-                        </Grid.Col>
                         
-                    </div>
+                        
+                    </div> */}
+                    <Grid.Col span={2}>
+                        <div style={{ position: 'relative' }}>
+                            <Avatar
+                                src={API_URL+sender.avatar.replace(API_URL,'')}
+                                radius={'100%'}
+                                size={55}
+                            />
+                            {getIconCorrespondingToType(item.type)}
+                        </div>
+                    </Grid.Col>
+                    <Grid.Col span={8} className='ps-3'>
+                        <Text fz={12} c={item.read&&"dimmed"} fw={!item.read&&600} lineClamp={3}>
+                            <Text fw={700} fz={13} className="d-inline">
+                                {sender.first_name} {sender.last_name}
+                            </Text>
+                            {' '}
+                            {item.content}
+                        </Text>
+                        <Text c={item.read?"dimmed":"blue"} size={11} className='d-block pt-1' fw={700}>
+                            {timeDifference !== null && formatDuration(timeDifference)}
+                        </Text>
+                    </Grid.Col>
+                    <Grid.Col span={1} className='ps-3'>
+                        <Badge size={5}>
+                            {item.read?(<IconBellCheck color='green' size={13}/>):(<IconBellRinging size={13}/>)}
+                        </Badge>
+                    </Grid.Col>
                 </Grid>
             )}
         </>

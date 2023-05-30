@@ -8,4 +8,7 @@ export default {
     rooms: {
         url: '/rooms',
     },
+    call: {
+        url: '/call/:roomId/:token',
+    },
 };

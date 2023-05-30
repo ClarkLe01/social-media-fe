@@ -5,6 +5,7 @@ export const navigatePath = {
     login: '/login',
     register: '/register',
     forgetPassword: '/forgot',
+    resetPassword: '/reset/:uid/:token',
     profile: '/profile/:userId',
     home: '',
     findpeople: '/people',
@@ -18,7 +19,7 @@ export const navigatePath = {
     friendRequest: '/friendrequest',
     yourRequest: '/yourrequest',
     friendList: '/friendlist',
-    videoCall: '/call/:roomCallId',
+    videoCall: '/call/:roomCallId/:roomCallToken',
     notFound404: '/notfound404',
     testpage: '/test',
 };
@@ -35,6 +36,7 @@ const HelpBox = lazy(() => import('@features/settings/helpbox/HelpBox'));
 const Register = lazy(() => import('@features/register/Register'));
 const Login = lazy(() => import('@features/login/Login'));
 const ForgetPassword = lazy(() => import('@features/forgotpassword/ForgotPassword'));
+const ResetPassword = lazy(() => import('@features/forgotpassword/ResetPassword'));
 const FindPeople = lazy(() => import('@features/search/FindPeople'));
 const Notification = lazy(() => import('@features/notification/Notification'));
 const Chat = lazy(() => import('@features/messages/Chat'));
@@ -165,6 +167,11 @@ const routes = [
                 name: 'ForgetPassword',
                 path: navigatePath.forgetPassword,
                 element: ForgetPassword,
+            },
+            {
+                name: 'ResetPassword',
+                path: navigatePath.resetPassword,
+                element: ResetPassword,
             },
         ],
     },

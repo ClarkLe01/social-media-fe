@@ -52,17 +52,63 @@ function useAuth() {
         window.location.href = navigatePath.login;
     };
 
+    const {
+        isLoading: requestResetPasswordLoading,
+        error: requestResetPasswordError,
+        mutate: requestResetPassword,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return publicApi(endPoints.user.requestResetPassword, variables);
+        },
+    });
+
+    const {
+        isLoading: validateResetPasswordLoading,
+        error: validateResetPasswordError,
+        mutate: validateResetPassword,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return publicApi(endPoints.user.validateResetPassword, variables);
+        },
+    });
+
+    const {
+        isLoading: resetPasswordLoading,
+        error: resetPasswordError,
+        mutate: resetPassword,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return publicApi(endPoints.user.resetPassword, variables);
+        },
+    });
+
     return {
-        profile,
         login,
-        logout,
-        register,
-        registerLoading,
-        profileLoading,
         loginLoading,
         loginError,
-        profileError,
+
+        register,
+        registerLoading,
         registerError,
+
+        profile,
+        profileLoading,
+        profileError,
+
+        logout,
+
+        requestResetPassword,
+        requestResetPasswordLoading,
+        requestResetPasswordError,
+
+        validateResetPassword,
+        validateResetPasswordLoading,
+        validateResetPasswordError,
+
+        resetPassword,
+        resetPasswordLoading,
+        resetPasswordError,
+
     };
 }
 
