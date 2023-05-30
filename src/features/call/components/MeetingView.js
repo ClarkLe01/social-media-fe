@@ -5,7 +5,7 @@ import {
     useParticipant,
 } from "@videosdk.live/react-sdk";
 import ReactPlayer from "react-player";
-import useCall from "@services/controller/useCall.";
+import useCall from "@services/controller/useCall";
 function ParticipantView(props) {
     const micRef = useRef(null);
     const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } = useParticipant(props.participantId);

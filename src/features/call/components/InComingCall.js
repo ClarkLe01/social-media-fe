@@ -3,7 +3,7 @@ import AvatarDisplay from '@features/messages/components/AvatarDisplay';
 import RoomNameDisplay from '@features/messages/components/RoomNameDisplay';
 import { ActionIcon, Avatar, Group, Modal, Text, Tooltip } from '@mantine/core';
 import { useAuth, useMessage } from '@services/controller';
-import useCall from '@services/controller/useCall.';
+import useCall from '@services/controller/useCall';
 import { IconPhoneOff } from '@tabler/icons-react';
 import { IconPhoneIncoming } from '@tabler/icons-react';
 import React, { useEffect, useState } from 'react';

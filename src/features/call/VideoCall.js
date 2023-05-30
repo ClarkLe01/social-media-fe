@@ -12,7 +12,7 @@ import { EndCallScreen } from './components/EndCallScreen';
 import AvatarDisplay from '@features/messages/components/AvatarDisplay';
 import RoomNameDisplay from '@features/messages/components/RoomNameDisplay';
 import Socket, { connections } from '@services/socket';
-import useCall from '@services/controller/useCall.';
+import useCall from '@services/controller/useCall';
 import WaitingScreen from './components/WaitingScreen';
 import MeetingPeer2PeerScreen from './components/MeetingPeer2PeerScreen';
 import MeetingView from './components/MeetingView';

@@ -11,7 +11,7 @@ import NotificationItem from './NotificationItem';
 import { useQueryClient } from '@tanstack/react-query';
 import EmptyStateIllustration from '@assets/svgs/empty-state.svg';
 import InComingCall from '@features/call/components/InComingCall';
-import useCall from '@services/controller/useCall.';
+import useCall from '@services/controller/useCall';
 
 function Notification() {
 

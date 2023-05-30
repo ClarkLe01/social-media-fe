@@ -36,7 +36,7 @@ import PrivateRoomProfile from './PrivateRoomProfile';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
 import ThumbMedia from './ThumbMedia';
-import useCall from '@services/controller/useCall.';
+import useCall from '@services/controller/useCall';
 import { navigatePath } from '@app/routes/config';
 
 function MainChat(props) {
