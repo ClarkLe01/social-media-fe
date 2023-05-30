@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { IconPhoto, IconCamera, IconUpload } from '@tabler/icons-react';
+import { IconPhoto, IconCamera, IconUpload, IconCheck, IconX } from '@tabler/icons-react';
 import {
     Button,
     Image,
@@ -20,6 +20,7 @@ import { useAuth, useProfile } from '@services/controller';
 import ImageCropper from '../../../common/components/ImageCropper';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
 import { API_URL } from '@constants';
+import { notifications } from '@mantine/notifications';
 
 function AvatarComponent(props) {
     const { user } = props;
@@ -45,9 +46,36 @@ function AvatarComponent(props) {
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
         const form = new FormData();
         form.append('avatar', file);
-        updateProfile({
-            data: form,
-        });
+        updateProfile(
+            {
+                data: form,
+            }, 
+            {
+                onSuccess: (data) => {
+                    notifications.show({
+                        id: 'notify-success-update-avatar',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Success ",
+                        message: 'You updated your avatar successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                },
+                onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-update-avatar',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Failed",
+                        message: 'You updated your avatar unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            });
         setUpdatedAvatarSrc(null);
         setAvatarSrc(null);
         setOpenAvatarModal(false);

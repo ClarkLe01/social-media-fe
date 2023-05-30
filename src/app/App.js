@@ -8,6 +8,7 @@ import AppLoading from './loading';
 import { LanguageProvider } from './locales';
 import Loading from '@common/components/Loading';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <ThemeProvider>
             <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
                 <MantineProvider theme={{ colorScheme }} >
+                    <Notifications />
                     <AppLoading />
                     <LanguageProvider>
                         <React.Suspense fallback={<Loading />}>
