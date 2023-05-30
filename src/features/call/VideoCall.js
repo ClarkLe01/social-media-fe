@@ -172,7 +172,6 @@ const VideoCall = () => {
                         setSelectedWebcam={setSelectedWebcam}
                         socket={socketClientRef.current}
                     />
-                    {/* <MeetingView token={token} roomId={meetingId} /> */}
                 </MeetingProvider>
             ) : isMeetingLeft ? (
                 <EndCallScreen />

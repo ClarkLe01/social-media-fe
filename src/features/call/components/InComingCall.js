@@ -87,7 +87,7 @@ const InComingCall = ({
                         )}
                     </Group>
                     <Group position="center" className='mt-2'>
-                        {roomChatCall && (
+                        {roomChatCall && RoomDetail.data && (
                             <RoomNameDisplay
                                 members={RoomDetail.data.members}
                                 currentUser={profile.data}

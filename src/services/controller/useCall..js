@@ -68,7 +68,7 @@ function useCall() {
     const endMeeting = async (token, roomId) => {
         try {
             //We will use VideoSDK rooms API endpoint to create a meetingId
-            const response = await api(endPoints.calling.room, {
+            const response = await api(endPoints.calling.room.deactivate, {
                 pathParams: {
                     token: token,
                     roomId: roomId,

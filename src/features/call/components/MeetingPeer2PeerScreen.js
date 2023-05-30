@@ -9,6 +9,7 @@ import SettingModal from "./SettingModal";
 import { ActionIcon, Group, LoadingOverlay, Tooltip } from "@mantine/core";
 import { IconMicrophone, IconMicrophoneOff, IconPhoneIncoming, IconPhoneOff, IconSettings, IconVideo, IconVideoOff } from "@tabler/icons-react";
 import ParticipantView from "./ParticipantView";
+import useCall from "@services/controller/useCall.";
 
 const MemoizedParticipant = React.memo(
     ParticipantView,
