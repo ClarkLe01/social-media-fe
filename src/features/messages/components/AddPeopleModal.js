@@ -43,32 +43,32 @@ const AddPeopleModal = (props) => {
             },
             {
                 onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                     notifications.show({
                         id: 'notify-success-add-members-group',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success",
                         message: 'You added members successfully!',
                         color: 'teal',
                         icon: <IconCheck />,
                         loading: false,
                     });
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
-                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
                 onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                     notifications.show({
                         id: 'notify-failed-add-members-group',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You added members unsuccessfully!',
                         color: 'red',
                         icon: <IconX />,
                         loading: false,
                     });
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
-                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
             },
         );

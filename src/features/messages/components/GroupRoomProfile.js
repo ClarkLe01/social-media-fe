@@ -106,7 +106,7 @@ const GroupRoomProfile = (props) => {
                     notifications.show({
                         id: 'notify-success-update-group-avatar',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success",
                         message: 'You updated group avatar successfully!',
                         color: 'teal',
@@ -120,7 +120,7 @@ const GroupRoomProfile = (props) => {
                     notifications.show({
                         id: 'notify-failed-update-group-avatar',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You updated your group avatar unsuccessfully!',
                         color: 'red',
@@ -146,32 +146,32 @@ const GroupRoomProfile = (props) => {
             },
             {
                 onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                     notifications.show({
                         id: 'notify-success-update-remove-member',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success",
                         message: 'You removed member successfully!',
                         color: 'teal',
                         icon: <IconCheck />,
                         loading: false,
                     });
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
-                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
                 onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                     notifications.show({
                         id: 'notify-failed-update-remove-member',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You removed member unsuccessfully!',
                         color: 'red',
                         icon: <IconX />,
                         loading: false,
                     });
-                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
-                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
             },
         );

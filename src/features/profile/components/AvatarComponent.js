@@ -55,7 +55,7 @@ function AvatarComponent(props) {
                     notifications.show({
                         id: 'notify-success-update-avatar',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success ",
                         message: 'You updated your avatar successfully!',
                         color: 'teal',
@@ -67,7 +67,7 @@ function AvatarComponent(props) {
                     notifications.show({
                         id: 'notify-failed-update-avatar',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You updated your avatar unsuccessfully!',
                         color: 'red',

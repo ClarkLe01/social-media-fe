@@ -70,7 +70,7 @@ function MainHeader() {
                                     notifications.show({
                                         id: 'notify-success-update-password',
                                         withCloseButton: true,
-                                        autoClose: 5000,
+                                        autoClose: 1000,
                                         title: "Success",
                                         message: 'You updated your password successfully!',
                                         color: 'teal',
@@ -84,7 +84,7 @@ function MainHeader() {
                                     notifications.show({
                                         id: 'notify-failed-update-password',
                                         withCloseButton: true,
-                                        autoClose: 5000,
+                                        autoClose: 1000,
                                         title: "Failed",
                                         message: 'You updated your password unsuccessfully!',
                                         color: 'red',

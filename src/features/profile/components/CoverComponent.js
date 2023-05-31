@@ -47,7 +47,7 @@ function CoverComponent(props) {
                     notifications.show({
                         id: 'notify-success-update-cover',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success ",
                         message: 'You updated your cover successfully!',
                         color: 'teal',
@@ -59,7 +59,7 @@ function CoverComponent(props) {
                     notifications.show({
                         id: 'notify-failed-update-cover',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You updated your cover unsuccessfully!',
                         color: 'red',
