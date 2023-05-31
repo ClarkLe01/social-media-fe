@@ -163,6 +163,16 @@ export default {
                 method: 'PATCH',
                 headers: headers.multipart,
             },
+            addMember: {
+                url: '/chat/room/member/add',
+                method: 'POST',
+                headers: headers.json,
+            },
+            removeMember: {
+                url: '/chat/room/member/remove',
+                method: 'POST',
+                headers: headers.json,
+            },
         },
     },
     post: {

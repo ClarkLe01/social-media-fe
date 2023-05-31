@@ -14,8 +14,7 @@ function Settings() {
     
     const { logout, profile } = useAuth();
     const [ openedChangePassword, setOpenedChangePassword ] = useState(false);
-    const { checkValidatePassword } = useProfile();
-    const { updateProfile } = useProfile(profile.data.id);
+    const { updateProfile, checkValidatePassword } = useProfile(profile.data.id);
     const [ currentPassword, setCurrentPassword ] = useState("");
     const [ newPassword, setNewPassword ] = useState("");
     const [ confirmNewPassword, setConfirmNewPassword ] = useState("");

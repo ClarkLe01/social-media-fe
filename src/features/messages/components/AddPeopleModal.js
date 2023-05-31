@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Group, Button, useMantineTheme, Input, Text, ScrollArea } from '@mantine/core';
-import { useAuth, useFriend } from '@services/controller';
-import { IconSearch } from '@tabler/icons-react';
+import { Modal, Group, Button, useMantineTheme, Input, Text, ScrollArea, LoadingOverlay } from '@mantine/core';
+import { useAuth, useFriend, useRoom } from '@services/controller';
+import { IconSearch, IconX } from '@tabler/icons-react';
+import MultiMemberSelector from '@common/components/MultiMemberSelector';
+import { notifications } from '@mantine/notifications';
+import { IconCheck } from '@tabler/icons-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 const AddPeopleModal = (props) => {
@@ -13,6 +17,11 @@ const AddPeopleModal = (props) => {
     const [ currentUser, setCurrentUser ] = useState(null);
     const [ addMembers, setAddMembers ] = useState([]);
     const [ friends, setFriends ] = useState([]);
+    const [ visible, setVisible ] = useState(false);
+
+    const { addMember } = useRoom();
+
+    const queryClient = useQueryClient();
 
     const theme = useMantineTheme();
 
@@ -22,6 +31,51 @@ const AddPeopleModal = (props) => {
         const updatedFriends = friends.filter(friend => !memberIds.includes(friend.id)); // filter out friends with ids that match member ids
         setFriends(updatedFriends); // update state for friends
     }, [ currentUser ]);
+
+    const handleAddMembers = () => {
+        setVisible(true);
+        addMember(
+            {
+                data: {
+                    members: addMembers,
+                    roomId: roomDetail.id,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    notifications.show({
+                        id: 'notify-success-add-members-group',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Success",
+                        message: 'You added members successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                },
+                onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-add-members-group',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Failed",
+                        message: 'You added members unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                },
+            },
+        );
+        setAddMembers([]);
+        setVisible(false);
+        onClose();
+    };
 
     useEffect(() => {
         if (profile && !profileLoading) {
@@ -33,7 +87,7 @@ const AddPeopleModal = (props) => {
         if (friendListDetail && !friendListDetailLoading && currentUser) {
             initFriendsNotInMembers(roomDetail.members, friendListDetail.data);
         }
-    }, [ friendListDetailLoading, currentUser ]);
+    }, [ friendListDetailLoading, currentUser, roomDetail ]);
 
     useEffect(() => {
         if(!friendListDetailLoading){
@@ -51,6 +105,7 @@ const AddPeopleModal = (props) => {
 
     return (
         <>
+            <LoadingOverlay visible={visible} overlayBlur={2} />
             <Modal
                 opened={opened}
                 onClose={onClose}
@@ -65,33 +120,19 @@ const AddPeopleModal = (props) => {
                     title: 'ms-auto',
                 }}
             >
-                <div className='search-region'>
-                    <Input icon = {<IconSearch />} radius={"md"} />
-                </div>
-                <div className='friends-selected'>
-                    {addMembers.length === 0 ? (
-                        <Text
-                            className='d-flex justify-content-center pt-5'
-                        >
-                            No users selected
-                        </Text>
-                    ): (
-                        <div></div>
-                    )}
-                </div>
-                <div className='friend-list pt-5'>
-                    {friends.length > 0 && (
-                        <ScrollArea
-                            type="auto" h={250} offsetScrollbars scrollbarSize={8}
-                        >
-                            
-                        </ScrollArea>
-                    )}
-                </div>
-                <div>
+                <MultiMemberSelector
+                    isIndeterminate={true}
+                    radius="xl"
+                    color="red"
+                    data={friends}
+                    onDataSelect={setAddMembers}
+                    selectedFriend={addMembers}
+                />
+                <div className='pt-3'>
                     <Button
                         fullWidth
                         disabled={addMembers.length === 0}
+                        onClick={handleAddMembers}
                     >
                         Add people
                     </Button>
