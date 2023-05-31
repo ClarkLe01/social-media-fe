@@ -69,14 +69,14 @@ function ProfilePhoto() {
                     ))}
                 </div>
             </div>
-            <div className="card-body d-block w-100 pt-0">
+            {/* <div className="card-body d-block w-100 pt-0">
                 <a
                     href="/home"
                     className="p-2 lh-28 w-100 d-block bg-grey text-grey-800 text-center font-xssss fw-700 rounded-xl"
                 >
                     <i className="feather-external-link font-xss me-2"></i> More
                 </a>
-            </div>
+            </div> */}
         </div>
     );
 }
