@@ -153,6 +153,11 @@ export default {
                 method: 'POST',
                 headers: headers.multipart,
             },
+            delete: {
+                url: '/chat/room/delete',
+                method: 'POST',
+                headers: headers.json,
+            },
             detail: {
                 url: '/chat/room/detail/:roomId',
                 method: 'GET',

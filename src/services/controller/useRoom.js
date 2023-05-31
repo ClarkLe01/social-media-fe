@@ -49,6 +49,22 @@ function useRoom() {
         },
     });
 
+    const {
+        isLoading: deleteRoomLoading,
+        error: deleteRoomError,
+        mutate: deleteRoom,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.chat.room.delete, variables);
+        },
+        onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+        onError: (error) => {      
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+    });
+
 
     const {
         isLoading: addMemberLoading,
@@ -102,6 +118,10 @@ function useRoom() {
         removeMemberLoading,
         removeMemberError,
         removeMember,
+
+        deleteRoomLoading,
+        deleteRoomError,
+        deleteRoom,
     };
 }
 

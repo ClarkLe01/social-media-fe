@@ -71,7 +71,7 @@ const GroupRoomProfile = (props) => {
     const [ avatarSrc, setAvatarSrc ] = useState(null);
     const [ updatedAvatarSrc, setUpdatedAvatarSrc ] = useState(null);
 
-    const { addMember, removeMember } = useRoom();
+    const { deleteRoom, removeMember } = useRoom();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -212,6 +212,47 @@ const GroupRoomProfile = (props) => {
                         autoClose: 1000,
                         title: "Failed",
                         message: 'You leaved group unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            },
+        );
+    };
+
+    const handleDeleteRoom = () => {
+        deleteRoom(
+            {
+                data: {
+                    roomId: roomDetail.id,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    notifications.show({
+                        id: 'notify-success-delete-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success",
+                        message: 'You deleted group successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                    setTimeout(() => {
+                        navigate(navigatePath.chatHome);
+                    }, 1000);
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    notifications.show({
+                        id: 'notify-failed-delete-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You deleted group unsuccessfully!',
                         color: 'red',
                         icon: <IconX />,
                         loading: false,
@@ -407,6 +448,7 @@ const GroupRoomProfile = (props) => {
                                                         <Menu.Item
                                                             color="red"
                                                             icon={<IconLogout size={14} />}
+                                                            onClick={handleDeleteRoom}
                                                         >
                                                             Delete Room
                                                         </Menu.Item>
