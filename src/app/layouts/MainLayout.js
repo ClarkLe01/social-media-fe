@@ -51,13 +51,18 @@ export default function MainLayout() {
                     opened={opened}
                     p="sm"
                     hiddenBreakpoint="md"
+                    hidden={!opened}
                     width={{
-                        sm: 40,
+                        sm: 50,
                         xl: 240,
                     }}
                     height={{
                         sm: 500,
                     }}
+                    classNames={{
+                        root: 'p-0 ps-1 pe-2',
+                    }}
+                    zIndex={102}
                 />
             }
             aside={

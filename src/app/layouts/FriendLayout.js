@@ -53,7 +53,7 @@ export default function FriendLayout() {
                     p="sm"
                     hiddenBreakpoint="md"
                     width={{
-                        sm: 40,
+                        sm: 50,
                         xl: 240,
                     }}
                     height={{

@@ -30,7 +30,7 @@ import { useQueryClient } from '@tanstack/react-query';
 function CreatePost(props) {
     const { id, setOpenedEditPost, images, contentPost } = props;
     
-    const openMediaFileRef = useRef(id?true:null);
+    const openMediaFileRef = useRef(null);
     const queryClient = useQueryClient();
 
     
@@ -226,7 +226,12 @@ function CreatePost(props) {
         form.append('status', lastChoosedValueRadio);
         form.append('canSee', selectedFriend);
         form.append('notSee', selectedFriend);
-        files.map(file => form.append("files", file));
+        if (files.length > 0) {
+            files.map(file => form.append("files", file));
+        }
+        else {
+            form.append('files', '');
+        }
         updatePost(
             {
                 data: form,
@@ -567,7 +572,7 @@ function CreatePost(props) {
                             ) : (
                                 <Button
                                     onClick={() => {setLastChoosedValueRadio(choosedValueRadio),
-                                    setShowModalType(createPostModalType.createPost);
+                                    id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
                                     }}
                                 >
                                     Done
@@ -592,14 +597,14 @@ function CreatePost(props) {
                         <Button
                             variant="outline"
                             onClick={() => {
-                                setShowModalType(createPostModalType.postAudience),
+                                id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
                                 setSelectedFriend([ ]);
                             }}
                         >
                             Cancel
                         </Button>
                         <Button
-                            onClick={() => setShowModalType(createPostModalType.postAudience)}
+                            onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}
                             disabled={selectedFriend.length < 1}
                         >
                             Save changes
@@ -651,10 +656,10 @@ function CreatePost(props) {
                         })}
                     </SimpleGrid>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
-                        <Button variant="outline" onClick={() => openMediaFileRef.current()}>
+                        <Button variant="outline" onClick={() => id?openMediaFileRef:openMediaFileRef.current()}>
                             Add Photos/Videos
                         </Button>
-                        <Button onClick={() => setShowModalType(createPostModalType.createPost)}>
+                        <Button onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}>
                             Done
                         </Button>
                     </div>
