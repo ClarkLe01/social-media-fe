@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Modal, Text, Input, Button, useMantineTheme, Group } from '@mantine/core';
 import { useRoom } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconX } from '@tabler/icons-react';
 
 const ChangeChatRoomNameModal = (props) => {
     const { roomDetail, opened, onClose } = props;
@@ -23,10 +25,30 @@ const ChangeChatRoomNameModal = (props) => {
             {
                 onSuccess: (data) => {
                     console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
+                    notifications.show({
+                        id: 'notify-success-update-group-name',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Success",
+                        message: 'You updated group name successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
                     queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
                     queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
                 onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-update-group-avatar',
+                        withCloseButton: true,
+                        autoClose: 5000,
+                        title: "Failed",
+                        message: 'You updated your group name unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
                     console.log('ChangeChatRoomNameModal handleUpdateRoom onError', error);
                 },
             },

@@ -153,6 +153,11 @@ export default {
                 method: 'POST',
                 headers: headers.multipart,
             },
+            delete: {
+                url: '/chat/room/delete',
+                method: 'POST',
+                headers: headers.json,
+            },
             detail: {
                 url: '/chat/room/detail/:roomId',
                 method: 'GET',
@@ -162,6 +167,16 @@ export default {
                 url: '/chat/room/update/:roomId',
                 method: 'PATCH',
                 headers: headers.multipart,
+            },
+            addMember: {
+                url: '/chat/room/member/add',
+                method: 'POST',
+                headers: headers.json,
+            },
+            removeMember: {
+                url: '/chat/room/member/remove',
+                method: 'POST',
+                headers: headers.json,
             },
         },
     },

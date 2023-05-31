@@ -123,7 +123,7 @@ function MultiMemberSelector(props) {
                 </Checkbox.Group>
             </ScrollArea>
             {valueChecked.length > 0 && (
-                <div className="pt-2 mt-4 border border-2">
+                <div className="pt-1 mt-1 border border-2">
                     {valueChecked.map((value, id) => (
                         <MemberBadge
                             value={value}

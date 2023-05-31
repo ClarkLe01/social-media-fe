@@ -87,7 +87,7 @@ function ProfileCard(props) {
                     notifications.show({
                         id: 'notify-success-update-profile',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Success ",
                         message: 'You updated your profile successfully!',
                         color: 'teal',
@@ -99,7 +99,7 @@ function ProfileCard(props) {
                     notifications.show({
                         id: 'notify-failed-update-profile',
                         withCloseButton: true,
-                        autoClose: 5000,
+                        autoClose: 1000,
                         title: "Failed",
                         message: 'You updated your profile unsuccessfully!',
                         color: 'red',

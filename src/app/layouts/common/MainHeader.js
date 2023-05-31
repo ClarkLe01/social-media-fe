@@ -23,8 +23,7 @@ function MainHeader() {
     const { saveLoading } = useAuth();
 
     const [ openedChangePassword, setOpenedChangePassword ] = useState(false);
-    const { checkValidatePassword } = useProfile();
-    const { updateProfile } = useProfile(profile.data.id);
+    const { updateProfile, checkValidatePassword } = useProfile(profile.data.id);
     const [ currentPassword, setCurrentPassword ] = useState("");
     const [ newPassword, setNewPassword ] = useState("");
     const [ confirmNewPassword, setConfirmNewPassword ] = useState("");
@@ -71,8 +70,8 @@ function MainHeader() {
                                     notifications.show({
                                         id: 'notify-success-update-password',
                                         withCloseButton: true,
-                                        autoClose: 5000,
-                                        title: "Success ",
+                                        autoClose: 1000,
+                                        title: "Success",
                                         message: 'You updated your password successfully!',
                                         color: 'teal',
                                         icon: <IconCheck />,
@@ -85,7 +84,7 @@ function MainHeader() {
                                     notifications.show({
                                         id: 'notify-failed-update-password',
                                         withCloseButton: true,
-                                        autoClose: 5000,
+                                        autoClose: 1000,
                                         title: "Failed",
                                         message: 'You updated your password unsuccessfully!',
                                         color: 'red',

@@ -49,6 +49,55 @@ function useRoom() {
         },
     });
 
+    const {
+        isLoading: deleteRoomLoading,
+        error: deleteRoomError,
+        mutate: deleteRoom,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.chat.room.delete, variables);
+        },
+        onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+        onError: (error) => {      
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+    });
+
+
+    const {
+        isLoading: addMemberLoading,
+        error: addMemberError,
+        mutate: addMember,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.chat.room.addMember, variables);
+        },
+        onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+        onError: (error) => {      
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+    });
+
+    const {
+        isLoading: removeMemberLoading,
+        error: removeMemberError,
+        mutate: removeMember,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.chat.room.removeMember, variables);
+        },
+        onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+        onError: (error) => {      
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
+        },
+    });
+
     return {
         RoomList,
         RoomListLoading,
@@ -61,6 +110,18 @@ function useRoom() {
         updateRoomLoading,
         updateRoomError,
         updateRoom,
+
+        addMemberLoading,
+        addMemberError,
+        addMember,
+
+        removeMemberLoading,
+        removeMemberError,
+        removeMember,
+
+        deleteRoomLoading,
+        deleteRoomError,
+        deleteRoom,
     };
 }
 
