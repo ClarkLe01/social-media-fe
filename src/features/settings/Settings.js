@@ -117,7 +117,7 @@ function Settings() {
                                         header: 'd-flex justify-content-between',
                                         title: 'flex-fill mx-auto pe-3 my-1',
                                     }}
-                                >
+                                > 
 
                                     <form onSubmit={form.onSubmit(handleChangePassword)}>
                                         <div>
