@@ -3,7 +3,7 @@ import { Avatar, Button, Card, Group, Image, Text } from '@mantine/core';
 import { useFriend, useProfile, useAuth } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import AvatarComponent from './AvatarComponent';
 
 function CardItem(props) {
@@ -44,7 +44,7 @@ function CardItem(props) {
                         classNames={{
                             image: 'float-right p-1 ',
                         }}
-                        src={API_URL+user.avatar.replace(API_URL,'')}
+                        src={MEDIA_URL+user.avatar.replace(API_URL,'')}
                         key={user.updated}
                     />
                     <h4 className="d-inline fw-700 font-sm ps-3 ">

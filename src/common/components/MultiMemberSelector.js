@@ -12,6 +12,7 @@ import {
     Checkbox,
     Badge,
 } from '@mantine/core';
+import { API_URL, MEDIA_URL } from '@constants';
 
 function MemberBadge(props) {
     const checkedMember = props.data.find((o) => o.id == props.value);
@@ -28,7 +29,7 @@ function MemberBadge(props) {
                 root: 'mx-1 mb-1 p-0 px-2',
             }}
             leftSection={
-                <Avatar src={checkedMember.avatar} size={22} radius="xl">
+                <Avatar src={MEDIA_URL+checkedMember.avatar.replace(API_URL, '')} size={22} radius="xl">
                     BH
                 </Avatar>
             }
@@ -91,7 +92,7 @@ function MultiMemberSelector(props) {
                                 size="xl"
                                 leftIcon={
                                     <Avatar
-                                        src={member.avatar}
+                                        src={MEDIA_URL+member.avatar.replace(API_URL, '')}
                                         alt="it's me"
                                         radius="xl"
                                     />

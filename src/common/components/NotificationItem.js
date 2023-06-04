@@ -20,7 +20,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Avatar, Text, Badge, Grid } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useProfile } from '@services/controller';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 
 function NotificationItem(props) {
     const { item } = props;
@@ -253,7 +253,7 @@ function NotificationItem(props) {
                     <Grid.Col span={2}>
                         <div style={{ position: 'relative' }}>
                             <Avatar
-                                src={API_URL+sender.avatar.replace(API_URL,'')}
+                                src={MEDIA_URL+sender.avatar.replace(API_URL,'')}
                                 radius={'100%'}
                                 size={55}
                             />

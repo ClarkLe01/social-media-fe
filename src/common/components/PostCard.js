@@ -32,7 +32,7 @@ import {
 } from '@tabler/icons-react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import { getIconStatus } from '@common/utils/radioStatus';
 import { useAuth, usePostDetail } from '@services/controller';
 import { Dropzone } from '@mantine/dropzone';
@@ -57,7 +57,7 @@ function ImageGridPreview(props) {
             <React.Fragment key={index}>
                 <Grid.Col span={12}>
                     <MemorizedImage
-                        src={API_URL + obj.file.replace(API_URL, '')}
+                        src={MEDIA_URL + obj.file.replace(API_URL, '')}
                         fit="cover"
                         onClick={() => {
                             setIsOpen(true), setPhotoIndex(index);
@@ -74,7 +74,7 @@ function ImageGridPreview(props) {
                 <Grid.Col span={6}>
                     <AspectRatio ratio={4 / 3}>
                         <MemorizedImage
-                            src={API_URL + obj.file.replace(API_URL, '')}
+                            src={MEDIA_URL + obj.file.replace(API_URL, '')}
                             fit="cover"
                             onClick={() => {
                                 setIsOpen(true), setPhotoIndex(index);
@@ -92,7 +92,7 @@ function ImageGridPreview(props) {
                 <Grid.Col span={index > 0 ? 6 : 12}>
                     <AspectRatio key={index} ratio={4 / 3}>
                         <MemorizedImage
-                            src={API_URL + obj.file.replace(API_URL, '')}
+                            src={MEDIA_URL + obj.file.replace(API_URL, '')}
                             fit="cover"
                             onClick={() => {
                                 setIsOpen(true), setPhotoIndex(index);
@@ -110,7 +110,7 @@ function ImageGridPreview(props) {
                 <Grid.Col span={index > 0 ? 4 : 12}>
                     <AspectRatio key={index} ratio={16 / 9}>
                         <MemorizedImage
-                            src={API_URL + obj.file.replace(API_URL, '')}
+                            src={MEDIA_URL + obj.file.replace(API_URL, '')}
                             onClick={() => {
                                 setIsOpen(true), setPhotoIndex(index);
                             }}
@@ -128,7 +128,7 @@ function ImageGridPreview(props) {
                     <Grid.Col span={index > 1 ? 4 : 6} className="p-1">
                         <AspectRatio ratio={16 / 9}>
                             <MemorizedImage
-                                src={API_URL + obj.file.replace(API_URL, '')}
+                                src={MEDIA_URL + obj.file.replace(API_URL, '')}
                                 withPlaceholder
                                 onClick={() => {
                                     setIsOpen(true), setPhotoIndex(index);
@@ -176,7 +176,7 @@ function ImageGridPreview(props) {
             {files.length > 4 && previewsMoreFourImage}
             {isOpen && (
                 <Lightbox
-                    mainSrc={API_URL + files[photoIndex].file.replace(API_URL, '')}
+                    mainSrc={MEDIA_URL + files[photoIndex].file.replace(API_URL, '')}
                     nextSrc={files[(photoIndex + 1) % files.length]}
                     prevSrc={files[(photoIndex + files.length - 1) % files.length]}
                     onCloseRequest={() => setIsOpen(false)}
@@ -240,7 +240,7 @@ function CommentItem(props) {
                     zIndex: 0,
                 }}
             >
-                <Avatar src={comment.user.avatar} radius={'100%'} size={32} />
+                <Avatar src={MEDIA_URL+comment.user.avatar.replace(API_URL, '')} radius={'100%'} size={32} />
                 <div className="ms-3 d-block">
                     <div className="comment-content align-items-center d-flex">
                         <div
@@ -309,7 +309,7 @@ function CommentItem(props) {
                     </div>
 
                     <div className="file-comment ps-1 pt-1 d-flex" onClick={() => setIsOpen(true)}>
-                        <Image src={comment.file} maw={'15rem'} />
+                        <Image src={MEDIA_URL+comment.file.replace(API_URL+'')} maw={'15rem'} />
                     </div>
                 </div>
             </div>}
@@ -342,7 +342,7 @@ function CommentItem(props) {
             </Modal>
             {isOpen && (
                 <Lightbox
-                    mainSrc={API_URL + files[photoIndex].file.replace(API_URL, '')}
+                    mainSrc={MEDIA_URL + files[photoIndex].file.replace(API_URL, '')}
                     nextSrc={files[(photoIndex + 1) % files.length]}
                     prevSrc={files[(photoIndex + files.length - 1) % files.length]}
                     onCloseRequest={() => setIsOpen(false)}
@@ -574,7 +574,7 @@ function PostCard(props) {
     return (
         <div className="card w-100 shadow-xss rounded-xxl border-0 px-4 pt-4 pb-2 mb-3">
             <div className="card-body p-0 d-flex">
-                <Avatar className="avatar me-3" radius={'100%'} src={owner.avatar} size={'md'} />
+                <Avatar className="avatar me-3" radius={'100%'} src={MEDIA_URL+owner.avatar.replace(API_URL, '')} size={'md'} />
                 <Text fw={700} size={16}>
                     {' '}
                     <Link

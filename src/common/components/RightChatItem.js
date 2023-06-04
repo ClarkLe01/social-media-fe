@@ -1,7 +1,7 @@
 import { useAuth, useMessage, useProfile } from "@services/controller";
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import { ActionIcon, Avatar } from "@mantine/core";
 
 function RightChatItem(props) {
@@ -26,7 +26,7 @@ function RightChatItem(props) {
                     className="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
                 >
                     <figure className="avatar float-left mb-0 me-2">
-                        <Avatar src={API_URL+user.avatar.replace(API_URL, '')} radius="xl" size={35}/>
+                        <Avatar src={MEDIA_URL+user.avatar.replace(API_URL, '')} radius="xl" size={35}/>
                     </figure>
                     <h3 className="fw-700 mb-0 mt-0">
                         <span

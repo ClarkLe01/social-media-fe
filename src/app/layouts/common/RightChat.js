@@ -6,7 +6,7 @@ import { Grid, Group, Text, ScrollArea } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
 import { useFriend, useAuth, useMessage, useRoom, useProfile } from '@services/controller';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import RightChatItem from '@common/components/RightChatItem';
 import { Rooms } from '@features/messages/components';
 import { navigatePath } from '@app/routes/config';
@@ -45,7 +45,7 @@ function ShowFriendRequest(props){
         <div className="wrap mb-3">
             <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
                 <div className="col col-md-2">
-                    {user && <Avatar src={API_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />}
+                    {user && <Avatar src={MEDIA_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />}
                 </div>
                 <div className="col col-md-9 px-2">
                     <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">

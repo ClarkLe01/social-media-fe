@@ -1,6 +1,7 @@
 export const APP_NAME = 'Insane';
 
 export const API_URL = process.env.REACT_APP_API_URL;
+export const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
 export const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 
 export const CALL_API_KEY = process.env.REACT_APP_VIDEOSDK_API_KEY;
