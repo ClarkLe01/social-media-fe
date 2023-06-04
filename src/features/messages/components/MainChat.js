@@ -332,11 +332,6 @@ function MainChat(props) {
                                 </div>
                                 <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon color="blue" variant="subtle">
-                                        <IconSticker />
-                                    </ActionIcon>
-                                </div>
-                                <div className="p-2 bd-highlight align-self-end">
-                                    <ActionIcon color="blue" variant="subtle">
                                         <IconGif />
                                     </ActionIcon>
                                 </div>

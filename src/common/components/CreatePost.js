@@ -317,13 +317,6 @@ function CreatePost(props) {
                     </div>
                     <div className="card-body d-flex p-0 mt-0 ps-2">
                         <a
-                            href="#video"
-                            className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                        >
-                            <i className="font-md text-danger feather-video me-2"></i>
-                            <span className="d-none-xs">Live Video</span>
-                        </a>
-                        <a
                             href="#photo"
                             className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
                         >
@@ -467,7 +460,7 @@ function CreatePost(props) {
                                 <IconPhoto />
                             </ActionIcon>
                         </div>
-                        <div className="p-2 bd-highlight" onClick={handleTagPeople}>
+                        {/* <div className="p-2 bd-highlight" onClick={handleTagPeople}>
                             <ActionIcon
                                 variant={
                                     createPostState.isShowTagPeople === true ? 'filled' : 'subtle'
@@ -491,7 +484,7 @@ function CreatePost(props) {
                             >
                                 <IconMapPinFilled />
                             </ActionIcon>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="d-grid gap-2 mx-auto">
                         <Button
@@ -752,7 +745,7 @@ function CreatePost(props) {
                                 <IconPhoto />
                             </ActionIcon>
                         </div>
-                        <div className="p-2 bd-highlight" onClick={handleTagPeople}>
+                        {/* <div className="p-2 bd-highlight" onClick={handleTagPeople}>
                             <ActionIcon
                                 variant={
                                     createPostState.isShowTagPeople === true ? 'filled' : 'subtle'
@@ -776,7 +769,7 @@ function CreatePost(props) {
                             >
                                 <IconMapPinFilled />
                             </ActionIcon>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="d-grid gap-2 mx-auto"> 
                         <Button

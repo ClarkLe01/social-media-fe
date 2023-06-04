@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AppShell,
     Header,
@@ -10,8 +10,9 @@ import {
     Transition,
     TextInput,
     ActionIcon,
+    Button,
 } from '@mantine/core';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { IconSearch, IconArrowLeft } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
 
@@ -20,6 +21,8 @@ import MainLogo from '@common/components/MainLogo';
 import RightChat from '@app/layouts/common/RightChat';
 import NavBar from './common/NavBar';
 import MainHeader from './common/MainHeader';
+import { useAuth, useProfile, useSearch } from '@services/controller';
+import { navigatePath } from '@app/routes/config';
 
 export default function MainLayout() {
     const scaleY = {
@@ -27,6 +30,26 @@ export default function MainLayout() {
         out: { opacity: 0, transform: 'scaleY(0)' },
         common: { transformOrigin: 'top' },
         transitionProperty: 'transform, opacity',
+    };
+    
+    const { profile } = useAuth();
+    const [ inputSearch, setInputSearch ] = useState('');
+    const navigate = useNavigate();
+
+    const handleEnterPress = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            handleSearch();
+        }
+    };
+    const handleSearch = () => {
+        const properties = `?search=${inputSearch}`;
+        const url = navigatePath.findpeople+properties;
+        if(inputSearch.trim() != '')
+        {
+            navigate(url, { state: { from: undefined } });
+            setInputSearch('');
+        }
     };
 
     const [ openSearch, setOpenSearch ] = useState(false);
@@ -86,12 +109,15 @@ export default function MainLayout() {
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                         <MainLogo />
                         <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-                            <form action="#" className="float-left header-search ms-3 mt-3">
+                            <form className="float-left header-search ms-3 mt-3">
                                 <Input
                                     icon={<IconSearch />}
                                     type="text"
                                     name="search"
                                     placeHolder="Search in Sociala"
+                                    value={inputSearch}
+                                    onChange={e => setInputSearch(e.target.value)}
+                                    onKeyDown={handleEnterPress}
                                     className="bg-grey border-0 lh-32 pt-1 pb-1 ps-5 pe-3 font-xsss fw-500 rounded-xl w350 theme-dark-bg h-auto"
                                 />
                             </form>
@@ -158,7 +184,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <Outlet />
+            <Outlet/>
         </AppShell>
     );
 }

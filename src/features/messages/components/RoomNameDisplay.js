@@ -3,7 +3,7 @@ import React from 'react';
 
 const RoomNameDisplay = (props) => {
     const { members, currentUser, isGroup, roomName, ...others } = props;
-    const filteredMembers = members.filter((member) => member.user.id !== currentUser.id).sort((a, b) => a.id - b.id);
+    const filteredMembers = members.length > 2 ? members.filter((member) => member.user.id !== currentUser.id).sort((a, b) => a.id - b.id) : members;
     if (!isGroup) return (
         <Text {...others}>
             {filteredMembers[0].user.first_name + ' ' + filteredMembers[0].user.last_name}

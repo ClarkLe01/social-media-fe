@@ -4,14 +4,6 @@ import { useAuth, useProfile, useUserPost } from '@services/controller';
 
 
 import ProfileCard from '@features/profile/components/ProfileCard';
-import ProfileDetail from '@common/components/ProfileDetail';
-import ProfilePhoto from '@common/components/ProfilePhoto';
-import CreatePost from '@common/components/CreatePost';
-import PostCard from '@common/components/PostCard';
-import Load from '@common/components/Load';
-import { Avatar, Text, Tooltip } from '@mantine/core';
-import { getTimeString } from '@common/utils/converString';
-import { getIconStatus } from '@common/utils/radioStatus';
 
 function Profile() {
     const { userId } = useParams();  // get param userId from url

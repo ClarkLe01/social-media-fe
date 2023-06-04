@@ -4,7 +4,6 @@ import {
     IconUserPlus,
     IconUserCheck,
     IconBrandMessenger,
-    IconPlus,
     IconPencil,
     IconFriends,
     IconBookmark,
@@ -19,7 +18,6 @@ import {
 } from '@tabler/icons-react';
 import {
     Button,
-    Text,
     Group,
     Menu,
     Modal,
@@ -27,7 +25,6 @@ import {
 } from '@mantine/core';
 
 import { useAuth, useFriend, useProfile } from '@services/controller';
-import { useQueryClient } from '@tanstack/react-query';
 
 import AvatarComponent from './AvatarComponent';
 import CoverComponent from './CoverComponent';
@@ -37,7 +34,6 @@ import Selector from '@common/components/Selector';
 import { notifications } from '@mantine/notifications';
 
 function ProfileCard(props) {
-    const queryClient = useQueryClient();
 
     const { user } = props;
     const { profile } = useAuth();
@@ -54,9 +50,6 @@ function ProfileCard(props) {
     const [ lastName, setLastName ] = useState(profile.data.last_name);
     const [ gender, setGender ] = useState(profile.data.gender);
     const [ birthday, setBirthday ] = useState(new Date(profile.data.birthday));
-
-
-    // console.log(profile.data);
 
     const genderOptions = [ 
         { value: 'male', label: 'Male' },

@@ -10,7 +10,6 @@ function ProfileDetail(props) {
     const dateString = birthday.getFullYear() + "-" +
         ("0" + (birthday.getMonth() + 1)).slice(-2) + "-" +
         ("0" + birthday.getDate()).slice(-2);
-    console.log(dateString);
     return (
         <div className="card w-100 shadow-xss rounded-xxl border-0 mb-3">
             <div className="card-body d-flex pt-4">

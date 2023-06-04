@@ -27,7 +27,7 @@ function Input(props) {
                     }}
                     placeholder={placeHolder}
                     onChange={handleInputChange}
-                    defaultValue={value}
+                    value={value}
                     {...other}
                 />
             )}

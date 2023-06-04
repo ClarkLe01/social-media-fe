@@ -12,7 +12,7 @@ export const navigatePath = {
     photos: '/profile/:userId/photos',
     home: '',
     profilePost: '/profile/:userId',
-    findpeople: '/people',
+    findpeople: '/user/list',
     settings: '/settings',
     helpbox: 'helpbox',
     notification: '/notification',

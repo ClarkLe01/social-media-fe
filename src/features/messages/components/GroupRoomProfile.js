@@ -294,20 +294,6 @@ const GroupRoomProfile = (props) => {
                     color="dark"
                 />
             </div>
-            <div className="d-flex justify-content-center align-items-center pb-2">
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconAlarmFilled />
-                    </ActionIcon>
-                    <Text size={13}>Mute</Text>
-                </div>
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconSearch size={20} />
-                    </ActionIcon>
-                    <Text size={13}>Search</Text>
-                </div>
-            </div>
             <div>
                 <Accordion classNames={{ content: 'pt-0 ps-4' }}>
                     <Accordion.Item value="customization">
@@ -335,25 +321,6 @@ const GroupRoomProfile = (props) => {
                                     onClick={() => setShowChangeRoomName(true)}
                                 >
                                     Change chat name
-                                </Button>
-                                <Button
-                                    color="dark"
-                                    fullWidth
-                                    variant="subtle"
-                                    classNames={{
-                                        inner: 'justify-content-start align-items-center',
-                                    }}
-                                    leftIcon={
-                                        <ThemeIcon
-                                            variant="gradient"
-                                            gradient={{ from: 'teal', to: 'blue', deg: 60 }}
-                                            radius={'100%'}
-                                        >
-                                            <IconPalette size={20} />
-                                        </ThemeIcon>
-                                    }
-                                >
-                                    Change theme
                                 </Button>
                                 <Button
                                     color="dark"

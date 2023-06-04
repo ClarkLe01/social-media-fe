@@ -1,11 +1,12 @@
 import { Avatar } from '@mantine/core';
 import React, { useEffect } from 'react';
+import { useAuth } from '@services/controller';
 import { API_URL, MEDIA_URL } from '@constants';
 
 const AvatarDisplay = (props) => {
+    const { profile } = useAuth();
     const { members, currentUser, isGroup, size, avatar } = props;
     const filteredMembers = members.filter((member) => member.user.id !== currentUser.id).sort((a, b) => a.id - b.id);
-
     if (!isGroup){
         return (
             <div>
@@ -78,8 +79,7 @@ const AvatarDisplay = (props) => {
                     }}
                     src={MEDIA_URL+filteredMembers[0].user.avatar.replace(API_URL,'')}
                 />
-            )}
-            
+            )}      
         </div>
     );
 };

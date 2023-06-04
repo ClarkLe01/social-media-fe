@@ -7,3 +7,4 @@ export { default as useRoom } from './useRoom';
 export { default as usePostDetail } from './usePostDetail';
 export { default as usePostGeneral } from './usePostGeneral';
 export { default as useUserPost } from './useUserPost';
+export { default as useSearch } from './useSearch';

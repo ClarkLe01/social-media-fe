@@ -45,6 +45,39 @@ function useProfile(userId) {
             return api(endPoints.user.validatePassword, variables);
         },
     });
+
+    const searchUser = (search) => {
+        const response = api(endPoints.user.searchUser, {
+            searchParams: {
+                search: search,
+            },
+        }).then(response => {
+            console.log(response);
+        }).catch(e => {
+            console.log(e);
+        });
+        // const data = response.data;
+        return response;
+    };
+
+    const {
+        data: searchUserTest,
+        isLoading: responseListLoading,
+        error: searchUserTestee,
+    } = useQuery({
+        queryKey: [ 'user/list', userId ],
+        queryFn: () => api(endPoints.user.searchUser, {
+            searchParams: {
+                search: userId,
+            },
+        }),
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        refetchOnMount: true,
+        staleTime: 1000,
+        // refetchInterval: 1000,
+    });
     
     return {
         profileId,
@@ -57,6 +90,9 @@ function useProfile(userId) {
         updateProfileError,
 
         checkValidatePassword,
+
+        searchUser,
+        searchUserTest,
     };
 }
 

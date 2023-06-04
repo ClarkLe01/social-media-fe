@@ -4,7 +4,7 @@ import { useAuth, useProfile, useUserPost } from "@services/controller";
 import { API_URL } from "@constants";
 import { Button, Image } from "@mantine/core";
 import { navigatePath } from "@app/routes/config";
-function Photos (props) {
+function Photos () {
     const { userId } = useParams();  // get param userId from url
     const { profileId } = useProfile(userId); // profile of user by params userId
     const [ user, setUser ] = useState(null);
