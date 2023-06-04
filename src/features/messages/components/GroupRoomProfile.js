@@ -33,7 +33,7 @@ import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
 import AddPeopleModal from './AddPeopleModal';
 import ChangeChatRoomNameModal from './ChangeChatRoomNameModal';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import ImageCropper from '@common/components/ImageCropper';
 import { Dropzone } from '@mantine/dropzone';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
@@ -102,7 +102,6 @@ const GroupRoomProfile = (props) => {
             },
             {
                 onSuccess: (data) => {
-                    console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
                     notifications.show({
                         id: 'notify-success-update-group-avatar',
                         withCloseButton: true,
@@ -115,6 +114,7 @@ const GroupRoomProfile = (props) => {
                     });
                     queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
                     queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                    if(members.length == 1) handleDeleteRoom();
                 },
                 onError: (error) => {
                     notifications.show({
@@ -158,6 +158,7 @@ const GroupRoomProfile = (props) => {
                         icon: <IconCheck />,
                         loading: false,
                     });
+                    if(members.length == 1) handleDeleteRoom();
                 },
                 onError: (error) => {
                     queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
@@ -391,7 +392,7 @@ const GroupRoomProfile = (props) => {
                                                 <Avatar
                                                     size={36}
                                                     src={
-                                                        API_URL +
+                                                        MEDIA_URL +
                                                         member.user.avatar.replace(API_URL, '')
                                                     }
                                                     radius={'100%'}

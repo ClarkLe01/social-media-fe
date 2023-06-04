@@ -6,7 +6,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { useAuth, useProfile } from '@services/controller';
 import ImageCropper from '../../../common/components/ImageCropper';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import { notifications } from '@mantine/notifications';
 function CoverComponent(props) {
     const { user } = props;
@@ -83,7 +83,7 @@ function CoverComponent(props) {
 
     return (
         <div>
-            <Image src={API_URL+user.cover.replace(API_URL,'')} key={user.updated} width={"100%"} height={320} fit='cover' />
+            <Image src={MEDIA_URL+user.cover.replace(API_URL,'')} key={user.updated} width={"100%"} height={320} fit='cover' />
             {user.id == profile.data.id && (
                 <>
                     <Group style={{ position: 'relative' }}>

@@ -29,7 +29,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Messages from './Messages';
 import Socket, { connections } from '@services/socket';
 import { useQueryClient } from '@tanstack/react-query';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import NotFound404 from '@features/errorsPage/NotFound404';
 import GroupRoomProfile from './GroupRoomProfile';
 import PrivateRoomProfile from './PrivateRoomProfile';
@@ -149,7 +149,7 @@ function MainChat(props) {
                 if (data.type == 'message') {
                     const message = data.data;
                     console.log('abc', message);
-                    message.senderID.avatar = API_URL + message.senderID.avatar.replace(API_URL,'');
+                    message.senderID.avatar = message.senderID.avatar.replace(API_URL,'');
                     setMessages((messages) => [ ...messages, data.data ]);
                     scrollToBottom();
                     queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
@@ -225,7 +225,7 @@ function MainChat(props) {
                                             >
                                                 <AvatarDisplay 
                                                     size={36}
-                                                    members={RoomDetail.data.members.filter((member) => member.id !== currentUser.id)}
+                                                    members={RoomDetail.data.members}
                                                     currentUser={currentUser}
                                                     isGroup={RoomDetail.data.isGroup}
                                                     avatar={RoomDetail.data.roomAvatar}

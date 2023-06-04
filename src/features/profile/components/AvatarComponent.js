@@ -19,7 +19,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { useAuth, useProfile } from '@services/controller';
 import ImageCropper from '../../../common/components/ImageCropper';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import { notifications } from '@mantine/notifications';
 
 function AvatarComponent(props) {
@@ -100,7 +100,7 @@ function AvatarComponent(props) {
                     classNames={{
                         image: 'float-right p-1 bg-white rounded-circle w-100',
                     }}
-                    src={API_URL+user.avatar.replace(API_URL,'')}
+                    src={MEDIA_URL+user.avatar.replace(API_URL,'')}
                     key={user.updated}
                 />
                 {user.id == profile.data.id && (
