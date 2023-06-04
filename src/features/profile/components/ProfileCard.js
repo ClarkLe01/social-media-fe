@@ -4,7 +4,6 @@ import {
     IconUserPlus,
     IconUserCheck,
     IconBrandMessenger,
-    IconPlus,
     IconPencil,
     IconFriends,
     IconBookmark,
@@ -14,10 +13,11 @@ import {
     IconUser,
     IconCake,
     IconGenderMale,
+    IconCheck,
+    IconX,
 } from '@tabler/icons-react';
 import {
     Button,
-    Text,
     Group,
     Menu,
     Modal,
@@ -25,17 +25,15 @@ import {
 } from '@mantine/core';
 
 import { useAuth, useFriend, useProfile } from '@services/controller';
-import { useQueryClient } from '@tanstack/react-query';
 
 import AvatarComponent from './AvatarComponent';
 import CoverComponent from './CoverComponent';
 import Input from '@common/components/Input';
 import DateTimePicker from '@common/components/DatetimePicker';
 import Selector from '@common/components/Selector';
-
+import { notifications } from '@mantine/notifications';
 
 function ProfileCard(props) {
-    const queryClient = useQueryClient();
 
     const { user } = props;
     const { profile } = useAuth();
@@ -52,9 +50,6 @@ function ProfileCard(props) {
     const [ lastName, setLastName ] = useState(profile.data.last_name);
     const [ gender, setGender ] = useState(profile.data.gender);
     const [ birthday, setBirthday ] = useState(new Date(profile.data.birthday));
-
-
-    // console.log(profile.data);
 
     const genderOptions = [ 
         { value: 'male', label: 'Male' },
@@ -76,9 +71,36 @@ function ProfileCard(props) {
         if (lastName != "") form.append('last_name', lastName);
         if (gender != "") form.append('gender', gender);
         if (dateString != "") form.append('birthday', dateString);
-        updateProfile({
-            data: form,
-        });
+        updateProfile(
+            {
+                data: form,
+            }, 
+            {
+                onSuccess: (data) => {
+                    notifications.show({
+                        id: 'notify-success-update-profile',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success ",
+                        message: 'You updated your profile successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                },
+                onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-update-profile',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You updated your profile unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            });
         setOpenedEditProfile(false);
     };
 
@@ -178,8 +200,8 @@ function ProfileCard(props) {
                                     >
 
                                         <form onSubmit={handleUpdateProfile}
-                                            className='pt-5 pb-1'>
-                                            <div className='pb-4' style={{ display: 'flex', gap: '5px' }}>
+                                            className='pt-1'>
+                                            <div style={{ display: 'flex', gap: '5px' }}>
                                                 <div>
                                                     <Divider my="xs" label="First name" />
                                                     <Input
@@ -203,6 +225,15 @@ function ProfileCard(props) {
                                                     />
                                                 </div>
                                             </div>
+                                            <Divider my="xs" label="Gender" />
+                                            <Selector
+                                                name="gender"
+                                                icon={<IconGenderMale />}
+                                                placeHolder="Choose your gender"
+                                                options={genderOptions}
+                                                value={gender}
+                                                onChange={e => handleChangeGender(e)}
+                                            />
                                             <div className='pb-4'>
                                                 <Divider my="xs" label="Birthday" />
                                                 <DateTimePicker
@@ -213,15 +244,6 @@ function ProfileCard(props) {
                                                     onChange={e => setBirthday(e)}
                                                 />
                                             </div>
-                                            <Divider my="xs" label="Gender" />
-                                            <Selector
-                                                name="gender"
-                                                icon={<IconGenderMale />}
-                                                placeHolder="Choose your gender"
-                                                options={genderOptions}
-                                                value={gender}
-                                                onChange={e => handleChangeGender(e)}
-                                            />
 
                                             <div className="col-sm-12 p-0 text-left">
                                                 <Button
@@ -352,7 +374,6 @@ function ProfileCard(props) {
                                 <Link
                                     className="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
                                     to={`/profile/${user.id}/friends`}
-                                   
                                 >
                                     Friends
                                 </Link>

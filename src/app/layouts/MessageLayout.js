@@ -8,18 +8,19 @@ import {
     Transition,
     TextInput,
     ActionIcon,
+    Aside,
 } from '@mantine/core';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import {
     IconSearch,
     IconMessageCircle,
     IconArrowLeft,
 } from '@tabler/icons-react';
 import { useClickOutside } from '@mantine/hooks';
+import { navigatePath } from '@app/routes/config';
 
 import Input from '@common/components/Input';
 import MainLogo from '@common/components/MainLogo';
-import Notification from '@common/components/Notification';
 import NavBar from './common/NavBar';
 import MainHeader from './common/MainHeader';
 
@@ -36,6 +37,25 @@ export default function MessageLayout() {
 
     const theme = useMantineTheme();
     const [ opened, setOpened ] = useState(false);
+
+    const [ inputSearch, setInputSearch ] = useState('');
+    const navigate = useNavigate();
+
+    const handleEnterPress = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            handleSearch();
+        }
+    };
+    const handleSearch = () => {
+        const properties = `?search=${inputSearch}`;
+        const url = navigatePath.findpeople+properties;
+        if(inputSearch.trim() != '')
+        {
+            navigate(url, { state: { from: undefined } });
+            setInputSearch('');
+        }
+    };
 
     return (
         <AppShell
@@ -64,18 +84,33 @@ export default function MessageLayout() {
                     zIndex={102}
                 />
             }
+            aside={
+                <Aside
+                    className="me-0 position-fixed"
+                    grow="true"
+                    mx="-xs"
+                    px="xs"
+                    p="md"
+                    hiddenBreakpoint="sm"
+                    width={{ base: 1 }}
+                >
+                </Aside>
+            }
 
             header={
                 <Header height={{ base: 60 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                         <MainLogo />
                         <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-                            <form action="#" className="float-left header-search ms-3 mt-3">
+                            <form className="float-left header-search ms-3 mt-3">
                                 <Input
                                     icon={<IconSearch />}
                                     type="text"
                                     name="search"
                                     placeHolder="Search in Sociala"
+                                    value={inputSearch}
+                                    onChange={e => setInputSearch(e.target.value)}
+                                    onKeyDown={handleEnterPress}
                                     className="bg-grey border-0 lh-32 pt-1 pb-1 ps-5 pe-3 font-xsss fw-500 rounded-xl w350 theme-dark-bg h-auto"
                                 />
                             </form>

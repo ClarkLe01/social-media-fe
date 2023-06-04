@@ -43,22 +43,10 @@ const PrivateRoomProfile = (props) => {
                     </ActionIcon>
                     <Text size={13}>Profile</Text>
                 </div>
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconAlarmFilled />
-                    </ActionIcon>
-                    <Text size={13}>Mute</Text>
-                </div>
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconSearch size={20} />
-                    </ActionIcon>
-                    <Text size={13}>Search</Text>
-                </div>
             </div>
             <div>
                 <Accordion>
-                    <Accordion.Item value="customization">
+                    {/* <Accordion.Item value="customization">
                         <Accordion.Control>
                             <Text fw={500}>Customization</Text>
                         </Accordion.Control>
@@ -100,7 +88,7 @@ const PrivateRoomProfile = (props) => {
                                 </Button>
                             </Group>
                         </Accordion.Panel>
-                    </Accordion.Item>
+                    </Accordion.Item> */}
 
                     <Accordion.Item value="files">
                         <Accordion.Control>

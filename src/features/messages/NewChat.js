@@ -236,11 +236,11 @@ function NewChat() {
                                                     <IconPhoto />
                                                 </ActionIcon>
                                             </div>
-                                            <div className="p-2 bd-highlight align-self-end">
+                                            {/* <div className="p-2 bd-highlight align-self-end">
                                                 <ActionIcon color="blue" variant="subtle">
                                                     <IconSticker />
                                                 </ActionIcon>
-                                            </div>
+                                            </div> */}
                                             <div className="p-2 bd-highlight align-self-end">
                                                 <ActionIcon color="blue" variant="subtle">
                                                     <IconGif />

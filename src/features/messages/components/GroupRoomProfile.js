@@ -26,6 +26,8 @@ import {
     IconUser,
     IconLogout,
     IconMessageCircleMinus,
+    IconCheck,
+    IconX,
 } from '@tabler/icons-react';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
@@ -37,6 +39,9 @@ import { Dropzone } from '@mantine/dropzone';
 import { readFile, base64ToFile } from '@common/utils/canvasUtils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRoom } from '@services/controller';
+import { notifications } from '@mantine/notifications';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { navigatePath } from '@app/routes/config';
 
 function CompareRole(item1, item2) {
     if (item1.role === 'admin' && item2.role !== 'admin') {
@@ -66,6 +71,10 @@ const GroupRoomProfile = (props) => {
     const [ avatarSrc, setAvatarSrc ] = useState(null);
     const [ updatedAvatarSrc, setUpdatedAvatarSrc ] = useState(null);
 
+    const { deleteRoom, removeMember } = useRoom();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [ openAvatarModal, setOpenAvatarModal ] = useState(false);
 
     const openAvatarRef = useRef(null);
@@ -94,10 +103,30 @@ const GroupRoomProfile = (props) => {
             {
                 onSuccess: (data) => {
                     console.log('ChangeChatRoomNameModal handleUpdateRoom onSuccess', data);
+                    notifications.show({
+                        id: 'notify-success-update-group-avatar',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success",
+                        message: 'You updated group avatar successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
                     queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
                     queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
                 },
                 onError: (error) => {
+                    notifications.show({
+                        id: 'notify-failed-update-group-avatar',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You updated your group avatar unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
                     console.log('ChangeChatRoomNameModal handleUpdateRoom onError', error);
                 },
             },
@@ -105,6 +134,132 @@ const GroupRoomProfile = (props) => {
         setUpdatedAvatarSrc(null);
         setAvatarSrc(null);
         setOpenAvatarModal(false);
+    };
+
+    const handleRemoveMember = (userId) => {
+        removeMember(
+            {
+                data: {
+                    memberId: userId,
+                    roomId: roomDetail.id,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                    notifications.show({
+                        id: 'notify-success-update-remove-member',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success",
+                        message: 'You removed member successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                    notifications.show({
+                        id: 'notify-failed-update-remove-member',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You removed member unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            },
+        );
+    };
+
+    const handleLeaveRoom = (userId) => {
+        removeMember(
+            {
+                data: {
+                    memberId: userId,
+                    roomId: roomDetail.id,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                    notifications.show({
+                        id: 'notify-success-update-leave-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success",
+                        message: 'You leaved group successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                    setTimeout(() => {
+                        navigate(navigatePath.chatHome);
+                    }, 1000);
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    queryClient.invalidateQueries({ queryKey: [ `room/detail/${roomDetail.id}` ] });
+                    notifications.show({
+                        id: 'notify-failed-update-leave-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You leaved group unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            },
+        );
+    };
+
+    const handleDeleteRoom = () => {
+        deleteRoom(
+            {
+                data: {
+                    roomId: roomDetail.id,
+                },
+            },
+            {
+                onSuccess: (data) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    notifications.show({
+                        id: 'notify-success-delete-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Success",
+                        message: 'You deleted group successfully!',
+                        color: 'teal',
+                        icon: <IconCheck />,
+                        loading: false,
+                    });
+                    setTimeout(() => {
+                        navigate(navigatePath.chatHome);
+                    }, 1000);
+                },
+                onError: (error) => {
+                    queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    notifications.show({
+                        id: 'notify-failed-delete-group',
+                        withCloseButton: true,
+                        autoClose: 1000,
+                        title: "Failed",
+                        message: 'You deleted group unsuccessfully!',
+                        color: 'red',
+                        icon: <IconX />,
+                        loading: false,
+                    });
+                },
+            },
+        );
     };
 
     useEffect(() => {
@@ -138,20 +293,6 @@ const GroupRoomProfile = (props) => {
                     color="dark"
                 />
             </div>
-            <div className="d-flex justify-content-center align-items-center pb-2">
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconAlarmFilled />
-                    </ActionIcon>
-                    <Text size={13}>Mute</Text>
-                </div>
-                <div className="px-3">
-                    <ActionIcon radius={'100%'} variant="default" size={36} className="mx-auto">
-                        <IconSearch size={20} />
-                    </ActionIcon>
-                    <Text size={13}>Search</Text>
-                </div>
-            </div>
             <div>
                 <Accordion classNames={{ content: 'pt-0 ps-4' }}>
                     <Accordion.Item value="customization">
@@ -179,25 +320,6 @@ const GroupRoomProfile = (props) => {
                                     onClick={() => setShowChangeRoomName(true)}
                                 >
                                     Change chat name
-                                </Button>
-                                <Button
-                                    color="dark"
-                                    fullWidth
-                                    variant="subtle"
-                                    classNames={{
-                                        inner: 'justify-content-start align-items-center',
-                                    }}
-                                    leftIcon={
-                                        <ThemeIcon
-                                            variant="gradient"
-                                            gradient={{ from: 'teal', to: 'blue', deg: 60 }}
-                                            radius={'100%'}
-                                        >
-                                            <IconPalette size={20} />
-                                        </ThemeIcon>
-                                    }
-                                >
-                                    Change theme
                                 </Button>
                                 <Button
                                     color="dark"
@@ -265,24 +387,37 @@ const GroupRoomProfile = (props) => {
                                                 </ActionIcon>
                                             </Menu.Target>
                                             <Menu.Dropdown>
-                                                {member.user.id !== currentUser.id && (
+                                                {/* {member.user.id !== currentUser.id && (
                                                     <Menu.Item
                                                         icon={<IconMessageCircle size={14} />}
                                                     >
                                                         Message
                                                     </Menu.Item>
-                                                )}
+                                                )} */}
                                                 <Menu.Item icon={<IconUser size={14} />}>
                                                     View Profile
                                                 </Menu.Item>
-                                                {member.user.id === currentUser.id && (
+                                                {member.user.id === currentUser.id && !IsAdmin(currentUser, members) && (
                                                     <>
                                                         <Menu.Divider />
                                                         <Menu.Item
                                                             color="red"
                                                             icon={<IconLogout size={14} />}
+                                                            onClick={() => handleLeaveRoom(member.user.id)}
                                                         >
                                                             Leave
+                                                        </Menu.Item>
+                                                    </>
+                                                )}
+                                                {member.user.id === currentUser.id && IsAdmin(currentUser, members) && (
+                                                    <>
+                                                        <Menu.Divider />
+                                                        <Menu.Item
+                                                            color="red"
+                                                            icon={<IconLogout size={14} />}
+                                                            onClick={handleDeleteRoom}
+                                                        >
+                                                            Delete Room
                                                         </Menu.Item>
                                                     </>
                                                 )}
@@ -292,6 +427,7 @@ const GroupRoomProfile = (props) => {
                                                         <Menu.Item
                                                             color="red"
                                                             icon={<IconMessageCircleMinus size={14} />}
+                                                            onClick={() => handleRemoveMember(member.user.id)}
                                                         >
                                                             Remove
                                                         </Menu.Item>

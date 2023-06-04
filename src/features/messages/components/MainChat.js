@@ -36,6 +36,8 @@ import PrivateRoomProfile from './PrivateRoomProfile';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
 import ThumbMedia from './ThumbMedia';
+import useCall from '@services/controller/useCall';
+import { navigatePath } from '@app/routes/config';
 
 function MainChat(props) {
     const queryClient = useQueryClient();
@@ -54,14 +56,38 @@ function MainChat(props) {
     const [ showEmoji, setShowEmoji ] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
-
-    
-
+    console.log(RoomDetail);
     const scrollToBottom = () =>
         scrollChatingRef.current.scrollTo({
             top: scrollChatingRef.current.scrollHeight,
             behavior: 'smooth',
         });
+
+
+    const { getToken, createMeeting } = useCall();
+    const handlePerformCallVideo = async () => {
+        const newToken = await getToken();
+        const newMeetingData = await createMeeting(newToken, roomId);
+        let isGroup = false;
+        if(RoomDetail){
+            isGroup = RoomDetail.data.isGroup;
+        }
+        const properties = `?hasVideo=true&isGroup=${isGroup}&roomChatId=${roomId}&sessionId=${newMeetingData.id}`;
+        const url = navigatePath.videoCall.replace(":roomCallId", newMeetingData.roomId).replace(":roomCallToken", newToken)+properties;
+        window.open(url,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=600");
+    };
+    const handlePerformCallVoice = async () => {
+        const newToken = await getToken();
+        const newMeetingData = await createMeeting(newToken, roomId);
+        let isGroup = false;
+        if(RoomDetail){
+            isGroup = RoomDetail.data.isGroup;
+        }
+        const properties = `?hasVideo=false&isGroup=${isGroup}&roomChatId=${roomId}&sessionId=${newMeetingData.id}`;
+        const url = navigatePath.videoCall.replace(":roomCallId", newMeetingData.roomId).replace(":roomCallToken", newToken)+properties;
+        window.open(url,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=600");
+    };
+    
 
     useEffect(() => {
         if (!messageListLoading && messageList) {
@@ -227,12 +253,18 @@ function MainChat(props) {
                                 </Button>
                             )}
                             <div className="pe-3">
-                                <ActionIcon size="lg">
+                                <ActionIcon 
+                                    size="lg"
+                                    onClick={handlePerformCallVoice}
+                                >
                                     <IconPhone />
                                 </ActionIcon>
                             </div>
                             <div className="pe-3">
-                                <ActionIcon size="lg">
+                                <ActionIcon 
+                                    size="lg"
+                                    onClick={handlePerformCallVideo}
+                                >
                                     <IconVideo />
                                 </ActionIcon>
                             </div>
@@ -296,11 +328,6 @@ function MainChat(props) {
                                         onClick={() => dropzoneRef.current()}
                                     >
                                         <IconPhoto />
-                                    </ActionIcon>
-                                </div>
-                                <div className="p-2 bd-highlight align-self-end">
-                                    <ActionIcon color="blue" variant="subtle">
-                                        <IconSticker />
                                     </ActionIcon>
                                 </div>
                                 <div className="p-2 bd-highlight align-self-end">

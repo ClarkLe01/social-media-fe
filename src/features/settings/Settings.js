@@ -2,9 +2,10 @@ import Input from '@common/components/Input';
 import { Button, Divider, Group, Modal } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useAuth, useProfile } from '@services/controller';
-import { IconUser } from '@tabler/icons-react';
+import { IconCheck, IconUser, IconX } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { notifications } from '@mantine/notifications';
 
 function Settings() {
 
@@ -13,8 +14,7 @@ function Settings() {
     
     const { logout, profile } = useAuth();
     const [ openedChangePassword, setOpenedChangePassword ] = useState(false);
-    const { checkValidatePassword } = useProfile();
-    const { updateProfile } = useProfile(profile.data.id);
+    const { updateProfile, checkValidatePassword } = useProfile(profile.data.id);
     const [ currentPassword, setCurrentPassword ] = useState("");
     const [ newPassword, setNewPassword ] = useState("");
     const [ confirmNewPassword, setConfirmNewPassword ] = useState("");
@@ -22,52 +22,79 @@ function Settings() {
     const [ differentNewPassword, setDifferentNewPassword ] = useState(false);
     
     const form = useForm({
-        initialValues: { password: '' },
+        initialValues: { 
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+        },
 
         // functions will be used to validate values at corresponding key
         validate: {
-            password: (value) => (value === '' ? 'This field is required' : null),
+            currentPassword: (value) => (value === '' ? 'This field is required' : null),
+            newPassword: (value) =>
+                value.length < 6 ? 'Password must have at least 6 letters' : null,
+            confirmPassword: (value, values) =>
+                value !== values.newPassword ? 'Confirm Password did not match' : null,
         },
     });
+
     const handleChangePassword = (values) => {
         const form1 = new FormData();
         
-        if (newPassword === "" || confirmNewPassword === "") {
-            console.log("need to field");
-        }
-        else{
-            if(newPassword.localeCompare(confirmNewPassword) == 0){
-                form1.append('password', newPassword);
-                checkValidatePassword(
-                    { data:{
-                        password: values.password,
-                    } },
-                    {
-                        onSuccess: (data) => {
-                            if(data.data.status){
-                                //console.log(data.data.status);
+        form1.append('password', values.newPassword);
+        checkValidatePassword(
+            { data:{
+                password: values.currentPassword,
+            } },
+            {
+                onSuccess: (data) => {
+                    if(data.data.status){
+                        //console.log(data.data.status);
         
-                                updateProfile({
-                                    data: form1,
-                                });
-                                console.log("Success");
-                                setOpenedChangePassword(false);
-                            }
-                            else
-                                console.log("Wrong current password");
-                        },
-                        onError: (error) => {
-        
-                            console.log(error.response.data);
-                            //form.setFieldError('email', error.response.data);
-                        },
-                    });
-            }
-            else
-                console.log("New password != confirm password");
-        } 
-        
-        
+                        updateProfile(
+                            {
+                                data: form1,
+                            },
+                            {
+                                onSuccess: (data) => {
+                                    console.log(data);
+                                    notifications.show({
+                                        id: 'notify-success-update-password',
+                                        withCloseButton: true,
+                                        autoClose: 1000,
+                                        title: "Success ",
+                                        message: 'You updated your password successfully!',
+                                        color: 'teal',
+                                        icon: <IconCheck />,
+                                        loading: false,
+                                    });
+                                    
+                                },
+                                onError: (error) => {
+                                    console.log(error.response.data);
+                                    notifications.show({
+                                        id: 'notify-failed-update-password',
+                                        withCloseButton: true,
+                                        autoClose: 1000,
+                                        title: "Failed",
+                                        message: 'You updated your password unsuccessfully!',
+                                        color: 'red',
+                                        icon: <IconX />,
+                                        loading: false,
+                                    });
+                                },
+                            },
+                        );
+                        setOpenedChangePassword(false);
+                    }
+                    else{
+                        form.setErrors({ currentPassword: "Wrong current password" });
+                    }
+                },
+                onError: (error) => {
+                    console.log(error.response.data);
+                },
+            });
     };
 
     return (
@@ -83,7 +110,7 @@ function Settings() {
                         </div>
                         <ul className="list-inline mb-4">
                             <li className="list-inline-item d-block border-bottom me-0">
-                                <Link className="pt-2 pb-2 d-flex align-items-center" to="/profile">
+                                <Link className="pt-2 pb-2 d-flex align-items-center" to={`/profile/${profile.data.id}`}>
                                     <i className="btn-round-md bg-primary-gradiant text-white feather-home font-md me-3"></i>
                                     <h4 className="fw-600 font-xsss mb-0 mt-0">
                                         Acount Information
@@ -93,7 +120,7 @@ function Settings() {
                                 </Link>
                             </li>
                             <li className="list-inline-item d-block  me-0">
-                                <Link className="pt-2 pb-2 d-flex align-items-center" to="/password">
+                                <Link className="pt-2 pb-2 d-flex align-items-center" onClick={() => setOpenedChangePassword(true)}>
                                     <i className="btn-round-md bg-blue-gradiant text-white feather-inbox font-md me-3">
                                     </i>
                                     <h4 className="fw-600 font-xsss mb-0 mt-0">
@@ -117,7 +144,7 @@ function Settings() {
                                         header: 'd-flex justify-content-between',
                                         title: 'flex-fill mx-auto pe-3 my-1',
                                     }}
-                                >
+                                > 
 
                                     <form onSubmit={form.onSubmit(handleChangePassword)}>
                                         <div>
@@ -128,7 +155,7 @@ function Settings() {
                                                 type="password"
                                                 placeHolder="Current Password"
                                                 onChange={e => setCurrentPassword(e.target.value)}
-                                                {...form.getInputProps('password')}
+                                                {...form.getInputProps('currentPassword')}
 
                                             />
                                         </div>
@@ -140,16 +167,18 @@ function Settings() {
                                                 type="password"
                                                 placeHolder="New Password"
                                                 onChange={e => setNewPassword(e.target.value)}
+                                                {...form.getInputProps('newPassword')}
                                             />
                                         </div>
                                         <div>
                                             <Divider my="xs" label="Confirm new password" />
                                             <Input
-                                                name="lastName"
+                                                name="confirmPassword"
                                                 icon={<IconUser />}
                                                 type="password"
                                                 placeHolder="Confirm new password"
                                                 onChange={e => setConfirmNewPassword(e.target.value)}
+                                                {...form.getInputProps('confirmPassword')}
                                             />
                                         </div>
 
@@ -166,9 +195,6 @@ function Settings() {
                                         </div>
                                     </form>
                                 </Modal>
-                                <Group position="center">
-                                    <Button onClick={() => setOpenedChangePassword(true)}>Change Your Password</Button>
-                                </Group>
                             </li>
                         </ul>
                         <div className="nav-caption fw-600 font-xsss text-grey-500 mb-2">Other

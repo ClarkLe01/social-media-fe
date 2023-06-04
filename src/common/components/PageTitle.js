@@ -17,9 +17,6 @@ function Pagetitle(props) {
                         />
                     </div>
                 </form>
-                <a href="/" className="btn-round-md ms-2 bg-greylight theme-dark-bg rounded-3">
-                    <i className="feather-filter font-xss text-grey-500"></i>
-                </a>
             </Text>
         </div>
     );

@@ -83,7 +83,6 @@ function FriendRequest(props) {
     const { responseList } = useFriend();
     const [ memberList, setMemberList ] = useState([]);
 
-    // const { acceptRequest } = useFriend(user.data.id);
     useEffect(() => {
         if (responseList) {
             setMemberList([ ...responseList.data ]);

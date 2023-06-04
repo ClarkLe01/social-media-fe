@@ -49,9 +49,24 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
-        validatePassword: {
-            url: '/user/validate/password',
+        requestResetPassword: {
+            url: '/user/password/reset/request',
             method: 'POST',
+            headers: headers.json,
+        },
+        validateResetPassword: {
+            url: '/user/password/reset/:uid/:token',
+            method: 'GET',
+            headers: headers.json,
+        },
+        resetPassword: {
+            url: '/user/password/reset/:uid/:token',
+            method: 'POST',
+            headers: headers.json,
+        },
+        searchUser: {
+            url: '/user/list',
+            method: 'GET',
             headers: headers.json,
         },
     },
@@ -143,6 +158,11 @@ export default {
                 method: 'POST',
                 headers: headers.multipart,
             },
+            delete: {
+                url: '/chat/room/delete',
+                method: 'POST',
+                headers: headers.json,
+            },
             detail: {
                 url: '/chat/room/detail/:roomId',
                 method: 'GET',
@@ -152,6 +172,16 @@ export default {
                 url: '/chat/room/update/:roomId',
                 method: 'PATCH',
                 headers: headers.multipart,
+            },
+            addMember: {
+                url: '/chat/room/member/add',
+                method: 'POST',
+                headers: headers.json,
+            },
+            removeMember: {
+                url: '/chat/room/member/remove',
+                method: 'POST',
+                headers: headers.json,
             },
         },
     },
@@ -240,6 +270,28 @@ export default {
             },
             validate: {
                 url: '/calling/room/validate',
+                method: 'GET',
+                headers: headers.json,
+            },
+            deactivate: {
+                url: '/calling/room/end',
+                method: 'GET',
+                headers: headers.json,
+            },
+            accept: {
+                url: '/calling/room/accept',
+                method: 'GET',
+                headers: headers.json,
+            },
+            reject: {
+                url: '/calling/room/reject',
+                method: 'GET',
+                headers: headers.json,
+            },
+        },
+        participants: {
+            remove: {
+                url: '/calling/sessions/participants/remove',
                 method: 'POST',
                 headers: headers.json,
             },

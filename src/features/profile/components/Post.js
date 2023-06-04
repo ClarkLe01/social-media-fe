@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ProfileDetail from '@common/components/ProfileDetail';
-import ProfilePhoto from '@common/components/ProfilePhoto';
 import CreatePost from '@common/components/CreatePost';
 import PostCard from '@common/components/PostCard';
 import Load from '@common/components/Load';
 import { Avatar, Text, Tooltip } from '@mantine/core';
 import { getTimeString } from '@common/utils/converString';
 import { getIconStatus } from '@common/utils/radioStatus';
+import Photos from "./Photos";
 
 function Post () {
     const { userId } = useParams();  // get param userId from url
@@ -33,7 +33,6 @@ function Post () {
     return <>
         <div className="col-xxl-4 col-xl-4 col-lg-12 col-md-12 py-3">
             {user && <ProfileDetail user={user} />}
-            {user && <ProfilePhoto />}
         </div>
         <div className="col-xxl-8 col-xl-8 col-lg-12 py-3">
             {profile.data.id == userId && (
