@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth, useProfile, useUserPost } from "@services/controller";
-import { API_URL } from "@constants";
-import { Button, Image } from "@mantine/core";
+import { API_URL, MEDIA_URL } from "@constants";
+import { Button, Image, SimpleGrid } from "@mantine/core";
 import { navigatePath } from "@app/routes/config";
 function Photos () {
     const { userId } = useParams();  // get param userId from url
@@ -30,25 +30,32 @@ function Photos () {
     };
 
     return (
-        userPosts.map((post, index) => (
-            post.images && post.images.map((file,value) => (
-
-                <div key={value} className="col-xxl-3 col-xl-3 col-lg-4 col-md-6 py-3">
-                    <Image 
-                        maw='100%' 
-                        width='100%' 
-                        height={150} 
-                        mx="auto" 
-                        radius="md" 
-                        src={API_URL + file.file.replace(API_URL, '')} 
-                        alt="image" 
-                        onClick={(e) => GoToPostDetail(post.id)}
-                    />
-                </div>
-            ),
-            )
-        ),
-        )
+        <div className="col-xxl-12 col-xl-12 col-lg-12 col-md-12 py-3">
+            <div className="card w-100 shadow-xss rounded-xxl border-0 mb-3">
+                <SimpleGrid cols={4} spacing="xs" className="py-3 px-1">
+                    {
+                        userPosts.map((post, index) => (
+                            post.images && post.images.map((file,value) => (
+                                <div key={value}>
+                                    <Image 
+                                        maw='100%' 
+                                        width={200}
+                                        height={200} 
+                                        mx="auto" 
+                                        radius="md" 
+                                        src={MEDIA_URL + file.file.replace(API_URL, '')} 
+                                        alt="image" 
+                                        onClick={(e) => GoToPostDetail(post.id)}
+                                    />
+                                </div>
+                            ),
+                            )
+                        ))
+                    }
+                </SimpleGrid>
+            </div>
+        </div>
+        
     );
 }
 
