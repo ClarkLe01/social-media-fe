@@ -47,10 +47,14 @@ function CardItem(props) {
                         src={MEDIA_URL+user.avatar.replace(API_URL,'')}
                         key={user.updated}
                     />
-                    <h4 className="d-inline fw-700 font-sm ps-3 ">
-                        {user.first_name} {user.last_name}
-                        { }{' '}
-                    </h4>
+                    <div className='ps-1'>
+                        <Text fw={700} size={16}>
+                            {user.first_name} {user.last_name}
+                        </Text>
+                        <Text c="dimmed" size={14}>
+                            {user.email}
+                        </Text>
+                    </div>
                 </div>
                 //     {type == 'request' && (
                 //         <div className="d-grid gap-2 mx-auto">

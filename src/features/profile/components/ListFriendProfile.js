@@ -57,9 +57,7 @@ function ListFriendProfile () {
                                         idFriendInstance={value.id}
                                         idProfile={value.requestID == userId ? value.responseID : value.requestID}
                                     />
-
                                 </Grid.Col> 
-                                
                             );
                         })}
                     </Grid>
