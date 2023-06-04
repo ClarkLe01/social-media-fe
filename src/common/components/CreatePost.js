@@ -8,6 +8,7 @@ import {
     ScrollArea,
     Button,
     ActionIcon,
+    Avatar,
 } from '@mantine/core';
 
 import {
@@ -24,6 +25,7 @@ import MediaEditCard from './MediaEditCard';
 import { useAuth, useFriend, usePostGeneral, useUserPost } from '@services/controller';
 import { CreateRadioButtons, getIconStatus } from '@common/utils/radioStatus';
 import { useQueryClient } from '@tanstack/react-query';
+import { API_URL, MEDIA_URL } from '@constants';
 
 
 
@@ -296,13 +298,14 @@ function CreatePost(props) {
                         className="card-body p-0 mt-3 position-relative"
                         onClick={() => setShowModalType(createPostModalType.createPost)}
                     >
-                        <figure className="avatar position-absolute ms-2 mt-1 top-5">
-                            <img
-                                src={props.user.avatar}
+                        <div className="avatar position-absolute ms-2 mt-1 top-5">
+                            <Avatar 
+                                src={MEDIA_URL+props.user.avatar.replace(API_URL,'')}
+                                size={30}
                                 alt="icon"
-                                className="shadow-sm rounded-circle w30"
+                                radius={"100%"}
                             />
-                        </figure>
+                        </div>
                         <textarea
                             name="message"
                             className="create-post h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
@@ -380,13 +383,14 @@ function CreatePost(props) {
                     id="createPost"
                 >
                     <div className="card-body p-0 d-flex">
-                        <figure className="avatar me-3">
-                            <img
-                                src={profile.data.avatar}
-                                alt="avater"
-                                className="shadow-sm rounded-circle w45"
+                        <div className="avatar me-3">
+                            <Avatar 
+                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
+                                size={45}
+                                alt="icon"
+                                radius={"100%"}
                             />
-                        </figure>
+                        </div>
                         <h4 className="fw-700 text-grey-900 font-xssss mt-1">
                             {' '}
                             {profile.data.first_name}{' '}{profile.data.last_name}
@@ -663,13 +667,14 @@ function CreatePost(props) {
                     id="createPost"
                 >
                     <div className="card-body p-0 d-flex">
-                        <figure className="avatar me-3">
-                            <img
-                                src={profile.data.avatar}
-                                alt="avater"
-                                className="shadow-sm rounded-circle w45"
+                        <div className="avatar me-3">
+                            <Avatar 
+                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
+                                size={45}
+                                alt="icon"
+                                radius={"100%"}
                             />
-                        </figure>
+                        </div>
                         <h4 className="fw-700 text-grey-900 font-xssss mt-1">
                             {' '}
                             {profile.data.first_name}{' '}{profile.data.last_name}

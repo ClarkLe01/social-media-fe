@@ -7,7 +7,7 @@ import Notification from '@common/components/Notification';
 import { Avatar, ActionIcon, Menu, Divider, Button, Modal } from '@mantine/core';
 
 import { navigatePath } from '@app/routes/config';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 import DarkLightTheme from '@common/components/DarkLightTheme';
 import Input from '@common/components/Input';
 import { useForm } from '@mantine/form';
@@ -121,7 +121,7 @@ function MainHeader() {
             <Menu position="bottom-end" width={150} withArrow>
                 <Menu.Target>
                     <ActionIcon className='ms-3 me-3'>
-                        <Avatar src={API_URL+profile.data.avatar.replace(API_URL, '')} radius="xl" size={35}/>
+                        <Avatar src={MEDIA_URL+profile.data.avatar.replace(API_URL, '')} radius="xl" size={35}/>
                     </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>

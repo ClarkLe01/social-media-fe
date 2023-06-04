@@ -7,7 +7,7 @@ import {
     Tooltip,
 } from '@mantine/core';
 import ReactPlayer from 'react-player';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 
 
 function ImageGridChat(props) {
@@ -17,7 +17,7 @@ function ImageGridChat(props) {
             <SimpleGrid cols={3} spacing="xs" verticalSpacing="xs">
                 {files.map((file, index) => {
                     return <React.Fragment key={index}>
-                        {file.type == 'image' && <Image src={API_URL+file.instance.replace(API_URL,'')} height={"170px"} width={"170px"} radius={"sm"} />}
+                        {file.type == 'image' && <Image src={MEDIA_URL+file.instance.replace(API_URL,'')} height={"170px"} width={"170px"} radius={"sm"} />}
                     </React.Fragment>;
                 })}
             </SimpleGrid>
@@ -28,7 +28,7 @@ function ImageGridChat(props) {
             <SimpleGrid cols={2} spacing="xs" verticalSpacing="xs">
                 {files.map((file, index) => {
                     return <React.Fragment key={index}>
-                        {file.type == 'image' && <Image src={API_URL+file.instance.replace(API_URL,'')} height={"260px"} width={"260px"} radius={"sm"} />}
+                        {file.type == 'image' && <Image src={MEDIA_URL+file.instance.replace(API_URL,'')} height={"260px"} width={"260px"} radius={"sm"} />}
                     </React.Fragment>;
                 })}
             </SimpleGrid>
@@ -92,7 +92,7 @@ function SentMessage(props) {
                                             }}
                                         >
                                             <Image
-                                                src={API_URL+file.instance.replace(API_URL,'')}
+                                                src={MEDIA_URL+file.instance.replace(API_URL,'')}
                                                 height={"250px"}
                                                 width={"100%"}
                                                 radius={"lg"}
@@ -102,7 +102,7 @@ function SentMessage(props) {
                                     {file.type == 'video' && (
                                         <div className='pe-2'>
                                             <ReactPlayer
-                                                url={API_URL+file.instance.replace(API_URL,'')}
+                                                url={MEDIA_URL+file.instance.replace(API_URL,'')}
                                                 width={"100%"}
                                                 playing={false}
                                                 controls={true}

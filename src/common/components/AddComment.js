@@ -7,6 +7,7 @@ import { Dropzone } from '@mantine/dropzone';
 import React, { useState, useRef, useEffect } from 'react';
 import data from '@emoji-mart/data';
 import { useQueryClient } from '@tanstack/react-query';
+import { API_URL, MEDIA_URL } from '@constants';
 
 function AddComment(props) {
     const queryClient = useQueryClient();
@@ -144,7 +145,7 @@ function AddComment(props) {
                 }}
             >
                 <div className="d-flex align-items-start justify-content-center">
-                    <Avatar src={currentUser.avatar} radius={'100%'} size={32} />
+                    <Avatar src={MEDIA_URL+currentUser.avatar.replace(API_URL+'')} radius={'100%'} size={32} />
                     <div
                         className="add-comment ms-3"
                         style={{

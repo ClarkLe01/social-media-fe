@@ -10,6 +10,7 @@ import { Avatar, Text, Tooltip } from '@mantine/core';
 import { getTimeString } from '@common/utils/converString';
 import { getIconStatus } from '@common/utils/radioStatus';
 import Photos from "./Photos";
+import { API_URL, MEDIA_URL } from "@constants";
 
 function Post () {
     const { userId } = useParams();  // get param userId from url
@@ -58,7 +59,7 @@ function Post () {
             {user && (
                 <div className="card w-100 shadow-xss rounded-xxl border-0 px-4 pt-4 pb-2 mb-3">
                     <div className="card-body p-0 d-flex">
-                        <Avatar className="avatar me-3" radius={'100%'} src={user.avatar} size={'md'} />
+                        <Avatar className="avatar me-3" radius={'100%'} src={MEDIA_URL+user.avatar.replace(API_URL,'')} size={'md'} />
                         <Text fw={700} size={16}>
                             {' '}
                             {user.first_name} {user.last_name}

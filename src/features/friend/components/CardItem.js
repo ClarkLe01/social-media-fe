@@ -3,7 +3,7 @@ import { Button, Card, Group, Image, Text } from '@mantine/core';
 import { useFriend, useProfile, useAuth } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 
 function CardItem(props) {
     const location = useLocation();
@@ -37,7 +37,7 @@ function CardItem(props) {
             {user && (
                 <Card shadow="sm" padding="lg" radius="md" withBorder >
                     <Card.Section onClick={goToProfile}>
-                        <Image src={API_URL+user.avatar.replace(API_URL,'')} height={160} />
+                        <Image src={MEDIA_URL+user.avatar.replace(API_URL,'')} height={160} />
                     </Card.Section>
         
                     <Group position="apart" mt="xs" onClick={goToProfile}>

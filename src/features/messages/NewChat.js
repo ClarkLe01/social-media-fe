@@ -32,7 +32,7 @@ import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { navigatePath } from '@app/routes/config';
 import ThumbMedia from './components/ThumbMedia';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 
 let SelectItem = ({ avatar, label, ...others }, ref) => (
     <div ref={ref} {...others}>
@@ -104,7 +104,7 @@ function NewChat() {
                         {
                             value: item.responseID.id,
                             email: item.responseID.email,
-                            avatar: API_URL+item.responseID.avatar.replace(API_URL,''),
+                            avatar: MEDIA_URL+item.responseID.avatar.replace(API_URL,''),
                             label: item.responseID.first_name + ' ' + item.responseID.last_name,
                         },
                     ]) 
@@ -112,7 +112,7 @@ function NewChat() {
                         {
                             value: item.requestID.id,
                             email: item.requestID.email,
-                            avatar: API_URL+item.requestID.avatar.replace(API_URL,''),
+                            avatar: MEDIA_URL+item.requestID.avatar.replace(API_URL,''),
                             label: item.requestID.first_name + ' ' + item.requestID.last_name,
                         },
                     ]);

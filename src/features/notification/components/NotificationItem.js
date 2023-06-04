@@ -20,7 +20,7 @@ import {
 } from '@assets/images/reaction';
 import { useProfile, useNotification } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
-import { API_URL } from '@constants';
+import { API_URL, MEDIA_URL } from '@constants';
 
 
 function NotificationItem(props) {
@@ -265,7 +265,7 @@ function NotificationItem(props) {
                     <Grid.Col span='content' className='ms-3'>
                         <div style={{ position: 'relative' }} >
                             <Avatar
-                                src={API_URL+sender.avatar.replace(API_URL, '')}
+                                src={MEDIA_URL+sender.avatar.replace(API_URL, '')}
                                 radius={'100%'}
                                 size={55}
                             />
