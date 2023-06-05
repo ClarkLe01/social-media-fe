@@ -80,18 +80,18 @@ function FriendRequest(props) {
     const { user } = props;
 
     const [ friendRequest, setFriendRequest ] = useState();
-    const { responseList } = useFriend();
+    const { responseList, responseListLoading } = useFriend();
     const [ memberList, setMemberList ] = useState([]);
 
     useEffect(() => {
-        if (responseList) {
+        if (responseList && !responseListLoading) {
             setMemberList([ ...responseList.data ]);
         }
 
         if (memberList.length > 0) {
-            setFriendRequest(memberList[0]);
+            setFriendRequest(responseList.data[0]);
         }
-    }, [ responseList ]);
+    }, [ responseList, responseListLoading ]);
 
     
     return (

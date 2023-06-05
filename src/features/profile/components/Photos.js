@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth, useProfile, useUserPost } from "@services/controller";
 import { API_URL, MEDIA_URL } from "@constants";
-import { Button, Image, SimpleGrid } from "@mantine/core";
+import { Button, Image, SimpleGrid, Text } from "@mantine/core";
 import { navigatePath } from "@app/routes/config";
 function Photos () {
     const { userId } = useParams();  // get param userId from url
@@ -32,6 +32,9 @@ function Photos () {
     return (
         <div className="col-xxl-12 col-xl-12 col-lg-12 col-md-12 py-3">
             <div className="card w-100 shadow-xss rounded-xxl border-0 mb-3">
+                <Text fw={700} size={30} className="mx-auto pt-1">
+                    Photos
+                </Text>
                 <SimpleGrid cols={4} spacing="xs" className="py-3 px-1">
                     {
                         userPosts.map((post, index) => (

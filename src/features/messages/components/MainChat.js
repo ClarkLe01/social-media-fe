@@ -412,7 +412,7 @@ function MainChat(props) {
                 openRef={dropzoneRef}
                 onDrop={(files) => setAttachFiles(prev => [ ...prev, ...files ])}
                 onReject={(files) => console.log('rejected files', files)}
-                maxSize={3 * 1024 ** 2}
+                maxSize={100 * 1024 ** 2}
                 accept={{
                     'image/*': [], // All images
                     'video/*': [],

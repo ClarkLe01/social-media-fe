@@ -49,6 +49,34 @@ function useMessage(roomId) {
         },
     });
 
+    const {
+        data: ImagesChat,
+        isLoading: ImagesChatLoading,
+        error: ImagesChatError,
+    } = useQuery({
+        queryKey: [ `room/images/${roomId}` ],
+        queryFn: () => api(endPoints.chat.file.images, { pathParams: { roomId } }),
+        enabled: !!roomId,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        staleTime: 1000,
+    });
+
+    const {
+        data: VideosChat,
+        isLoading: VideosChatLoading,
+        error: VideosChatError,
+    } = useQuery({
+        queryKey: [ `room/videos/${roomId}` ],
+        queryFn: () => api(endPoints.chat.file.videos, { pathParams: { roomId } }),
+        enabled: !!roomId,
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        staleTime: 1000,
+    });
+
     return {
         messageList,
         messageListLoading,
@@ -61,6 +89,14 @@ function useMessage(roomId) {
         sendMessageLoading,
         sendMessageError,
         sendMessage,
+
+        ImagesChat,
+        ImagesChatLoading,
+        ImagesChatError,
+
+        VideosChat,
+        VideosChatLoading,
+        VideosChatError,
     };
 }
 
