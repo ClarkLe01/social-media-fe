@@ -184,6 +184,18 @@ export default {
                 headers: headers.json,
             },
         },
+        file: {
+            videos: {
+                url: '/chat/videos/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+            images: {
+                url: '/chat/images/:roomId',
+                method: 'GET',
+                headers: headers.json,
+            },
+        },
     },
     post: {
         list: {
