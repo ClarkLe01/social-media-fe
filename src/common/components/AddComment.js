@@ -39,16 +39,13 @@ function AddComment(props) {
                 .then(dataUrl => {
                     let fileData = dataURLtoFile(dataUrl, "imageName.jpg");
                     tempFiles.push(fileData);
-                    console.log(fileData);
                     setAttachFiles(tempFiles);
 
                 });
             // setAttachFiles(tempFiles);
-            // console.log(tempFiles);
         }
     }, [  ]); 
 
-    console.log(render);
     console.log(attachFiles.length);
 
     function dataURLtoFile(dataurl, filename) {
