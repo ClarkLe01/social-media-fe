@@ -46,9 +46,9 @@ function CardItem(props) {
                         </Text>
                     </Group>
                     <Group position="apart" mt={1} mb={6} onClick={goToProfile}>
-                        {/* <Text size="sm" color="dimmed">
-                            18 mutual friends
-                        </Text> */}
+                        <Text size="sm" color="dimmed">
+                            {user.email}
+                        </Text>
                     </Group>
                     {type == 'request' && (
                         <div className="d-grid gap-2 mx-auto">
