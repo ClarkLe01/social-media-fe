@@ -45,7 +45,6 @@ function FindPeople() {
                             return (
                                 <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
                                     <CardItem
-                                        // idFriendInstance={value.id}
                                         idProfile={value.id}
                                         type='no'
                                     />
