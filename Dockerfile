@@ -1,5 +1,5 @@
 # pull official base image
-FROM node:17-alpine as builder
+FROM node:16 as builder
 
 # set work directory
 COPY ./package.json .
