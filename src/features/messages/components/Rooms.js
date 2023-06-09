@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AvatarDisplay from './AvatarDisplay';
 import RoomNameDisplay from './RoomNameDisplay';
 import { API_URL } from '@constants';
+import { useQueryClient } from '@tanstack/react-query';
 
 function Room(props) {
     const { id, roomName, members, isGroup, latest_message, updated, roomAvatar } = props.room;
@@ -12,6 +13,8 @@ function Room(props) {
     const { profile, profileLoading } = useAuth();
     const { roomId } = useParams();
     const navigate = useNavigate();
+
+    const queryClient = useQueryClient();
 
     function timeDiffToString(timestamp) {
         const date = new Date(timestamp);

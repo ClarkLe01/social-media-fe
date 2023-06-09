@@ -93,10 +93,11 @@ function MainChat(props) {
         if (!messageListLoading && messageList) {
             setMessages(messageList.data);
         }
-    }, [ messageListLoading, roomId ]);
+    }, [ messageListLoading, roomId, messageList ]);
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+        queryClient.invalidateQueries([ 'message/list', `room:${roomId}` ]);
         return () => attachFiles.forEach((file) => URL.revokeObjectURL(file.preview));
     }, [ roomId ]);
 
