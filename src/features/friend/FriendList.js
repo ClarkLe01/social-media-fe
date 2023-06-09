@@ -11,6 +11,7 @@ function FriendList() {
     const { profile } = useAuth();
     const { friendList } = useFriend(profile.data.id);
     const [ memberList, setMemberList ] = useState([]);
+    const [ inputSearch, setInputSearch ] = useState('');
     useEffect(() => {
         if (friendList) {
             setMemberList([ ...friendList.data ]);
@@ -19,7 +20,7 @@ function FriendList() {
 
     return (
         <div>
-            <Pagetitle title="Your Friends" />
+            <Pagetitle title="Your Friends" inputSearch={inputSearch} setInputSearch={setInputSearch}/>
             {memberList.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"
@@ -33,17 +34,19 @@ function FriendList() {
             ) : (
                 <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
                     <Grid className="row ps-2 pe-2">
-                        {memberList.map((value) => {
-                            return (
-                                <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
-                                    <CardItem
-                                        idFriendInstance={value.id}
-                                        idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
-                                        type='friend'
-                                    />
-                                </Grid.Col>
-                            );
-                        })}
+                        {memberList
+                            .map((value) => { 
+                                return (
+                                    <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
+                                        <CardItem
+                                            idFriendInstance={value.id}
+                                            idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
+                                            type='friend'
+                                            inputSearch={inputSearch}
+                                        />
+                                    </Grid.Col>
+                                );
+                            })}
                     </Grid>
                 </ScrollArea>
             )}

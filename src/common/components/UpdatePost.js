@@ -38,23 +38,23 @@ function CreatePost(props) {
     
 
     // Variable for submiting modal
-    const [ content, setContent ] = useState(contentPost?contentPost:'');
+    const [ content, setContent ] = useState(contentPost);
     const [ files, setFiles ] = useState([ ]);
     const [ selectedFriend, setSelectedFriend ] = useState([ ]);
     const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
 
     // Variable for managing modal create post tool
     const [ choosedValueRadio, setChoosedValueRadio ] = useState(props.defaultAudience);
-    const [ createPostState, setCreatePostState ] = useState({
-        isShowDropzone: false,
-        isShowTagPeople: false,
-        isShowAddFeeling: false,
-        isCheckIn: false,
-        // add more properties as needed
-    });
+    // const [ editPostState, setEditPostState ] = useState({
+    //     isShowDropzone: false,
+    //     isShowTagPeople: false,
+    //     isShowAddFeeling: false,
+    //     isCheckIn: false,
+    //     // add more properties as needed
+    // });
 
     const [ editPostState, setEditPostState ] = useState({
-        isShowDropzone: true,
+        isShowDropzone: false,
         isShowTagPeople: false,
         isShowAddFeeling: false,
         isCheckIn: false,
@@ -70,12 +70,6 @@ function CreatePost(props) {
             name: '',
             withCloseButton: false,
             size: 'md',
-        },
-        createPost: {
-            type: 'createPost',
-            name: 'Create post',
-            withCloseButton: true,
-            size: 'lg',
         },
         postAudience: {
             type: 'postAudience',
@@ -115,15 +109,41 @@ function CreatePost(props) {
         },
     };
 
-    const [  showModalType, setShowModalType ] = useState(id ? createPostModalType.updatePost : createPostModalType.default);
+    const [  showModalType, setShowModalType ] = useState(createPostModalType.updatePost);
     const [ canPost, setcanPost ] = useState(false);
     const [ memberList, setMemberList ] = useState([ ]);
     const [ temp , setTemp ] = useState(openMediaFileRef);
 
-    const { createPost, createPostError, createPostLoading, updatePost } = useUserPost();
+    const { updatePost } = useUserPost();
     const { profile } = useAuth();
     const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(profile.data.id);
-    
+    useEffect(() => {
+        // 👇️ only runs once
+        if(images){
+            // console.log("asdas");
+            let tempFiles = [];
+            images.map((image) => {
+                const url = MEDIA_URL+image.file;
+                const toDataURL = url => fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    }));
+
+                toDataURL(url)
+                    .then(dataUrl => {
+                        var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+                        // console.log("Here is JavaScript File Object", [ fileData ]);
+                        tempFiles.push(fileData);
+                    });
+                
+            });
+            setFiles( tempFiles );
+        }
+    }, [  ]); 
 
     // Close modal
     const handleClose = () => {
@@ -145,28 +165,9 @@ function CreatePost(props) {
 
     // Modal 1 status create post
     function handleMediaTool() {
-        setCreatePostState((prevState) => ({
+        setEditPostState((prevState) => ({
             ...prevState,
-            isShowDropzone: !createPostState.isShowDropzone,
-        }));
-    }
-    function handleTagPeople() {
-        setCreatePostState((prevState) => ({
-            ...prevState,
-            isShowTagPeople: !createPostState.isShowTagPeople,
-        }));
-        setShowModalType(createPostModalType.tagPeople);
-    }
-    function handleAddFeeling() {
-        setCreatePostState((prevState) => ({
-            ...prevState,
-            isShowAddFeeling: !createPostState.isShowAddFeeling,
-        }));
-    }
-    function handleCheckIn() {
-        setCreatePostState((prevState) => ({
-            ...prevState,
-            isCheckIn: !createPostState.isCheckIn,
+            isShowDropzone: !editPostState.isShowDropzone,
         }));
     }
 
@@ -178,22 +179,6 @@ function CreatePost(props) {
         } else if (value == 'specificFriends') {
             setShowModalType(createPostModalType.specificFriends);
         }
-    }
-
-    // Submit New Post
-    function handleSubmitNewPost() {
-        const form = new FormData();
-        form.append('content', content);
-        form.append('status', lastChoosedValueRadio);
-        form.append('canSee', selectedFriend);
-        form.append('notSee', selectedFriend);
-        files.map(file => form.append("files", file));
-        createPost(
-            {
-                data: form,
-            },
-        );
-        handleClose();
     }
 
     function handleEditPost() {
@@ -235,7 +220,7 @@ function CreatePost(props) {
                     : setMemberList(prev => [ ...prev, item.requestID ]);
             });
         }
-    }, [ friendListDetailLoading ]);
+    }, []);
 
     useEffect(() => {
         content.length > 0 || files.length > 0 ? setcanPost(true) : setcanPost(false);
@@ -263,50 +248,8 @@ function CreatePost(props) {
         });
     }
 
-
     return (
         <>
-            {id?false:true && 
-                <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
-                    <div
-                        className="card-body p-0 mt-3 position-relative"
-                        onClick={() => setShowModalType(createPostModalType.createPost)}
-                    >
-                        <div className="avatar position-absolute ms-2 mt-1 top-5">
-                            <Avatar 
-                                src={MEDIA_URL+props.user.avatar.replace(API_URL,'')}
-                                size={30}
-                                alt="icon"
-                                radius={"100%"}
-                            />
-                        </div>
-                        <textarea
-                            name="message"
-                            className="create-post h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
-                            cols="30"
-                            rows="10"
-                            placeholder="What's on your mind?"
-                            disabled
-                        ></textarea>
-                    </div>
-                    <div className="card-body d-flex p-0 mt-0 ps-2">
-                        <a
-                            href="#photo"
-                            className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                        >
-                            <i className="font-md text-success feather-image me-2"></i>
-                            <span className="d-none-xs">Photo/Video</span>
-                        </a>
-                        <a
-                            href="#activity"
-                            className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                        >
-                            <i className="font-md text-warning feather-camera me-2"></i>
-                            <span className="d-none-xs">Feeling/Activity</span>
-                        </a>
-                    </div>
-                </div>
-            } 
             <Modal
                 name={showModalType.name}
                 size={showModalType.size}
@@ -315,7 +258,7 @@ function CreatePost(props) {
                     <div className="d-flex justify-content-center">
                         {(showModalType.type == 'postAudience' || showModalType.type == 'editMedia' || showModalType.type == 'tagPeople') && (
                             <ActionIcon
-                                onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}
+                                onClick={() => setShowModalType(createPostModalType.updatePost)}
                             >
                                 <IconArrowLeft />
                             </ActionIcon>
@@ -351,125 +294,6 @@ function CreatePost(props) {
                 withCloseButton={showModalType.withCloseButton}
                 centered
             >
-                {/* createPost Modal */}
-                <div
-                    className={`${showModalType.type != 'createPost' && 'd-none'}`}
-                    id="createPost"
-                >
-                    <div className="card-body p-0 d-flex">
-                        <div className="avatar me-3">
-                            <Avatar 
-                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
-                                size={45}
-                                alt="icon"
-                                radius={"100%"}
-                            />
-                        </div>
-                        <h4 className="fw-700 text-grey-900 font-xssss mt-1">
-                            {' '}
-                            {profile.data.first_name}{' '}{profile.data.last_name}
-                            <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-                                {' '}
-                                <Button
-                                    variant="outline"
-                                    leftIcon={getIconStatus(lastChoosedValueRadio).icon}
-                                    rightIcon={<IconTriangleInvertedFilled size={10} />}
-                                    classNames={{
-                                        leftSection: 'd-flex align-items-center',
-                                        rightSection: 'd-flex align-items-center',
-                                    }}
-                                    size="xs"
-                                    onClick={() => {
-                                        setChoosedValueRadio(lastChoosedValueRadio),
-                                        setShowModalType(createPostModalType.postAudience);
-                                    }}
-                                    compact
-                                >
-                                    {radioButtons.map(
-                                        (obj) => obj.value == lastChoosedValueRadio && obj.label,
-                                    )}
-                                </Button>
-                            </span>
-                        </h4>
-                    </div>
-                    <ScrollArea
-                        style={{ height: createPostState.isShowDropzone ? 350 : 200 }}
-                        offsetScrollbars
-                        scrollbarSize={6}
-                    >
-                        <div className="text-content px-1">
-                            <Textarea
-                                variant="unstyled"
-                                classNames={{
-                                    root: 'border-0',
-                                }}
-                                autosize
-                                minRows={3}
-                                value={content}
-                                onChange={(event) => setContent(event.currentTarget.value)}
-                                onResize={(event) => console.log(event.currentTarget)}
-                            />
-                        </div>
-                        {createPostState.isShowDropzone && (
-                            <div className="image-video-content pb-3 px-1">
-                                <MediaFileSection
-                                    files={files}
-                                    setFiles={setFiles}
-                                    onEdit={() => setShowModalType(createPostModalType.editMedia)}
-                                    openMediaFileRef={openMediaFileRef}
-                                />
-                            </div>
-                        )}
-                    </ScrollArea>
-
-                    <div className="post-tool d-flex bd-highlight mb-3 border border-1 mt-3">
-                        <div className="me-auto p-2 bd-highlight">Add to your post</div>
-                        <div className="p-2 bd-highlight">
-                            <ActionIcon
-                                variant={
-                                    createPostState.isShowDropzone === true ? 'filled' : 'subtle'
-                                }
-                                onClick={handleMediaTool}
-                            >
-                                <IconPhoto />
-                            </ActionIcon>
-                        </div>
-                        {/* <div className="p-2 bd-highlight" onClick={handleTagPeople}>
-                            <ActionIcon
-                                variant={
-                                    createPostState.isShowTagPeople === true ? 'filled' : 'subtle'
-                                }
-                            >
-                                <IconTag />
-                            </ActionIcon>
-                        </div>
-                        <div className="p-2 bd-highlight" onClick={handleAddFeeling}>
-                            <ActionIcon
-                                variant={
-                                    createPostState.isShowAddFeeling === true ? 'filled' : 'subtle'
-                                }
-                            >
-                                <IconMoodHappy />
-                            </ActionIcon>
-                        </div>
-                        <div className="p-2 bd-highlight" onClick={handleCheckIn}>
-                            <ActionIcon
-                                variant={createPostState.isCheckIn === true ? 'filled' : 'subtle'}
-                            >
-                                <IconMapPinFilled />
-                            </ActionIcon>
-                        </div> */}
-                    </div>
-                    <div className="d-grid gap-2 mx-auto">
-                        <Button
-                            fullWidth
-                            disabled={canPost ? false : true}
-                            onClick={handleSubmitNewPost}
-                        >
-                            Post
-                        </Button>
-                    </div>
-                </div>
                 {/* postAudience Modal */}
                 <div
                     className={`${showModalType.type != 'postAudience' && 'd-none'}`}
@@ -526,7 +350,7 @@ function CreatePost(props) {
                             variant="outline"
                             onClick={() => {
                                 setChoosedValueRadio(lastChoosedValueRadio),
-                                id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
+                                setShowModalType(createPostModalType.updatePost);
                             }}
                         >
                             Cancel
@@ -543,7 +367,7 @@ function CreatePost(props) {
                             ) : (
                                 <Button
                                     onClick={() => {setLastChoosedValueRadio(choosedValueRadio),
-                                    id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
+                                    setShowModalType(createPostModalType.updatePost);
                                     }}
                                 >
                                     Done
@@ -627,10 +451,10 @@ function CreatePost(props) {
                         })}
                     </SimpleGrid>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
-                        <Button variant="outline" onClick={() => id?openMediaFileRef:openMediaFileRef.current()}>
+                        <Button variant="outline" onClick={() => openMediaFileRef}>
                             Add Photos/Videos
                         </Button>
-                        <Button onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}>
+                        <Button onClick={() => setShowModalType(createPostModalType.updatePost)}>
                             Done
                         </Button>
                     </div>
@@ -643,7 +467,7 @@ function CreatePost(props) {
                     <div className="card-body p-0 d-flex">
                         <div className="avatar me-3">
                             <Avatar 
-                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
+                                src={MEDIA_URL+profile.data.avatar.replace(MEDIA_URL,'')}
                                 size={45}
                                 alt="icon"
                                 radius={"100%"}
@@ -677,7 +501,7 @@ function CreatePost(props) {
                         </h4>
                     </div>
                     <ScrollArea
-                        style={{ height: createPostState.isShowDropzone ? 350 : 200 }}
+                        style={{ height: editPostState.isShowDropzone ? 350 : 200 }}
                         offsetScrollbars
                         scrollbarSize={6}
                     >
@@ -694,7 +518,7 @@ function CreatePost(props) {
                                 onResize={(event) => console.log(event.currentTarget)}
                             />
                         </div>
-                        {createPostState.isShowDropzone && (
+                        {editPostState.isShowDropzone && (
                             <div className="image-video-content pb-3 px-1">
                                 <MediaFileSection
                                     files={files}
@@ -712,13 +536,38 @@ function CreatePost(props) {
                         <div className="p-2 bd-highlight">
                             <ActionIcon
                                 variant={
-                                    createPostState.isShowDropzone === true ? 'filled' : 'subtle'
+                                    editPostState.isShowDropzone === true ? 'filled' : 'subtle'
                                 }
                                 onClick={handleMediaTool}
                             >
                                 <IconPhoto />
                             </ActionIcon>
                         </div>
+                        {/* <div className="p-2 bd-highlight" onClick={handleTagPeople}>
+                            <ActionIcon
+                                variant={
+                                    editPostState.isShowTagPeople === true ? 'filled' : 'subtle'
+                                }
+                            >
+                                <IconTag />
+                            </ActionIcon>
+                        </div>
+                        <div className="p-2 bd-highlight" onClick={handleAddFeeling}>
+                            <ActionIcon
+                                variant={
+                                    editPostState.isShowAddFeeling === true ? 'filled' : 'subtle'
+                                }
+                            >
+                                <IconMoodHappy />
+                            </ActionIcon>
+                        </div>
+                        <div className="p-2 bd-highlight" onClick={handleCheckIn}>
+                            <ActionIcon
+                                variant={editPostState.isCheckIn === true ? 'filled' : 'subtle'}
+                            >
+                                <IconMapPinFilled />
+                            </ActionIcon>
+                        </div> */}
                     </div>
                     <div className="d-grid gap-2 mx-auto"> 
                         <Button

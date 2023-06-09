@@ -9,6 +9,7 @@ function CardItem(props) {
     const location = useLocation();
     const navigate = useNavigate();
     const { idFriendInstance, idProfile, type } = props;
+    const inputSearch = props.inputSearch?props.inputSearch.trim().toLowerCase():'';
     const { profile } = useAuth(); // current user
     const { profileId } = useProfile(idProfile);
     const { deleteFriend, acceptRequest } = useFriend(profile.data.id);
@@ -34,7 +35,7 @@ function CardItem(props) {
 
     return (
         <>
-            {user && (
+            {user && ((user.first_name + " " + user.last_name).trim().toLowerCase().includes(inputSearch)) ? (
                 <Card shadow="sm" padding="lg" radius="md" withBorder >
                     <Card.Section onClick={goToProfile}>
                         <Image src={MEDIA_URL+user.avatar.replace(API_URL,'')} height={160} />
@@ -69,7 +70,7 @@ function CardItem(props) {
                         </div>
                     )}
                 </Card>
-            )}
+            ):null}
         </>
     );
 }

@@ -58,7 +58,6 @@ function MainHeader() {
             {
                 onSuccess: (data) => {
                     if(data.data.status){
-                        //console.log(data.data.status);
         
                         updateProfile(
                             {
@@ -66,7 +65,7 @@ function MainHeader() {
                             },
                             {
                                 onSuccess: (data) => {
-                                    console.log(data);
+                                    // console.log(data);
                                     notifications.show({
                                         id: 'notify-success-update-password',
                                         withCloseButton: true,
@@ -80,7 +79,7 @@ function MainHeader() {
                                     
                                 },
                                 onError: (error) => {
-                                    console.log(error.response.data);
+                                    // console.log(error.response.data);
                                     notifications.show({
                                         id: 'notify-failed-update-password',
                                         withCloseButton: true,
@@ -101,7 +100,7 @@ function MainHeader() {
                     }
                 },
                 onError: (error) => {
-                    console.log(error.response.data);
+                    // console.log(error.response.data);
                 },
             });
     };

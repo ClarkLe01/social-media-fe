@@ -47,6 +47,7 @@ function useUserPost(userId) {
         onSuccess: ({ data }) => {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
+            window.location.reload();
         },
         onError: (error) => {      
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });

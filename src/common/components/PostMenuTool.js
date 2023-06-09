@@ -7,7 +7,7 @@ import {
 import { Modal, Button, Group, Menu, Text } from '@mantine/core';
 import { usePostGeneral, useUserPost } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
-import CreatePost from './CreatePost';
+import UpdatePost from './UpdatePost';
 function PostMenuTool(props) {
     const { id, user, status, images, content } = props;
     const queryClient = useQueryClient();
@@ -53,7 +53,7 @@ function PostMenuTool(props) {
                     </Menu.Item>
                     <Menu.Item 
                         icon={<IconLock size={24} />}
-                        onClick={() => console.log(`edit post ${id}`)}
+                        // onClick={() => console.log(`edit post ${id}`)}
                     >
                         Edit audience
                     </Menu.Item>
@@ -103,7 +103,7 @@ function PostMenuTool(props) {
                 </div>
             </Modal>
             {openedEditPost && 
-            <CreatePost 
+            <UpdatePost 
                 user={user} 
                 defaultAudience={status} 
                 id={id} 

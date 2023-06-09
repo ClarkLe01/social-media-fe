@@ -10,6 +10,8 @@ function FriendRequest() {
     useScrollLock(true);
     const { responseList } = useFriend();
     const [ memberList, setMemberList ] = useState([]);
+    const [ inputSearch, setInputSearch ] = useState('');
+
     useEffect(() => {
         if (responseList) {
             setMemberList([ ...responseList.data ]);
@@ -17,7 +19,7 @@ function FriendRequest() {
     }, [ responseList ]);
     return (
         <div>
-            <Pagetitle title="Your Request" />
+            <Pagetitle title="Your Request" inputSearch={inputSearch} setInputSearch={setInputSearch}/>
             {memberList.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"
@@ -38,6 +40,7 @@ function FriendRequest() {
                                         idFriendInstance={value.id}
                                         idProfile={value.requestID}
                                         type='response'
+                                        inputSearch={inputSearch}
                                     />
                                 </Grid.Col>
                             );

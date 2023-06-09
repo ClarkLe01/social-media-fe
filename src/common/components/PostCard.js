@@ -309,7 +309,7 @@ function CommentItem(props) {
                     </div>
 
                     <div className="file-comment ps-1 pt-1 d-flex" onClick={() => setIsOpen(true)}>
-                        <Image src={MEDIA_URL+comment.file.replace(API_URL+'')} maw={'15rem'} />
+                        {comment.file != "" && <Image src={MEDIA_URL+comment.file.replace(API_URL+'')} maw={'15rem'} />}
                     </div>
                 </div>
             </div>}
@@ -454,6 +454,7 @@ function PostCard(props) {
     const [ reactType, setReactType ] = useState('unlike');
 
     const navigate = useNavigate();
+
 
     const handleReactClick = (data) => {
         updateInteraction(
@@ -602,7 +603,6 @@ function PostCard(props) {
                     defaultAudience="public" 
                     id={id} 
                     status={status}
-                    // owner={owner} 
                     content={content}
                     images={images}
                 />}

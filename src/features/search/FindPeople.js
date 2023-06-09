@@ -15,6 +15,8 @@ function FindPeople() {
 
     const [ queryParameters ] = useSearchParams();
     const { searchUserTest } = useSearch(queryParameters.get('search') || '');
+    const [ inputSearch, setInputSearch ] = useState('');
+
     const [ listUser , setListUser ] = useState([]);
 
     useEffect(() => {
@@ -27,7 +29,7 @@ function FindPeople() {
 
     return (
         <div>
-            <Pagetitle title="People" />
+            <Pagetitle title="People" inputSearch={inputSearch} setInputSearch={setInputSearch}/>
             {listUser.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"
@@ -47,6 +49,7 @@ function FindPeople() {
                                     <CardItem
                                         idProfile={value.id}
                                         type='no'
+                                        inputSearch={inputSearch}
                                     />
                                 </Grid.Col>
                             );

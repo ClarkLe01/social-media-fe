@@ -92,6 +92,10 @@ const GroupRoomProfile = (props) => {
         }
     };
 
+    const goToProfile = (id) => {
+        navigate(navigatePath.profile.replace(':userId', id), { state: { from: location.pathname } });
+    };
+
     const handleAvatarUpdate = () => {
         if(!updatedAvatarSrc) return;
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
@@ -392,7 +396,7 @@ const GroupRoomProfile = (props) => {
                                                         </ActionIcon>
                                                     </Menu.Target>
                                                     <Menu.Dropdown>
-                                                        <Menu.Item icon={<IconUser size={14} />}>
+                                                        <Menu.Item icon={<IconUser size={14} />} onClick={() => goToProfile(member.user.id)}>
                                                         View Profile
                                                         </Menu.Item>
                                                         {member.user.id === currentUser.id && !IsAdmin(currentUser, members) && (

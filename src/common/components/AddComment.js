@@ -18,14 +18,14 @@ function AddComment(props) {
     const [ attachFiles, setAttachFiles ] = useState([]);
     const dropzoneRef = useRef(null);
     const { createComment, createCommentError, createCommentLoading, updateComment } = usePostComment();
+    const [ render, setRender ] = useState(0);
 
     useEffect(() => {
         // 👇️ only runs once
         if(commentFile){
-            // console.log("asdas");
             let tempFiles = [];
             
-            const url = commentFile;
+            const url = MEDIA_URL+commentFile;
             const toDataURL = url => fetch(url)
                 .then(response => response.blob())
                 .then(blob => new Promise((resolve, reject) => {
@@ -37,12 +37,12 @@ function AddComment(props) {
 
             toDataURL(url)
                 .then(dataUrl => {
-                    var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
-                    // console.log("Here is JavaScript File Object", [ fileData ]);
+                    let fileData = dataURLtoFile(dataUrl, "imageName.jpg");
                     tempFiles.push(fileData);
+                    setAttachFiles(tempFiles);
+
                 });
-                
-            setAttachFiles( tempFiles );
+            // setAttachFiles(tempFiles);
         }
     }, [  ]); 
 
@@ -64,6 +64,9 @@ function AddComment(props) {
             attachFiles.map((file) => {
                 form.append('file', file);
             });
+        }
+        else{
+            form.append('file', '');
         }
         for (let [ key, value ] of form) {
             console.log('form', key, ':', value);
@@ -91,7 +94,6 @@ function AddComment(props) {
         if (commentContent.length == 0 && attachFiles.length == 0) return;
         const form = new FormData();
         form.append('content', commentContent);
-        //console.log(attachFiles.length);
         if (attachFiles.length > 0) {
             attachFiles.map((file) => {
                 form.append('file', file);
@@ -125,7 +127,6 @@ function AddComment(props) {
     const handleEnterPress = (e) => {
         if (e.code == 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            //console.log(flag);
             if(!flag) handleSendComment();
             else handleUpdateComment();
         }
