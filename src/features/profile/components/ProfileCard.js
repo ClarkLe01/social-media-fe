@@ -15,6 +15,13 @@ import {
     IconGenderMale,
     IconCheck,
     IconX,
+    IconSquare,
+    IconSquarePlus,
+    IconSquareCheck,
+    IconSquareCheckFilled,
+    IconChevronDown,
+    IconAlarmSnooze,
+    IconAlarm,
 } from '@tabler/icons-react';
 import {
     Button,
@@ -22,6 +29,7 @@ import {
     Menu,
     Modal,
     Divider,
+    ActionIcon,
 } from '@mantine/core';
 
 import { useAuth, useFriend, useProfile } from '@services/controller';
@@ -153,6 +161,7 @@ function ProfileCard(props) {
                         case 'request':
                             return (
                                 <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
+                                    <Button leftIcon={<IconSquareCheckFilled size={23} />}>Following</Button>
                                     <Button
                                         onClick={handleDeleteFriend}
                                         color="red"
@@ -166,6 +175,7 @@ function ProfileCard(props) {
                         case 'response':
                             return (
                                 <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
+                                    <Button leftIcon={<IconBrandMessenger size={23} />}>Follow</Button>
                                     <Menu>
                                         <Menu.Target>
                                             <Button color="violet" leftIcon={<IconUserCheck size={23} />}>
@@ -268,6 +278,7 @@ function ProfileCard(props) {
                         case 'no':
                             return (
                                 <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
+                                    <Button leftIcon={<IconSquarePlus size={23} />}>Follow</Button>     
                                     <Button
                                         onClick={handleAddFriend}
                                         color="gray"
@@ -276,6 +287,28 @@ function ProfileCard(props) {
                                         Add Friend
                                     </Button>
                                     <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
+                                    <Menu>
+                                        <Menu.Target>
+                                            <ActionIcon variant="filled">
+                                                <IconChevronDown size={23} />
+                                            </ActionIcon>
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            <Menu.Item 
+                                                onClick={handleAcceptRequest}
+                                                icon={<IconAlarmSnooze color="red" size={23}/>}
+                                            >
+                                                Turn off notification
+                                            </Menu.Item>
+                                            <Menu.Item 
+                                                onClick={handleAcceptRequest}
+                                                icon={<IconAlarm color="blue" size={23}/>}
+                                            >
+                                                Turn on notification
+                                            </Menu.Item>
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                    
                                 </Group>
                             );
                         default:

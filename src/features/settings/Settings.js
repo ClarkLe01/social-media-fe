@@ -62,7 +62,7 @@ function Settings() {
                                         id: 'notify-success-update-password',
                                         withCloseButton: true,
                                         autoClose: 1000,
-                                        title: "Success ",
+                                        title: "Success",
                                         message: 'You updated your password successfully!',
                                         color: 'teal',
                                         icon: <IconCheck />,

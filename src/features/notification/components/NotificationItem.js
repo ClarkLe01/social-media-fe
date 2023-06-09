@@ -8,6 +8,10 @@ import {
     IconBook, 
     IconMessageCircle, 
     IconArticle,
+    IconX,
+    IconAlarmOff,
+    IconAlarmSnooze,
+    IconAlarm,
 } from '@tabler/icons-react';
 import { ActionIcon, Menu, Avatar, Grid, Text } from '@mantine/core';
 import { 
@@ -18,15 +22,18 @@ import {
     ReactWow,
     ReactAngry,
 } from '@assets/images/reaction';
-import { useProfile, useNotification } from '@services/controller';
+import { useProfile, useNotification, useAuth } from '@services/controller';
 import { useQueryClient } from '@tanstack/react-query';
 import { API_URL, MEDIA_URL } from '@constants';
-
+import { notifications } from '@mantine/notifications';
 
 function NotificationItem(props) {
     const { item } = props;
     const { profileId } = useProfile(item.senderID);
+    const { profile } = useAuth();
+    const { muteUserIds, muteUserIdsLoading, unMuteUser, muteUser } = useProfile(profile.data.id);
     const [ sender, setSender ] = useState(null);
+    const [ muteIds, setMuteIds ] = useState([]);
     const [ timeDifference, setTimeDifference ] = useState(Math.floor((new Date() - new Date(item.created)) / 1000));
     const [ isHover, setIsHover ] = useState(false);
     const { updateNotificationItem, deleteNotificationItem } = useNotification();
@@ -62,6 +69,78 @@ function NotificationItem(props) {
             });
     };
 
+    const handleMuteUserNotification = () => {
+        muteUser({
+            data: {
+                userId: item.senderID,
+            },
+        },
+        {
+            onSuccess: (data) => {
+                queryClient.invalidateQueries({ queryKey: [ `mutes/${profile.data.id}` ] });
+                notifications.show({
+                    id: 'notify-success-mute-user',
+                    withCloseButton: true,
+                    autoClose: 1000,
+                    title: "Success",
+                    message: 'You mute this user successfully!',
+                    color: 'teal',
+                    icon: <IconCheck />,
+                    loading: false,
+                });
+            },
+            onError: (error) => {
+                queryClient.invalidateQueries({ queryKey: [ `mutes/${profile.data.id}` ] });
+                notifications.show({
+                    id: 'notify-failed-mute-user',
+                    withCloseButton: true,
+                    autoClose: 1000,
+                    title: "Failed",
+                    message: 'You mute this user unsuccessfully!',
+                    color: 'red',
+                    icon: <IconX />,
+                    loading: false,
+                });
+            },
+        });
+    };
+
+    const handleUnMuteUserNotification = () => {
+        unMuteUser({
+            data: {
+                userId: item.senderID,
+            },
+        },
+        {
+            onSuccess: (data) => {
+                queryClient.invalidateQueries({ queryKey: [ `mutes/${profile.data.id}` ] });
+                notifications.show({
+                    id: 'notify-success-unmute-user',
+                    withCloseButton: true,
+                    autoClose: 1000,
+                    title: "Success",
+                    message: 'You unmute this user successfully!',
+                    color: 'teal',
+                    icon: <IconCheck />,
+                    loading: false,
+                });
+            },
+            onError: (error) => {
+                queryClient.invalidateQueries({ queryKey: [ `mutes/${profile.data.id}` ] });
+                notifications.show({
+                    id: 'notify-failed-unmute-user',
+                    withCloseButton: true,
+                    autoClose: 1000,
+                    title: "Failed",
+                    message: 'You unmute this user unsuccessfully!',
+                    color: 'red',
+                    icon: <IconX />,
+                    loading: false,
+                });
+            },
+        });
+    };
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             const givenDate = new Date(item.created);
@@ -71,6 +150,12 @@ function NotificationItem(props) {
         }, 1000);
         return () => clearInterval(intervalId);
     }, [ item ]);
+
+    useEffect(() => {
+        if(muteUserIds && !muteUserIdsLoading){   
+            setMuteIds([ ...muteUserIds.data.mute ]);
+        }
+    }, [ muteUserIds, muteUserIdsLoading ]);
 
     function formatDuration(durationInSeconds) {
         if (durationInSeconds < 60) return `a seccond ago`;
@@ -302,6 +387,21 @@ function NotificationItem(props) {
                                     >
                                         Marks as read
                                     </Menu.Item>
+                                    {muteIds.includes(item.senderID)?(
+                                        <Menu.Item
+                                            icon={<IconAlarm color="blue" size={24} />}
+                                            onClick={handleUnMuteUserNotification}
+                                        >
+                                            UnMute
+                                        </Menu.Item>
+                                    ): (
+                                        <Menu.Item
+                                            icon={<IconAlarmSnooze color="red   " size={24} />}
+                                            onClick={handleMuteUserNotification}
+                                        >
+                                            Mute
+                                        </Menu.Item>
+                                    )}
                                     <Menu.Item
                                         icon={<IconSquareX color="red" size={24} />}
                                         onClick={handleDeleteNotification}

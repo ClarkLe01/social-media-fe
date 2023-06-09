@@ -7,7 +7,6 @@ function useProfile(userId) {
         data: profileId,
         isLoading: profileIdLoading,
         error: profileIdError,
-        refetch: profileIdRefetch,
     } = useQuery({
         queryKey: [ `profile/${userId}` ],
         queryFn: () => api(endPoints.user.getProfileById, { pathParams: { userId: userId } }),
@@ -78,12 +77,75 @@ function useProfile(userId) {
         staleTime: 1000,
         // refetchInterval: 1000,
     });
+
+    const {
+        data: followingUserIds,
+        isLoading: followingUserIdsLoading,
+        error: followingUserIdsError,
+    } = useQuery({
+        queryKey: [ `follows/${userId}` ],
+        queryFn: () => api(endPoints.user.userFollows, { pathParams: { userId: userId } }),
+        enabled: !!userId,
+        retryOnMount: false,
+        staleTime: 1000,
+    });
+
+    const {
+        isLoading: followUserLoading,
+        error: followUserError,
+        mutate: followUser,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.user.follow, variables);
+        },
+    });
+
+    const {
+        isLoading: unFollowUserLoading,
+        error: unFollowUserError,
+        mutate: unFollowUser,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.user.unfollow, variables);
+        },
+    });
+
+    const {
+        data: muteUserIds,
+        isLoading: muteUserIdsLoading,
+        error: muteUserIdsError,
+    } = useQuery({
+        queryKey: [ `mutes/${userId}` ],
+        queryFn: () => api(endPoints.user.userMutes, { pathParams: { userId: userId } }),
+        enabled: !!userId,
+        retryOnMount: false,
+        staleTime: 1000,
+    });
+
+    const {
+        isLoading: muteUserLoading,
+        error: muteUserError,
+        mutate: muteUser,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.user.mute, variables);
+        },
+    });
+
+    const {
+        isLoading: unMuteUserLoading,
+        error: unMuteUserError,
+        mutate: unMuteUser,
+    } = useMutation({
+        mutationFn: (variables) => {
+            return api(endPoints.user.unmute, variables);
+        },
+    });
     
     return {
         profileId,
         profileIdLoading,
         profileIdError,
-        profileIdRefetch,
 
         updateProfile,
         updateProfileLoading,
@@ -93,6 +155,30 @@ function useProfile(userId) {
 
         searchUser,
         searchUserTest,
+
+        followingUserIds,
+        followingUserIdsLoading,
+        followingUserIdsError,
+
+        followUser,
+        followUserLoading,
+        followUserError,
+
+        unFollowUser,
+        unFollowUserLoading,
+        unFollowUserError,
+
+        muteUserIds,
+        muteUserIdsLoading,
+        muteUserIdsError,
+
+        muteUser,
+        muteUserLoading,
+        muteUserError,
+
+        unMuteUser,
+        unMuteUserLoading,
+        unMuteUserError,
     };
 }
 
