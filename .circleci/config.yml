@@ -84,22 +84,5 @@ workflows:
                 - main
           post-steps:
             - jira/notify:
-                environment_type: development
-                job_type: build
-
-      - aws-ecr/build-and-push-image: 
-          requires:
-            - test-frontend
-          dockerfile: Dockerfile
-          path: .
-          profile-name: waflol
-          repo: social-media-fe
-          tag: latest
-          filters:
-            branches:
-              only:
-                - main
-          post-steps:
-            - jira/notify:
-                environment_type: development
+                environment_type: production
                 job_type: build
