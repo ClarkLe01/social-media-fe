@@ -147,7 +147,7 @@ function ProfileCard(props) {
                                     <Button color="green" leftIcon={<IconUserCheck size={23} />}>
                                         Friend
                                     </Button>
-                                    <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
+                                    {/* <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button> */}
                                 </Group>
                             );
                         case 'request':
@@ -160,7 +160,7 @@ function ProfileCard(props) {
                                     >
                                         Cancel Request
                                     </Button>
-                                    <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
+                                    {/* <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button> */}
                                 </Group>
                             );
                         case 'response':
@@ -177,7 +177,7 @@ function ProfileCard(props) {
                                             <Menu.Item onClick={handleDeleteFriend}>Delete Request</Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>
-                                    <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
+                                    {/* <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button> */}
                                 </Group>
                             );
                         case 'me':
@@ -275,7 +275,7 @@ function ProfileCard(props) {
                                     >
                                         Add Friend
                                     </Button>
-                                    <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button>
+                                    {/* <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button> */}
                                 </Group>
                             );
                         default:

@@ -39,6 +39,8 @@ function Room(props) {
         }
     }
 
+    
+
     const currentUser = useMemo(() => profile.data, [ profile.data ]);
 
     const handleClickRoom = useCallback(() => {
@@ -111,10 +113,14 @@ function Room(props) {
 }
 
 function Rooms(props) {
+    const inputSearch = props.inputSearch?props.inputSearch.trim().toLowerCase():'';
     return (
         <>
             {props.rooms.length > 0 &&
-                props.rooms.map((room, index) => <Room key={index} room={room} />)}
+                props.rooms
+                    .filter(room => room.members.some(member => (member.user.first_name.toLowerCase() + " " + member.user.last_name.toLowerCase()).includes(inputSearch)) || 
+                                    (room.roomName && room.roomName.includes(inputSearch)))
+                    .map((room, index) => <Room key={index} room={room}/>)}
         </>
     );
 }

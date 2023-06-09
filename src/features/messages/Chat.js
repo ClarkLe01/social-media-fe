@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Grid,
     Text,
@@ -24,6 +24,7 @@ function Chat() {
     const location = useLocation();
     const navigate = useNavigate();
     const { RoomList, RoomListLoading } = useRoom();
+    const [ inputSearch, setInputSearch ] = useState('');
 
     const handleNavigateToCreateRoom = () => {
         navigate(`../${navigatePath.newChat}`, { state: { from: undefined } });
@@ -58,6 +59,8 @@ function Chat() {
                                 placeholder="Search Messenger"
                                 radius="xl"
                                 size="xs"
+                                value={inputSearch}
+                                onChange={(e) => setInputSearch(e.target.value)}
                             />
                         </div>
                     </div>
@@ -68,7 +71,7 @@ function Chat() {
                             offsetScrollbars
                             scrollbarSize={4}
                         >
-                            {RoomList && <Rooms rooms={RoomList.data} />}
+                            {RoomList && <Rooms rooms={RoomList.data} inputSearch={inputSearch} />}
                         </ScrollArea>
                     </div>
                 </Grid.Col>
