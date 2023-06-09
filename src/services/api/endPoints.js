@@ -69,6 +69,36 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
+        userFollows: {
+            url: '/user/follows/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        follow: {
+            url: '/user/follow',
+            method: 'POST',
+            headers: headers.json,
+        },
+        unfollow: {
+            url: '/user/unfollow',
+            method: 'POST',
+            headers: headers.json,
+        },
+        userMutes: {
+            url: '/user/mutes/:userId',
+            method: 'GET',
+            headers: headers.json,
+        },
+        mute: {
+            url: '/user/mute',
+            method: 'POST',
+            headers: headers.json,
+        },
+        unmute: {
+            url: '/user/unmute',
+            method: 'POST',
+            headers: headers.json,
+        },
     },
     friend: {
         list: {

@@ -78,6 +78,9 @@ function Notification() {
                         setCallData(null);
                         setIncomingCallModal(false);
                     }
+                    if(data.type == 'message'){
+                        queryClient.invalidateQueries({ queryKey: [ "room/list" ] });
+                    }
                 }
                 
             };

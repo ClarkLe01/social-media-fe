@@ -1,15 +1,20 @@
 # pull official base image
-FROM node:17-alpine
+FROM node:16 as builder
 
 # set work directory
-WORKDIR /app/frontend/
+COPY ./package.json .
 
 # install dependencies
-COPY package*.json /app/frontend/
 RUN npm install
 
-# copy project
-COPY . /app/frontend/
-EXPOSE 3000
+COPY . .
+# Build the project and copy the files
+RUN npm run build
 
-CMD ["npm", "start"]
+# copy project
+FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY --from=builder /build /usr/share/nginx/html/
+COPY --from=builder /nginx/nginx.conf /etc/nginx/conf.d/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
