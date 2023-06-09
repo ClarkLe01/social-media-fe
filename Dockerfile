@@ -2,11 +2,12 @@
 FROM node:17-alpine as builder
 
 # set work directory
-COPY . .
+COPY ./package.json .
 
 # install dependencies
 RUN npm install
 
+COPY . .
 # Build the project and copy the files
 RUN npm run build
 
