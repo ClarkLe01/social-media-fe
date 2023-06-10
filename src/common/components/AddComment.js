@@ -1,7 +1,7 @@
 import { Textarea, Popover, Avatar, ActionIcon, Divider } from '@mantine/core';
 import usePostComment from '@services/controller/usePostComment';
 import { IconMoodEmpty, IconCamera, IconSend } from '@tabler/icons-react';
-import { Picker } from 'emoji-mart';
+import Picker from '@emoji-mart/react';
 import ThumbMedia from '@features/messages/components/ThumbMedia';
 import { Dropzone } from '@mantine/dropzone';
 import React, { useState, useRef, useEffect } from 'react';
