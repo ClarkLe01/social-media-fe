@@ -3,8 +3,8 @@ FROM node:16 as builder
 
 # set work directory
 WORKDIR /app
-COPY ./package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+COPY package.json .
+COPY package-lock.json .
 
 # install dependencies
 RUN npm ci
@@ -16,10 +16,7 @@ FROM nginx:stable-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/nginx/nginx-staging.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
-RUN rm -rf ./*
 # Copy static assets from builder stage
-COPY --from=builder /app/build .
+COPY --from=builder /app/build /usr/share/nginx/html
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
