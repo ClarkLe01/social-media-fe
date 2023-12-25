@@ -1,8 +1,16 @@
 version: '3.8'
 services:
-  nginx-react:
+  frontend:
     build:
       context: .
+      dockerfile: Dockerfile.prod
+    container_name: frontend
+    volumes:
+      - static:/app/build
+    
+  nginx-react:
+    build:
+      context: ./nginx
       dockerfile: Dockerfile.prod
     container_name: nginx-react
     ports:
@@ -10,10 +18,12 @@ services:
       - 443:443
     env_file:
       - .env
+    depends_on:
+      - frontend
     volumes:
       - ./certbot/www:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/nginx/ssl/:rov
-      - ./build:/usr/share/nginx/html/
+      - static:/usr/share/nginx/html/
 
   certbot:
     image: certbot/certbot:latest
@@ -21,4 +31,7 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+
+volumes:
+  static:
     

@@ -10,13 +10,3 @@ COPY package-lock.json .
 RUN npm ci
 COPY . .
 RUN npm run build
-
-# copy project
-FROM nginx:stable-alpine
-RUN rm /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/nginx/nginx-staging.conf /etc/nginx/conf.d/default.conf
-
-# Copy static assets from builder stage
-COPY --from=builder /app/build /usr/share/nginx/html
-# Containers run nginx with global directives and daemon off
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
