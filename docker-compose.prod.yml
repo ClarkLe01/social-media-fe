@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     container_name: frontend
+    env_file:
+      - .env
     volumes:
       - static:/app/build
     
