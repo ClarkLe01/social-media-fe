@@ -1,0 +1,12 @@
+# pull official base image
+FROM node:16 as builder
+
+# set work directory
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+
+# install dependencies
+RUN npm ci
+COPY . .
+RUN npm run build

@@ -22,7 +22,7 @@ module.exports = {
             },
         },
         modules: {
-            ...when(process.env.REACT_APP_ENV !== 'dev', () => ({ localIdentName: '[hash:base64:5]' }), () => ({})),
+            ...when(process.env.NODE_ENV !== 'development', () => ({ localIdentName: '[hash:base64:5]' }), () => ({})),
         },
     },
     plugins: [

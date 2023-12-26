@@ -286,7 +286,6 @@ function CreatePost(props) {
                             cols="30"
                             rows="10"
                             placeholder="What's on your mind?"
-                            disabled
                         ></textarea>
                     </div>
                     <div className="card-body d-flex p-0 mt-0 ps-2">
