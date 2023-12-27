@@ -17,10 +17,27 @@ function usePostGeneral() {
         staleTime: 1000,
     });
 
+    const {
+        data: PhotoList,
+        isLoading: PhotoListLoading,
+        error: PhotoListError,
+    } = useQuery({
+        queryKey: [ 'photo/list' ],
+        queryFn: () => api(endPoints.post.photos),
+        retryOnMount: true,
+        retry: 5,
+        retryDelay: 1000,
+        staleTime: 1000,
+    });
+
     return {
         PostList,
         PostListLoading,
         PostListError,
+
+        PhotoList,
+        PhotoListLoading,
+        PhotoListError,
     };
 }
 
