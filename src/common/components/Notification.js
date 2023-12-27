@@ -66,7 +66,7 @@ function Notification() {
                     data = JSON.parse(data.data);
                     if(data.value && data.type == 'notify'){
                         queryClient.invalidateQueries({ queryKey: [ "notifications" ] });
-                        setNotifications([ data.value, ...notifications ]);
+                        // setNotifications([ data.value, ...notifications ]);
                     }
                     if(data.value && data.type == 'calling'){
                         if(callData == null){

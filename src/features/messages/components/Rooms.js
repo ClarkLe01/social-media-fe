@@ -63,15 +63,13 @@ function Room(props) {
             onClick={handleClickRoom}
         >
             <Group position="center" className="me-3">
-                <Indicator inline offset={4} position="bottom-end" color="green" withBorder>
-                    <AvatarDisplay 
-                        size={48}
-                        members={members}
-                        currentUser={currentUser}
-                        isGroup={isGroup}
-                        avatar={roomAvatar}
-                    />
-                </Indicator>
+                <AvatarDisplay 
+                    size={48}
+                    members={members}
+                    currentUser={currentUser}
+                    isGroup={isGroup}
+                    avatar={roomAvatar}
+                />
             </Group>
             <div>
                 <RoomNameDisplay 

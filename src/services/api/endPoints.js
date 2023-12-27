@@ -258,6 +258,11 @@ export default {
             method: 'DELETE',
             headers: headers.json,
         },
+        photos: {
+            url: '/photos',
+            method: 'GET',
+            headers: headers.json,
+        },
     },
     comment: {
         list: {

@@ -1,7 +1,6 @@
 import { generatePath } from 'react-router-dom';
 import { getData } from '@common/utils/localStorage';
 import { SOCKET_URL, storageKeyAccessToken } from '@constants';
-import useWebSocket from 'react-use-websocket';
 
 export default class Socket{
     constructor({ url } = {}, { pathParams } = {}){
