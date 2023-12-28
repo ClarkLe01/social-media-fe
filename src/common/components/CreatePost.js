@@ -282,10 +282,11 @@ function CreatePost(props) {
                         </div>
                         <textarea
                             name="message"
-                            className="create-post h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
+                            className="create-post h100 bor-0 w-100 rounded-xxl ps-5 text-grey-500 fw-500 border-light-md theme-dark-bg"
                             cols="30"
                             rows="10"
                             placeholder="What's on your mind?"
+                            style={{ resize: 'none', padding: '14px 8px 8px 8px', fontSize: 14 }}
                         ></textarea>
                     </div>
                     <div className="card-body d-flex p-0 mt-0 ps-2">

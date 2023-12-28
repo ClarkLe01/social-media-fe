@@ -73,7 +73,7 @@ function Register() {
 
     return (
         <Fragment>
-            <Overlay hidden={!registerLoading} color="transparent" />
+            <Overlay hidden={!registerLoading} color="#fff" blur={0} />
             <h2 className="fw-700 display1-size display2-md-size mb-3">New Account</h2>
             <form onSubmit={form.onSubmit(handleRegister)}>
                 <div style={{ display: 'flex', gap: '5px' }}>

@@ -1,3 +1,4 @@
+import ProfileLayout from '@app/layouts/ProfileLayout';
 import { AUTH } from '@constants';
 import React, { lazy } from 'react';
 
@@ -78,6 +79,39 @@ const routes = [
                 element: Home,
             },
             {
+                name: 'Find People',
+                path: navigatePath.findpeople,
+                element: FindPeople,
+            },
+            {
+                name: 'Settings',
+                path: navigatePath.settings,
+                element: Settings,
+            },
+            {
+                name: 'Help box',
+                path: navigatePath.helpbox,
+                element: HelpBox,
+            },
+            {
+                name: 'Notification',
+                path: navigatePath.notification,
+                element: Notification,
+            },
+            {
+                name: 'Post Detail View',
+                path: navigatePath.post,
+                element: PostView,
+            },
+        ],
+    },
+    {
+        name: 'Profile Layout',
+        element: ProfileLayout,
+        path: '/',
+        requireAuth: AUTH.REQUIRE,
+        children: [
+            {
                 name: 'Profile',
                 path: navigatePath.profile,
                 element: Profile,
@@ -104,31 +138,6 @@ const routes = [
                         element: Photos,
                     },
                 ],
-            },
-            {
-                name: 'Find People',
-                path: navigatePath.findpeople,
-                element: FindPeople,
-            },
-            {
-                name: 'Settings',
-                path: navigatePath.settings,
-                element: Settings,
-            },
-            {
-                name: 'Help box',
-                path: navigatePath.helpbox,
-                element: HelpBox,
-            },
-            {
-                name: 'Notification',
-                path: navigatePath.notification,
-                element: Notification,
-            },
-            {
-                name: 'Post Detail View',
-                path: navigatePath.post,
-                element: PostView,
             },
         ],
     },

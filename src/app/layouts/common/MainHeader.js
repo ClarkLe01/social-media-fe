@@ -117,7 +117,7 @@ function MainHeader() {
             >
                 <IconMessageCircle />
             </Link>
-            <Menu position="bottom-end" width={150} withArrow>
+            <Menu position="bottom-end" width={200} withArrow>
                 <Menu.Target>
                     <ActionIcon className='ms-3 me-3'>
                         <Avatar src={MEDIA_URL+profile.data.avatar.replace(API_URL, '')} radius="xl" size={35}/>

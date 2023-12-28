@@ -161,7 +161,7 @@ const SideBar = () => {
                 <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
                     <div className="section full px-0 pt-4 position-relative feed-body">
                         <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>
-                        <ul className="list-group list-group-flush">
+                        <ul className="list-group list-group-flush" style={{ cursor: 'pointer' }}>
                             {memberList.map((value) => (
                                 <RightChatItem 
                                     key={value.id}
@@ -174,7 +174,7 @@ const SideBar = () => {
                     </div>
                     <div className="section full px-0 pt-4 pb-4 position-relative feed-body">
                         <h4 className="font-xsss text-grey-900 fw-700 ls-3">Contact</h4>
-                        <ul className="list-group list-group-flush">
+                        <ul className="list-group list-group-flush" style={{ cursor: 'pointer' }}>
                             {RoomList && <Rooms rooms={RoomList.data} isRightChat={true}/>}  
                         </ul>
                     </div>

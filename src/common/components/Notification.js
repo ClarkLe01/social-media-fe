@@ -135,7 +135,7 @@ function Notification() {
                 <Popover.Dropdown className='px-0 '>
                     <div className="d-flex px-3 pt-3 border-bottom">
                         <h4 className="fw-700 font-xss mb-4 me-auto">Notification</h4>
-                        <Link to="/notification" className="fw-700 font-xssss mb-4">
+                        <Link to="/notification" onClick={() => setOpenedNotification(false)} className="fw-700 font-xssss mb-4">
                             See all
                         </Link>
                     </div>
