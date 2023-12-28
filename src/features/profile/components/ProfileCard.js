@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
     IconUserPlus,
@@ -32,7 +33,7 @@ import {
     ActionIcon,
 } from '@mantine/core';
 
-import { useAuth, useFriend, useProfile } from '@services/controller';
+import { useAuth, useFriend, useProfile, useFriendAction } from '@services/controller';
 
 import AvatarComponent from './AvatarComponent';
 import CoverComponent from './CoverComponent';
@@ -42,10 +43,11 @@ import Selector from '@common/components/Selector';
 import { notifications } from '@mantine/notifications';
 
 function ProfileCard(props) {
-
+    const queryClient = useQueryClient();
     const { user } = props;
     const { profile } = useAuth();
-    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(profile.data.id);
+    const { friendList, requestList, responseList } = useFriend(profile.data.id);
+    const { addFriend, acceptRequest, deleteFriend, rejectRequest, cancelRequest } = useFriendAction();
     const [ dimensions, setDimensions ] = useState({ width: 400, height: 182 });
     const isHide = dimensions.width < 405 ? true : false;
     const [ groupButtonType, setGroupButtonType ] = useState(null);
@@ -130,6 +132,7 @@ function ProfileCard(props) {
             pathParams: { instanceId: target.id },
         });
     }, [ user, friendList, responseList, requestList ]);
+
     const handleDeleteFriend = useCallback(() => {
         const instances = [ ...friendList.data, ...requestList.data, ...responseList.data ];
         const target = instances.find(
@@ -141,11 +144,38 @@ function ProfileCard(props) {
             pathParams: { instanceId: target.id },
         });
     }, [ user, friendList, responseList, requestList ]);
+
+    const handleCancelRequest = useCallback(() => {
+        const instances = [ ...requestList.data, ...responseList.data ];
+        const target = instances.find(
+            (instance) =>
+                (instance.requestID === user.id && instance.responseID === profile.data.id) ||
+                (instance.requestID === profile.data.id && instance.responseID === user.id),
+        );
+        cancelRequest({
+            pathParams : {
+                instanceId: target.id,
+            },
+        });
+    }, [ user, friendList, responseList, requestList ]);
+
+    const handleRejectRequest = useCallback(() => {
+        const instances = [ ...requestList.data, ...responseList.data ];
+        const target = instances.find(
+            (instance) =>
+                (instance.requestID === user.id && instance.responseID === profile.data.id) ||
+                (instance.requestID === profile.data.id && instance.responseID === user.id),
+        );
+        rejectRequest({
+            pathParams: { instanceId: target.id },
+        });
+    }, [ user, friendList, responseList, requestList ]);
+
     const handleAddFriend = useCallback(() => {
         addFriend({
             data: { responseID: user.id },
         });
-    }, [ user ]);
+    }, [ user, friendList, responseList, requestList ]);
 
     const getGroupButtonNum = () => {
         switch (groupButtonType) {
@@ -163,7 +193,7 @@ function ProfileCard(props) {
                                 <Group className="d-inline-block d-flex align-items-center justify-content-center me-sm-3 mb-1 ms-auto">
                                     <Button leftIcon={<IconSquareCheckFilled size={23} />}>Following</Button>
                                     <Button
-                                        onClick={handleDeleteFriend}
+                                        onClick={handleCancelRequest}
                                         color="red"
                                         leftIcon={<IconUserCheck size={23} />}
                                     >
@@ -184,7 +214,7 @@ function ProfileCard(props) {
                                         </Menu.Target>
                                         <Menu.Dropdown>
                                             <Menu.Item onClick={handleAcceptRequest}>Confirm</Menu.Item>
-                                            <Menu.Item onClick={handleDeleteFriend}>Delete Request</Menu.Item>
+                                            <Menu.Item onClick={handleRejectRequest}>Reject Request</Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>
                                     {/* <Button leftIcon={<IconBrandMessenger size={23} />}>Message</Button> */}
@@ -322,10 +352,7 @@ function ProfileCard(props) {
         if (friendList && requestList && responseList) {
             if (user.id != profile.data.id) {
                 let isFriend = friendList.data.find(
-                    (friend) =>
-                        (friend.responseID == user.id && friend.requestID == profile.data.id) ||
-                        (friend.responseID == profile.data.id && friend.requestID == user.id),
-                );
+                    (friend) => friend.id == user.id);
                 let isRequest = requestList.data.find((request) => request.responseID == user.id);
                 let isResponse = responseList.data.find(
                     (response) => response.requestID == user.id,

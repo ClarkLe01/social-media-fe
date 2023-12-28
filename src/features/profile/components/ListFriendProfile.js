@@ -6,34 +6,16 @@ import { Grid, Group, ScrollArea, Text } from "@mantine/core";
 import CardItem from "./CardItem";
 function ListFriendProfile () {
     const { userId } = useParams();  // get param userId from url
-    const { profileId } = useProfile(userId); // profile of user by params userId
-    const { profile } = useAuth(); // current user
-    const [ user, setUser ] = useState(null);
 
-    // const { friendList } = useFriend(profile.data.id);
-    // const [ memberList, setMemberList ] = useState([]);
-
-    const { userFriendList } = useFriend(userId);
+    const { friendList } = useFriend(userId);
     const [ userMemberList, setUserMemberList ] = useState([]);
 
-    // useEffect(() => {
-    //     if (friendList) {
-    //         setMemberList([ ...friendList.data ]);
-    //     }
-        
-    // }, [ friendList ]);
-
     useEffect(() => {
-        if (userFriendList) {
-            setUserMemberList([ ...userFriendList.data ]);
+        if (friendList) {
+            setUserMemberList([ ...friendList.data ]);
         }
-    }, [ userFriendList ]);
+    }, [ friendList ]);
     
-    useEffect(() => {
-        if (profileId) {
-            setUser(profileId.data);
-        }
-    }, [ profileId ]);
     return <>
         <div className="col-xxl-12 col-xl-12 col-lg-12 col-md-12">
             {userMemberList.length == 0 ? (
@@ -54,8 +36,7 @@ function ListFriendProfile () {
                             return (
                                 <Grid.Col key={value.id} xs={12} sm={12} md={6} xl={6}>
                                     <CardItem
-                                        idFriendInstance={value.id}
-                                        idProfile={value.requestID == userId ? value.responseID : value.requestID}
+                                        idProfile={value.id}
                                     />
                                 </Grid.Col> 
                             );

@@ -5,7 +5,7 @@ import Pagetitle from '@common/components/PageTitle';
 import { Grid, Group, Text, ScrollArea } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
-import { useFriend, useAuth, useMessage, useRoom, useProfile } from '@services/controller';
+import { useFriend, useAuth, useMessage, useRoom, useProfile, useFriendAction } from '@services/controller';
 import { API_URL, MEDIA_URL } from '@constants';
 import RightChatItem from '@common/components/RightChatItem';
 import { Rooms } from '@features/messages/components';
@@ -13,15 +13,13 @@ import { navigatePath } from '@app/routes/config';
 import { IconFriendsOff } from '@tabler/icons-react';
 
 function ShowFriendRequest(props){
-    const { friendRequest, profile } = props;
+    const { friendRequest } = props;
     const { profileId } = useProfile(friendRequest.requestID);
     const [ user, setUser ] = useState();
-
-    const { deleteFriend, acceptRequest } = useFriend(profile.id);
-
+    const { acceptRequest, rejectRequest } = useFriendAction();
 
     const handleCancel = () => {
-        deleteFriend({
+        rejectRequest({
             pathParams: { instanceId: friendRequest.id },
         });
     };
@@ -33,7 +31,7 @@ function ShowFriendRequest(props){
     };
 
     const goToProfile = () => {
-        Navigate(navigatePath.profile.replace(':userId', friendRequest.requestID), { state: { from: location.pathname } });
+        window.location.href = navigatePath.profile.replace(':userId', friendRequest.requestID);
     };
 
     useEffect(() => {
@@ -45,11 +43,11 @@ function ShowFriendRequest(props){
     return (
         <div className="wrap mb-3">
             <div className="card-body d-flex pt-2 pb-0 px-0 bor-0">
-                <div className="col col-md-2">
+                <div className="col col-md-2" onClick={goToProfile}>
                     {user && <Avatar src={MEDIA_URL+user.avatar.replace(API_URL,'')} radius={100} size='md' />}
                 </div>
                 <div className="col col-md-9 px-2">
-                    <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1">
+                    <h4 className="fw-700 text-grey-900 font-xssss mt-1 mb-1" onClick={goToProfile}>
                         {user && user.first_name + ' ' + user.last_name}
                     </h4>
                     <div className="card-body d-flex align-items-center justify-content-start p-0 flex-md-wrap">
@@ -78,22 +76,7 @@ function ShowFriendRequest(props){
 
 function FriendRequest(props) {
 
-    const { user } = props;
-
-    const [ friendRequest, setFriendRequest ] = useState();
-    const { responseList, responseListLoading } = useFriend();
-    const [ memberList, setMemberList ] = useState([]);
-
-    useEffect(() => {
-        if (responseList && !responseListLoading) {
-            setMemberList([ ...responseList.data ]);
-        }
-
-        if (memberList.length > 0) {
-            setFriendRequest(responseList.data[0]);
-        }
-    }, [ responseList, responseListLoading ]);
-
+    const { listRequest } = props;
     
     return (
         <div className="section full  pt-4 position-relative feed-body">
@@ -105,7 +88,7 @@ function FriendRequest(props) {
                     See all
                 </Link>
             </div>
-            {memberList.length == 0 ? (
+            {listRequest.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"
                     position="center"
@@ -115,7 +98,7 @@ function FriendRequest(props) {
                     </Text>
                 </Group>
             ) : (
-                friendRequest && <ShowFriendRequest friendRequest={friendRequest} profile={user}/>
+                listRequest.map((request, index) => (<ShowFriendRequest friendRequest={request} key={index}/>))
             )}
         </div>
     );
@@ -128,8 +111,9 @@ const SideBar = () => {
     const { profileId } = useProfile(profile.data.id);
     const [ user, setUser ] = useState(null);
 
-    const { friendList } = useFriend(profile.data.id);
+    const { friendList, responseList } = useFriend(profile.data.id);
     const [ memberList, setMemberList ] = useState([]);
+    const [ friendRequest, setFriendRequest ] = useState([]);
     
     useEffect(() => {
         if (profileId) {
@@ -143,9 +127,15 @@ const SideBar = () => {
         }
     }, [ friendList ]);
 
+    useEffect(() => {
+        if (responseList) {
+            setFriendRequest([ ...responseList.data ]);
+        }
+    }, [ responseList ]);
+
     return (
         <>
-            {user && <FriendRequest user={user}/>}
+            <FriendRequest listRequest={friendRequest} />
             <hr />
             {(memberList.length == 0 )?
                 <Group
@@ -165,8 +155,7 @@ const SideBar = () => {
                             {memberList.map((value) => (
                                 <RightChatItem 
                                     key={value.id}
-                                    idFriendInstance={value.id}
-                                    idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
+                                    idProfile={value.id}
                                     type='friend'    
                                 />
                             ))}
