@@ -22,19 +22,20 @@ function CoverComponent(props) {
 
     const onCoverChange = async (files) => {
         if (files && files.length > 0) {
-            
             let imageDataUrl = await readFile(files[0]);
-            
+
             const image = new window.Image();
             image.src = imageDataUrl;
             image.onload = () => {
-                image.width < 600 || image.height < 400?setCoverSrc(null) : setCoverSrc(imageDataUrl);
+                image.width < 600 || image.height < 400
+                    ? setCoverSrc(null)
+                    : setCoverSrc(imageDataUrl);
             };
         }
     };
 
     const handleCoverUpdate = () => {
-        if(!updatedCoverSrc) return;
+        if (!updatedCoverSrc) return;
         const file = base64ToFile(updatedCoverSrc, 'cover.jpg');
         const form = new FormData();
         form.append('cover', file);
@@ -48,7 +49,7 @@ function CoverComponent(props) {
                         id: 'notify-success-update-cover',
                         withCloseButton: true,
                         autoClose: 1000,
-                        title: "Success ",
+                        title: 'Success ',
                         message: 'You updated your cover successfully!',
                         color: 'teal',
                         icon: <IconCheck />,
@@ -60,14 +61,15 @@ function CoverComponent(props) {
                         id: 'notify-failed-update-cover',
                         withCloseButton: true,
                         autoClose: 1000,
-                        title: "Failed",
+                        title: 'Failed',
                         message: 'You updated your cover unsuccessfully!',
                         color: 'red',
                         icon: <IconX />,
                         loading: false,
                     });
                 },
-            });
+            },
+        );
         setUpdatedCoverSrc(null);
         setCoverSrc(null);
         setOpenCoverModal(false);
@@ -83,40 +85,31 @@ function CoverComponent(props) {
 
     return (
         <div>
-            <Image src={MEDIA_URL+user.cover.replace(API_URL,'')} key={user.updated} width={"100%"} height={320} fit='cover' />
+            <Image
+                src={MEDIA_URL + user.cover.replace(API_URL, '')}
+                key={user.updated}
+                width={'100%'}
+                height={320}
+                fit="cover"
+            />
             {user.id == profile.data.id && (
                 <>
                     <Group style={{ position: 'relative' }}>
-                        <Menu shadow="md" width={200}>
-                            <Menu.Target>
-                                <Button
-                                    color="indigo"
-                                    variant="filled"
-                                    leftIcon={<IconCamera size={18} />}
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: '10px',
-                                        right: '10px',
-                                    }}
-                                >
-                                    Edit Cover Photo
-                                </Button>
-                            </Menu.Target>
-
-                            <Menu.Dropdown>
-                                <Menu.Item icon={<IconPhoto size={16} />}>
-                                    <Text>Select photo</Text>
-                                </Menu.Item>
-                                <Menu.Item
-                                    icon={<IconUpload size={16} />}
-                                    onClick={() => {
-                                        setOpenCoverModal(true), openCoverRef.current();
-                                    }}
-                                >
-                                    <Text>Upload photo</Text>
-                                </Menu.Item>
-                            </Menu.Dropdown>
-                        </Menu>
+                        <Button
+                            color="indigo"
+                            variant="filled"
+                            onClick={() => {
+                                setOpenCoverModal(true), openCoverRef.current();
+                            }}
+                            leftIcon={<IconCamera size={18} />}
+                            style={{
+                                position: 'absolute',
+                                bottom: '10px',
+                                right: '10px',
+                            }}
+                        >
+                            Edit Cover Photo
+                        </Button>
                     </Group>
                 </>
             )}
@@ -152,13 +145,14 @@ function CoverComponent(props) {
                                 min
                                 cropShape="square"
                                 setResult={setUpdatedCoverSrc}
-                                value = {updatedCoverSrc}
+                                value={updatedCoverSrc}
                                 dropZoneOpen={() => openCoverRef.current()}
                             />
                             <div className="d-grid gap-5 d-flex justify-content-evenly mt-3 pt-3">
                                 <Button
                                     fullWidth
-                                    variant="outline" color="red"
+                                    variant="outline"
+                                    color="red"
                                     onClick={() => {
                                         setUpdatedCoverSrc(null),
                                         setCoverSrc(null),
@@ -170,7 +164,8 @@ function CoverComponent(props) {
 
                                 <Button
                                     fullWidth
-                                    variant="light" color="green"
+                                    variant="light"
+                                    color="green"
                                     onClick={() => {
                                         handleCoverUpdate();
                                     }}
