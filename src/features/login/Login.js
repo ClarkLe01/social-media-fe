@@ -47,7 +47,7 @@ function Login() {
 
     return (
         <>
-            <Overlay hidden={!loginLoading} color="transparent" />
+            <Overlay hidden={!loginLoading} blur="0" color='#fff' style={{ backgroundColor: 'transparent !important' }}/>
             <h2 className="fw-700 display1-size display2-md-size mb-3">Login your account</h2>
             <Notification
                 icon={<IconX size={18} />}

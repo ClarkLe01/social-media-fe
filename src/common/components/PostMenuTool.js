@@ -41,7 +41,9 @@ function PostMenuTool(props) {
             <Menu position="left-start" withArrow arrowPosition="center" key={id}>
                 <Menu.Target>
                     <div className='ms-auto pointer'>
-                        <i className="ti-more-alt text-grey-900 font-xss btn-round-md bg-greylight" />
+                        <Button variant='transparent' h={'100%'} w={'100%'}>
+                            <i className="ti-more-alt text-grey-900 font-xss btn-round-md bg-greylight" />
+                        </Button>
                     </div>
                 </Menu.Target>
                 <Menu.Dropdown>
@@ -51,16 +53,16 @@ function PostMenuTool(props) {
                     >
                         Edit post
                     </Menu.Item>
-                    <Menu.Item 
+                    {/* <Menu.Item 
                         icon={<IconLock size={24} />}
                         // onClick={() => console.log(`edit post ${id}`)}
                     >
                         Edit audience
-                    </Menu.Item>
+                    </Menu.Item> */}
 
-                    <Menu.Divider />
+                    {/* <Menu.Divider /> */}
 
-                    <Menu.Label>Danger zone</Menu.Label>
+                    {/* <Menu.Label>Danger zone</Menu.Label> */}
                     <Menu.Item 
                         color="red" 
                         icon={<IconTrash size={24} />}

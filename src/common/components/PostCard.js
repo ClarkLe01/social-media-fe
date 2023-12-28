@@ -56,7 +56,7 @@ function ImageGridPreview(props) {
         return (
             <React.Fragment key={index}>
                 <Grid.Col span={12}>
-                    <MemorizedImage
+                    <Image
                         src={MEDIA_URL + obj.file.replace(API_URL, '')}
                         fit="cover"
                         onClick={() => {

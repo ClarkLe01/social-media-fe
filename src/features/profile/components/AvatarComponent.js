@@ -42,21 +42,21 @@ function AvatarComponent(props) {
         }
     };
     const handleAvatarUpdate = () => {
-        if(!updatedAvatarSrc) return;
+        if (!updatedAvatarSrc) return;
         const file = base64ToFile(updatedAvatarSrc, 'avatar.jpg');
         const form = new FormData();
         form.append('avatar', file);
         updateProfile(
             {
                 data: form,
-            }, 
+            },
             {
                 onSuccess: (data) => {
                     notifications.show({
                         id: 'notify-success-update-avatar',
                         withCloseButton: true,
                         autoClose: 1000,
-                        title: "Success ",
+                        title: 'Success ',
                         message: 'You updated your avatar successfully!',
                         color: 'teal',
                         icon: <IconCheck />,
@@ -68,14 +68,15 @@ function AvatarComponent(props) {
                         id: 'notify-failed-update-avatar',
                         withCloseButton: true,
                         autoClose: 1000,
-                        title: "Failed",
+                        title: 'Failed',
                         message: 'You updated your avatar unsuccessfully!',
                         color: 'red',
                         icon: <IconX />,
                         loading: false,
                     });
                 },
-            });
+            },
+        );
         setUpdatedAvatarSrc(null);
         setAvatarSrc(null);
         setOpenAvatarModal(false);
@@ -100,7 +101,7 @@ function AvatarComponent(props) {
                     classNames={{
                         image: 'float-right p-1 bg-white rounded-circle w-100',
                     }}
-                    src={MEDIA_URL+user.avatar.replace(API_URL,'')}
+                    src={MEDIA_URL + user.avatar.replace(API_URL, '')}
                     key={user.updated}
                 />
                 {user.id == profile.data.id && (
@@ -112,27 +113,16 @@ function AvatarComponent(props) {
                                 left: '70px',
                             }}
                         >
-                            <Menu shadow="md" width={200}>
-                                <Menu.Target>
-                                    <ActionIcon color="gray" radius="xl" variant="filled">
-                                        <IconCamera size={18} />
-                                    </ActionIcon>
-                                </Menu.Target>
-
-                                <Menu.Dropdown>
-                                    <Menu.Item icon={<IconPhoto size={16} />}>
-                                        <Text>Select photo</Text>
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        icon={<IconUpload size={16} />}
-                                        onClick={() => {
-                                            setOpenAvatarModal(true), openAvatarRef.current();
-                                        }}
-                                    >
-                                        <Text>Upload photo</Text>
-                                    </Menu.Item>
-                                </Menu.Dropdown>
-                            </Menu>
+                            <ActionIcon
+                                onClick={() => {
+                                    setOpenAvatarModal(true), openAvatarRef.current();
+                                }}
+                                color="gray"
+                                radius="xl"
+                                variant="filled"
+                            >
+                                <IconCamera size={18} />
+                            </ActionIcon>
                         </Group>
                     </>
                 )}
@@ -143,7 +133,9 @@ function AvatarComponent(props) {
                     <div hidden>
                         <Dropzone
                             openRef={openAvatarRef}
-                            onDrop={(files) => {onAvatarChange(files), setUpdatedAvatarSrc(null);}}
+                            onDrop={(files) => {
+                                onAvatarChange(files), setUpdatedAvatarSrc(null);
+                            }}
                             onReject={(files) => console.log('rejected files', files)}
                             maxSize={3 * 1024 ** 2}
                             accept={{
@@ -172,14 +164,15 @@ function AvatarComponent(props) {
                                 maxZoom={3}
                                 cropShape="round"
                                 setResult={setUpdatedAvatarSrc}
-                                value = {updatedAvatarSrc}
+                                value={updatedAvatarSrc}
                                 dropZoneOpen={() => openAvatarRef.current()}
                             />
                         </div>
                         <div className="d-grid gap-5 d-flex justify-content-evenly mt-3 pt-3">
                             <Button
                                 fullWidth
-                                variant="outline" color="red"
+                                variant="outline"
+                                color="red"
                                 onClick={() => {
                                     setUpdatedAvatarSrc(null),
                                     setAvatarSrc(null),
@@ -191,7 +184,8 @@ function AvatarComponent(props) {
 
                             <Button
                                 fullWidth
-                                variant="light" color="green"
+                                variant="light"
+                                color="green"
                                 onClick={() => {
                                     handleAvatarUpdate();
                                 }}

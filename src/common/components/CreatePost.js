@@ -17,6 +17,7 @@ import {
     IconTag,
     IconMapPinFilled,
     IconMoodHappy,
+    IconPhotoAi,
     IconArrowLeft,
 } from '@tabler/icons-react';
 import MediaFileSection from './MediaFileSection';
@@ -27,20 +28,16 @@ import { CreateRadioButtons, getIconStatus } from '@common/utils/radioStatus';
 import { useQueryClient } from '@tanstack/react-query';
 import { API_URL, MEDIA_URL } from '@constants';
 
-
-
 function CreatePost(props) {
     const { id, setOpenedEditPost, images, contentPost } = props;
-    
+
     const openMediaFileRef = useRef(null);
     const queryClient = useQueryClient();
 
-    
-
     // Variable for submiting modal
-    const [ content, setContent ] = useState(contentPost?contentPost:'');
-    const [ files, setFiles ] = useState([ ]);
-    const [ selectedFriend, setSelectedFriend ] = useState([ ]);
+    const [ content, setContent ] = useState(contentPost ? contentPost : '');
+    const [ files, setFiles ] = useState([]);
+    const [ selectedFriend, setSelectedFriend ] = useState([]);
     const [ lastChoosedValueRadio, setLastChoosedValueRadio ] = useState(props.defaultAudience);
 
     // Variable for managing modal create post tool
@@ -115,28 +112,34 @@ function CreatePost(props) {
         },
     };
 
-    const [  showModalType, setShowModalType ] = useState(id ? createPostModalType.updatePost : createPostModalType.default);
+    const [ showModalType, setShowModalType ] = useState(
+        id ? createPostModalType.updatePost : createPostModalType.default,
+    );
     const [ canPost, setcanPost ] = useState(false);
-    const [ memberList, setMemberList ] = useState([ ]);
-    const [ temp , setTemp ] = useState(openMediaFileRef);
+    const [ memberList, setMemberList ] = useState([]);
+    const [ temp, setTemp ] = useState(openMediaFileRef);
 
     const { createPost, createPostError, createPostLoading, updatePost } = useUserPost();
     const { profile } = useAuth();
-    const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(profile.data.id);
-    
+    const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(
+        profile.data.id,
+    );
 
     // Close modal
     const handleClose = () => {
         setShowModalType(createPostModalType.default);
-        setSelectedFriend([ ]);
-        setFiles([ ]);
+        setSelectedFriend([]);
+        setFiles([]);
         setContent('');
-        if(id) setOpenedEditPost(false);
+        if (id) setOpenedEditPost(false);
     };
 
     function dataURLtoFile(dataurl, filename) {
-        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[ 1 ]), n = bstr.length, u8arr = new Uint8Array(n);
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
         while (n--) {
             u8arr[n] = bstr.charCodeAt(n);
         }
@@ -187,12 +190,10 @@ function CreatePost(props) {
         form.append('status', lastChoosedValueRadio);
         form.append('canSee', selectedFriend);
         form.append('notSee', selectedFriend);
-        files.map(file => form.append("files", file));
-        createPost(
-            {
-                data: form,
-            },
-        );
+        files.map((file) => form.append('files', file));
+        createPost({
+            data: form,
+        });
         handleClose();
     }
 
@@ -203,9 +204,8 @@ function CreatePost(props) {
         form.append('canSee', selectedFriend);
         form.append('notSee', selectedFriend);
         if (files.length > 0) {
-            files.map(file => form.append("files", file));
-        }
-        else {
+            files.map((file) => form.append('files', file));
+        } else {
             form.append('files', '');
         }
         updatePost(
@@ -229,10 +229,10 @@ function CreatePost(props) {
 
     useEffect(() => {
         if (!friendListDetailLoading && friendListDetail) {
-            friendListDetail.data.map(item => {
+            friendListDetail.data.map((item) => {
                 item.requestID.id === profile.data.id
-                    ? setMemberList(prev => [ ...prev, item.responseID ])
-                    : setMemberList(prev => [ ...prev, item.requestID ]);
+                    ? setMemberList((prev) => [ ...prev, item.responseID ])
+                    : setMemberList((prev) => [ ...prev, item.requestID ]);
             });
         }
     }, [ friendListDetailLoading ]);
@@ -263,58 +263,79 @@ function CreatePost(props) {
         });
     }
 
-
     return (
         <>
-            {id?false:true && 
-                <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
-                    <div
-                        className="card-body p-0 mt-3 position-relative"
-                        onClick={() => setShowModalType(createPostModalType.createPost)}
-                    >
-                        <div className="avatar position-absolute ms-2 mt-1 top-5">
-                            <Avatar 
-                                src={MEDIA_URL+props.user.avatar.replace(API_URL,'')}
-                                size={30}
-                                alt="icon"
-                                radius={"100%"}
-                            />
+            {id
+                ? false
+                : true && (
+                    <div className="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-2 pe-4 pb-3 mb-3">
+                        <div
+                            className="card-body p-0 mt-3 position-relative"
+                            onClick={() => {
+                                setShowModalType(createPostModalType.createPost);
+                                setCreatePostState({
+                                    isShowDropzone: false,
+                                    isShowTagPeople: false,
+                                    isShowAddFeeling: false,
+                                    isCheckIn: false,
+                                });
+                            }}
+                        >
+                            <div className="avatar position-absolute ms-2 mt-1 top-5">
+                                <Avatar
+                                    src={MEDIA_URL + props.user.avatar.replace(API_URL, '')}
+                                    size={30}
+                                    alt="icon"
+                                    radius={'100%'}
+                                />
+                            </div>
+                            <textarea
+                                name="message"
+                                className="create-post h100 bor-0 w-100 rounded-xxl ps-5 text-grey-500 fw-500 border-light-md theme-dark-bg"
+                                cols="30"
+                                rows="10"
+                                placeholder="What's on your mind?"
+                                style={{
+                                    resize: 'none',
+                                    padding: '14px 8px 8px 8px',
+                                    fontSize: 14,
+                                }}
+                            ></textarea>
                         </div>
-                        <textarea
-                            name="message"
-                            className="create-post h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
-                            cols="30"
-                            rows="10"
-                            placeholder="What's on your mind?"
-                        ></textarea>
+                        <div className="card-body d-flex p-0 mt-0 ps-2">
+                            <div
+                                href="#photo"
+                                onClick={() => {
+                                    setShowModalType(createPostModalType.createPost);
+                                    setCreatePostState((prevState) => ({
+                                        ...prevState,
+                                        isShowDropzone: true,
+                                    }));
+                                }}
+                                style={{ cursor: 'pointer' }}
+                                className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
+                            >
+                                <i className="font-md text-success feather-image me-2"></i>
+                                <span className="d-none-xs">Photo/Video</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="card-body d-flex p-0 mt-0 ps-2">
-                        <a
-                            href="#photo"
-                            className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                        >
-                            <i className="font-md text-success feather-image me-2"></i>
-                            <span className="d-none-xs">Photo/Video</span>
-                        </a>
-                        <a
-                            href="#activity"
-                            className="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                        >
-                            <i className="font-md text-warning feather-camera me-2"></i>
-                            <span className="d-none-xs">Feeling/Activity</span>
-                        </a>
-                    </div>
-                </div>
-            } 
+                )}
             <Modal
                 name={showModalType.name}
                 size={showModalType.size}
                 opened={showModalType.type != ''}
                 title={
                     <div className="d-flex justify-content-center">
-                        {(showModalType.type == 'postAudience' || showModalType.type == 'editMedia' || showModalType.type == 'tagPeople') && (
+                        {(showModalType.type == 'postAudience' ||
+                            showModalType.type == 'editMedia' ||
+                            showModalType.type == 'tagPeople') && (
                             <ActionIcon
-                                onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}
+                                onClick={() =>
+                                    id
+                                        ? setShowModalType(createPostModalType.updatePost)
+                                        : setShowModalType(createPostModalType.createPost)
+                                }
                             >
                                 <IconArrowLeft />
                             </ActionIcon>
@@ -323,7 +344,7 @@ function CreatePost(props) {
                             <ActionIcon
                                 onClick={() => {
                                     setShowModalType(createPostModalType.postAudience),
-                                    setSelectedFriend([ ]);
+                                    setSelectedFriend([]);
                                 }}
                             >
                                 <IconArrowLeft />
@@ -333,7 +354,7 @@ function CreatePost(props) {
                             <ActionIcon
                                 onClick={() => {
                                     setShowModalType(createPostModalType.postAudience),
-                                    setSelectedFriend([ ]);
+                                    setSelectedFriend([]);
                                 }}
                             >
                                 <IconArrowLeft />
@@ -357,16 +378,16 @@ function CreatePost(props) {
                 >
                     <div className="card-body p-0 d-flex">
                         <div className="avatar me-3">
-                            <Avatar 
-                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
+                            <Avatar
+                                src={MEDIA_URL + profile.data.avatar.replace(API_URL, '')}
                                 size={45}
                                 alt="icon"
-                                radius={"100%"}
+                                radius={'100%'}
                             />
                         </div>
                         <h4 className="fw-700 text-grey-900 font-xssss mt-1">
                             {' '}
-                            {profile.data.first_name}{' '}{profile.data.last_name}
+                            {profile.data.first_name} {profile.data.last_name}
                             <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
                                 {' '}
                                 <Button
@@ -433,6 +454,16 @@ function CreatePost(props) {
                                 <IconPhoto />
                             </ActionIcon>
                         </div>
+                        {/* <div className="p-2 bd-highlight">
+                            <ActionIcon
+                                variant={
+                                    createPostState.isShowTagPeople === true ? 'filled' : 'subtle'
+                                }
+                            >
+                                <IconPhotoAi />
+                            </ActionIcon>
+                        </div> */}
+                        
                         {/* <div className="p-2 bd-highlight" onClick={handleTagPeople}>
                             <ActionIcon
                                 variant={
@@ -495,7 +526,7 @@ function CreatePost(props) {
                                         }}
                                         onClick={() => {
                                             handleRadioButtonClick(radio.value);
-                                            setSelectedFriend([ ]);
+                                            setSelectedFriend([]);
                                         }}
                                     >
                                         <Radio
@@ -504,7 +535,7 @@ function CreatePost(props) {
                                             label={radio.label}
                                             description={
                                                 choosedValueRadio == radio.value &&
-                                                    selectedFriend.length > 0
+                                                selectedFriend.length > 0
                                                     ? selectedFriend.length
                                                     : radio.description
                                             }
@@ -513,7 +544,8 @@ function CreatePost(props) {
                                                 root: 'flex-fill',
                                                 body: 'flex-fill pe-3 align-items-center',
                                                 labelWrapper: 'me-auto',
-                                            }} setShowModalType
+                                            }}
+                                            setShowModalType
                                         />
                                     </Button>
                                 ))}
@@ -525,27 +557,33 @@ function CreatePost(props) {
                             variant="outline"
                             onClick={() => {
                                 setChoosedValueRadio(lastChoosedValueRadio),
-                                id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
+                                id
+                                    ? setShowModalType(createPostModalType.updatePost)
+                                    : setShowModalType(createPostModalType.createPost);
                             }}
                         >
                             Cancel
                         </Button>
                         {(choosedValueRadio == 'friendExcepts' ||
                             choosedValueRadio == 'specificFriends') &&
-                            selectedFriend.length == 0 ? (
+                        selectedFriend.length == 0 ? (
                                 <Button
-                                    onClick={() => {setShowModalType(createPostModalType[choosedValueRadio ]);
+                                    onClick={() => {
+                                        setShowModalType(createPostModalType[choosedValueRadio]);
                                     }}
                                 >
-                                    Next
+                                Next
                                 </Button>
                             ) : (
                                 <Button
-                                    onClick={() => {setLastChoosedValueRadio(choosedValueRadio),
-                                    id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost);
+                                    onClick={() => {
+                                        setLastChoosedValueRadio(choosedValueRadio),
+                                        id
+                                            ? setShowModalType(createPostModalType.updatePost)
+                                            : setShowModalType(createPostModalType.createPost);
                                     }}
                                 >
-                                    Done
+                                Done
                                 </Button>
                             )}
                     </div>
@@ -568,7 +606,7 @@ function CreatePost(props) {
                             variant="outline"
                             onClick={() => {
                                 setShowModalType(createPostModalType.postAudience);
-                                setSelectedFriend([ ]);
+                                setSelectedFriend([]);
                             }}
                         >
                             Cancel
@@ -598,7 +636,7 @@ function CreatePost(props) {
                             variant="outline"
                             onClick={() => {
                                 setShowModalType(createPostModalType.postAudience),
-                                setSelectedFriend([ ]);
+                                setSelectedFriend([]);
                             }}
                         >
                             Cancel
@@ -620,16 +658,25 @@ function CreatePost(props) {
                                     key={index}
                                     file={file}
                                     onRemove={() => removeFile(index)}
-                                // onChange={(value) => updateCaption(index, value)}
+                                    // onChange={(value) => updateCaption(index, value)}
                                 />
                             );
                         })}
                     </SimpleGrid>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-1 pt-2">
-                        <Button variant="outline" onClick={() => id?openMediaFileRef:openMediaFileRef.current()}>
+                        <Button
+                            variant="outline"
+                            onClick={() => (id ? openMediaFileRef : openMediaFileRef.current())}
+                        >
                             Add Photos/Videos
                         </Button>
-                        <Button onClick={() => id?setShowModalType(createPostModalType.updatePost):setShowModalType(createPostModalType.createPost)}>
+                        <Button
+                            onClick={() =>
+                                id
+                                    ? setShowModalType(createPostModalType.updatePost)
+                                    : setShowModalType(createPostModalType.createPost)
+                            }
+                        >
                             Done
                         </Button>
                     </div>
@@ -641,16 +688,16 @@ function CreatePost(props) {
                 >
                     <div className="card-body p-0 d-flex">
                         <div className="avatar me-3">
-                            <Avatar 
-                                src={MEDIA_URL+profile.data.avatar.replace(API_URL,'')}
+                            <Avatar
+                                src={MEDIA_URL + profile.data.avatar.replace(API_URL, '')}
                                 size={45}
                                 alt="icon"
-                                radius={"100%"}
+                                radius={'100%'}
                             />
                         </div>
                         <h4 className="fw-700 text-grey-900 font-xssss mt-1">
                             {' '}
-                            {profile.data.first_name}{' '}{profile.data.last_name}
+                            {profile.data.first_name} {profile.data.last_name}
                             <span className="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
                                 {' '}
                                 <Button
@@ -719,7 +766,7 @@ function CreatePost(props) {
                             </ActionIcon>
                         </div>
                     </div>
-                    <div className="d-grid gap-2 mx-auto"> 
+                    <div className="d-grid gap-2 mx-auto">
                         <Button
                             fullWidth
                             disabled={canPost ? false : true}

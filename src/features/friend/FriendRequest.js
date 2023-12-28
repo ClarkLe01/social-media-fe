@@ -19,7 +19,7 @@ function FriendRequest() {
     }, [ responseList ]);
     return (
         <div>
-            <Pagetitle title="Your Request" inputSearch={inputSearch} setInputSearch={setInputSearch}/>
+            <Pagetitle title="Friend Request" inputSearch={inputSearch} setInputSearch={setInputSearch}/>
             {memberList.length == 0 ? (
                 <Group
                     className="d-grid justify-content-center align-items-center"

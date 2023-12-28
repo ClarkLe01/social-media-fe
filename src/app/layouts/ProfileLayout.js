@@ -24,7 +24,7 @@ import MainHeader from './common/MainHeader';
 import { useAuth, useProfile, useSearch } from '@services/controller';
 import { navigatePath } from '@app/routes/config';
 
-export default function MainLayout() {
+export default function ProfileLayout() {
     const scaleY = {
         in: { opacity: 1, transform: 'scaleY(1)' },
         out: { opacity: 0, transform: 'scaleY(0)' },
@@ -69,41 +69,6 @@ export default function MainLayout() {
                         theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
             }}
-            navbar={
-                <NavBar
-                    opened={opened}
-                    p="sm"
-                    hiddenBreakpoint="md"
-                    hidden={!opened}
-                    width={{
-                        sm: 50,
-                        xl: 240,
-                    }}
-                    height={{
-                        sm: 500,
-                    }}
-                    classNames={{
-                        root: 'p-0 ps-1 pe-2',
-                    }}
-                    zIndex={102}
-                />
-            }
-            aside={
-                <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-                    <Aside
-                        className="me-0 position-fixed"
-                        grow="true"
-                        component={ScrollArea}
-                        mx="-xs"
-                        px="xs"
-                        p="md"
-                        hiddenBreakpoint="sm"
-                        width={{ sm: 50, md: 270, lg: 310 }}
-                    >
-                        <RightChat />
-                    </Aside>
-                </MediaQuery>
-            }
             header={
                 <Header height={{ base: 60, md: 80 }} p="md" style={{ zIndex: 101 }}>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -184,7 +149,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <div style={{ maxWidth: 800, margin: 'auto' }}><Outlet/></div>
+            <div style={{ maxWidth: 1200, margin: 'auto' }}><Outlet/></div>
         </AppShell>
     );
 }
