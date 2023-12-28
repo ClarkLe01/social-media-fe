@@ -124,12 +124,14 @@ function useFriend(userId) {
             return api(endPoints.friend.delete, variables);
         },
         onSuccess: ({ data }) => {
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
             queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
             queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
             queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
         },
         onError: (error) => {
             queryClient.invalidateQueries({ queryKey: [ 'friend/requests' ] });
+            queryClient.invalidateQueries({ queryKey: [ 'room/list' ] });
             queryClient.invalidateQueries({ queryKey: [ 'friend/responses' ] });
             queryClient.invalidateQueries({ queryKey: [ 'friend/list', userId ] });
         },
