@@ -4,7 +4,7 @@ import { IconMessageCircle, IconLogout, IconAddressBook, IconLock, IconUser, Ico
 
 import { useAuth, useProfile } from '@services/controller';
 import Notification from '@common/components/Notification';
-import { Avatar, ActionIcon, Menu, Divider, Button, Modal } from '@mantine/core';
+import { Avatar, ActionIcon, Menu, Divider, Button, Modal, Indicator } from '@mantine/core';
 
 import { navigatePath } from '@app/routes/config';
 import { API_URL, MEDIA_URL } from '@constants';
@@ -12,6 +12,7 @@ import DarkLightTheme from '@common/components/DarkLightTheme';
 import Input from '@common/components/Input';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+
 function MainHeader() {
     const { logout, profile } = useAuth();
     const navigate = useNavigate();
@@ -108,14 +109,20 @@ function MainHeader() {
     return (
         <>
             <Notification />
-            {/* <div className="p-2 text-center ms-3 menu-icon chat-active-btn">
-                <DarkLightTheme/>
-            </div> */}
             <Link
                 to="/message"
                 className="p-2 text-center ms-3 menu-icon chat-active-btn"
             >
-                <IconMessageCircle />
+                <Indicator
+                    inline
+                    offset={4}
+                    position="bottom-start"
+                    color="red"
+                    withBorder
+                    disabled={false}
+                >
+                    <IconMessageCircle />
+                </Indicator>
             </Link>
             <Menu position="bottom-end" width={200} withArrow>
                 <Menu.Target>

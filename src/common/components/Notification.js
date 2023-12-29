@@ -3,7 +3,7 @@ import {
 } from '@tabler/icons-react';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ScrollArea, Popover, ActionIcon, Image, AspectRatio } from '@mantine/core';
+import { ScrollArea, Popover, ActionIcon, Image, AspectRatio, Indicator } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useNotification } from '@services/controller';
 import Socket, { connections } from '@services/socket';
@@ -129,7 +129,16 @@ function Notification() {
             >
                 <Popover.Target>
                     <ActionIcon className="ms-auto" onClick={() => setOpenedNotification((o) => !o)}>
-                        <IconBellFilled />
+                        <Indicator
+                            inline
+                            offset={4}
+                            position="bottom-start"
+                            color="red"
+                            withBorder
+                            disabled={true}
+                        >
+                            <IconBellFilled />
+                        </Indicator>
                     </ActionIcon>
                 </Popover.Target>
                 <Popover.Dropdown className='px-0 '>

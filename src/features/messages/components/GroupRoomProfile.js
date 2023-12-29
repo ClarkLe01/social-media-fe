@@ -12,17 +12,12 @@ import {
     UnstyledButton,
 } from '@mantine/core';
 import {
-    IconUserCircle,
-    IconAlarmFilled,
     IconBrandYoutube,
     IconPhoto,
-    IconSearch,
     IconAbc,
-    IconPalette,
     IconPhotoFilled,
     IconDots,
     IconPlus,
-    IconMessageCircle,
     IconUser,
     IconLogout,
     IconMessageCircleMinus,

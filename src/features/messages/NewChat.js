@@ -50,7 +50,7 @@ SelectItem = forwardRef(SelectItem);
 function NewChat() {
     useScrollLock(true);
     const { profile } = useAuth();
-    const { friendListDetail, friendListDetailLoading } = useFriend(profile.data.id);
+    const { friendList, friendListLoading } = useFriend(profile.data.id);
     const location = useLocation();
     const navigate = useNavigate();
     const { RoomList, createRoom } = useRoom();
@@ -97,29 +97,20 @@ function NewChat() {
     };
 
     useEffect(() => {
-        if(friendListDetail && !friendListDetailLoading){
-            friendListDetail.data.map(item => {
-                item.requestID.id === profile.data.id 
-                    ? setFriendData(prev => [ ...prev, 
-                        {
-                            value: item.responseID.id,
-                            email: item.responseID.email,
-                            avatar: MEDIA_URL+item.responseID.avatar.replace(API_URL,''),
-                            label: item.responseID.first_name + ' ' + item.responseID.last_name,
-                        },
-                    ]) 
-                    : setFriendData(prev => [ ...prev, 
-                        {
-                            value: item.requestID.id,
-                            email: item.requestID.email,
-                            avatar: MEDIA_URL+item.requestID.avatar.replace(API_URL,''),
-                            label: item.requestID.first_name + ' ' + item.requestID.last_name,
-                        },
-                    ]);
+        if(friendList && !friendListLoading){
+            friendList.data.map(item => {
+                setFriendData(prev => [ ...prev, 
+                    {
+                        value: item.id,
+                        email: item.email,
+                        avatar: MEDIA_URL+item.avatar.replace(API_URL,''),
+                        label: item.first_name + ' ' + item.last_name,
+                    },
+                ]);
             });
         }
         return () => setFriendData([]);
-    }, [ friendListDetail, friendListDetailLoading ]);
+    }, [ friendList, friendListLoading ]);
 
     return (
         <div className="row">

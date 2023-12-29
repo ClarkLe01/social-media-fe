@@ -81,9 +81,7 @@ function FriendRequest(props) {
     return (
         <div className="section full  pt-4 position-relative feed-body">
             <div className="card-body d-flex align-items-center p-1">
-                <h4 className="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
-                    Friend Request
-                </h4>
+                <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friend Request</h4>
                 <Link to="/friendrequest" className="fw-600 ms-auto font-xssss text-primary">
                     See all
                 </Link>
@@ -137,20 +135,19 @@ const SideBar = () => {
         <>
             <FriendRequest listRequest={friendRequest} />
             <hr />
-            {(memberList.length == 0 )?
-                <Group
-                    className="d-grid justify-content-center align-items-center"
-                    position="center"
-                >
-                    <Text className="d-flex justify-content-center align-items-center">
-                        
-                        <IconFriendsOff /> 
-                        You do not have friend.
-                    </Text>
-                </Group>:
-                <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
-                    <div className="section full px-0 pt-4 position-relative feed-body">
-                        <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>
+            <div className="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
+                <div className="section full px-0 pt-4 position-relative feed-body">
+                    <h4 className="font-xsss text-grey-900 fw-700 ls-3">Friends</h4>
+                    {(memberList.length == 0 )?
+                        <Group
+                            className="d-grid justify-content-center align-items-center"
+                            position="center"
+                        >
+                            <Text className="d-flex justify-content-center align-items-center">
+                                <IconFriendsOff /> 
+                                You do not have friend.
+                            </Text>
+                        </Group>:
                         <ul className="list-group list-group-flush" style={{ cursor: 'pointer' }}>
                             {memberList.map((value) => (
                                 <RightChatItem 
@@ -160,15 +157,15 @@ const SideBar = () => {
                                 />
                             ))}
                         </ul>
-                    </div>
-                    <div className="section full px-0 pt-4 pb-4 position-relative feed-body">
-                        <h4 className="font-xsss text-grey-900 fw-700 ls-3">Contact</h4>
-                        <ul className="list-group list-group-flush" style={{ cursor: 'pointer' }}>
-                            {RoomList && <Rooms rooms={RoomList.data} isRightChat={true}/>}  
-                        </ul>
-                    </div>
-                </div>
-            }
+                    }
+                </div>  
+            </div>
+            <div className="section full px-0 pt-4 pb-4 position-relative feed-body">
+                <h4 className="font-xsss text-grey-900 fw-700 ls-3">Contact</h4>
+                <ul className="list-group list-group-flush" style={{ cursor: 'pointer' }}>
+                    {RoomList && <Rooms rooms={RoomList.data} isRightChat={true}/>}  
+                </ul>
+            </div>
         </>
     );
 };
