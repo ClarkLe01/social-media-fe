@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Group, Image, Text } from '@mantine/core';
-import { useFriend, useProfile, useAuth } from '@services/controller';
+import { useProfile, useAuth, useFriendAction } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
 import { API_URL, MEDIA_URL } from '@constants';
@@ -9,21 +9,34 @@ function CardItem(props) {
     const location = useLocation();
     const navigate = useNavigate();
     const { idFriendInstance, idProfile, type } = props;
-    const inputSearch = props.inputSearch?props.inputSearch.trim().toLowerCase():'';
-    const { profile } = useAuth(); // current user
     const { profileId } = useProfile(idProfile);
-    const { deleteFriend, acceptRequest } = useFriend(profile.data.id);
+    const { deleteFriend, acceptRequest, rejectRequest, cancelRequest } = useFriendAction();
     const [ user, setUser ] = useState(null);
-    const handleCancel = () => {
+
+    const handleCancelRequest = () => {
+        cancelRequest({
+            pathParams: { instanceId: idFriendInstance },
+        });
+    };
+
+    const handleRejectRequest = () => {
+        rejectRequest({
+            pathParams: { instanceId: idFriendInstance },
+        });
+    };
+
+    const handleDeleteFriend = () => {
         deleteFriend({
             pathParams: { instanceId: idFriendInstance },
         });
     };
-    const handleAccept= () => {
+
+    const handleAccept = () => {
         acceptRequest({
             pathParams: { instanceId: idFriendInstance },
         });
     };
+    
     const goToProfile = () => {
         navigate(navigatePath.profile.replace(':userId', idProfile), { state: { from: location.pathname } });
     };
@@ -35,7 +48,7 @@ function CardItem(props) {
 
     return (
         <>
-            {user && ((user.first_name + " " + user.last_name).trim().toLowerCase().includes(inputSearch)) ? (
+            {user ? (
                 <Card shadow="sm" padding="lg" radius="md" withBorder >
                     <Card.Section onClick={goToProfile}>
                         <Image src={MEDIA_URL+user.avatar.replace(API_URL,'')} height={160} />
@@ -53,7 +66,7 @@ function CardItem(props) {
                     </Group>
                     {type == 'request' && (
                         <div className="d-grid gap-2 mx-auto">
-                            <Button color="gray" onClick={handleCancel}>
+                            <Button color="gray" onClick={handleCancelRequest}>
                                 Cancel Request
                             </Button>
                         </div>
@@ -61,12 +74,12 @@ function CardItem(props) {
                     {type == 'response' && (
                         <div className="d-grid gap-2 mx-auto">
                             <Button onClick={handleAccept}>Confirm</Button>
-                            <Button color="gray" onClick={handleCancel}>Cancel</Button>
+                            <Button color="gray" onClick={handleRejectRequest}>Cancel</Button>
                         </div>
                     )}
                     {type == 'friend' && (
                         <div className="d-grid gap-2 mx-auto">
-                            <Button color="red" onClick={handleCancel}>Unfriend</Button>
+                            <Button color="red" onClick={handleDeleteFriend}>Unfriend</Button>
                         </div>
                     )}
                 </Card>

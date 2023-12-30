@@ -40,7 +40,7 @@ function FriendList() {
                                     <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
                                         <CardItem
                                             idFriendInstance={value.id}
-                                            idProfile={value.requestID === profile.data.id ? value.responseID : value.requestID}
+                                            idProfile={value.id}
                                             type='friend'
                                             inputSearch={inputSearch}
                                         />

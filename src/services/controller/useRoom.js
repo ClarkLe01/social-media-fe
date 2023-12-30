@@ -11,10 +11,6 @@ function useRoom() {
     } = useQuery({
         queryKey: [ 'room/list' ],
         queryFn: () => api(endPoints.chat.room.list),
-        retryOnMount: true,
-        retry: 5,
-        retryDelay: 1000,
-        staleTime: 1000,
     });
 
     const {

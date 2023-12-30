@@ -12,7 +12,7 @@ const AddPeopleModal = (props) => {
     const { opened, onClose, roomDetail } = props;
 
     const { profile, profileLoading, profileError } = useAuth();
-    const { friendListDetail, friendListDetailLoading, friendListError } = useFriend(profile.data.id);
+    const { friendList, friendListLoading, friendError } = useFriend(profile.data.id);
 
     const [ currentUser, setCurrentUser ] = useState(null);
     const [ addMembers, setAddMembers ] = useState([]);
@@ -27,7 +27,6 @@ const AddPeopleModal = (props) => {
 
     const initFriendsNotInMembers = useCallback((members, friends) => {
         const memberIds = members.map(member => member.user.id); // get array of member ids
-        friends = friends.map(friend => friend.requestID.id == currentUser.id ? friend.responseID : friend.requestID); // get array of friend ids
         const updatedFriends = friends.filter(friend => !memberIds.includes(friend.id)); // filter out friends with ids that match member ids
         setFriends(updatedFriends); // update state for friends
     }, [ currentUser ]);
@@ -84,16 +83,16 @@ const AddPeopleModal = (props) => {
     }, [ profileLoading ]);
 
     useEffect(() => {
-        if (friendListDetail && !friendListDetailLoading && currentUser) {
-            initFriendsNotInMembers(roomDetail.members, friendListDetail.data);
+        if (friendList && !friendListLoading && currentUser) {
+            initFriendsNotInMembers(roomDetail.members, friendList.data);
         }
-    }, [ friendListDetailLoading, currentUser, roomDetail ]);
+    }, [ friendListLoading, currentUser, roomDetail ]);
 
     useEffect(() => {
-        if(!friendListDetailLoading){
+        if(!friendListLoading){
             console.log('AddPeopleModal friends', friends);
         }
-    }, [ friends, friendListDetailLoading ]);
+    }, [ friends, friendListLoading ]);
 
     useEffect(() => {
         return () => {

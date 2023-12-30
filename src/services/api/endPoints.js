@@ -69,11 +69,6 @@ export default {
             method: 'GET',
             headers: headers.json,
         },
-        userFollows: {
-            url: '/user/follows/:userId',
-            method: 'GET',
-            headers: headers.json,
-        },
         follow: {
             url: '/user/follow',
             method: 'POST',
@@ -84,30 +79,10 @@ export default {
             method: 'POST',
             headers: headers.json,
         },
-        userMutes: {
-            url: '/user/mutes/:userId',
-            method: 'GET',
-            headers: headers.json,
-        },
-        mute: {
-            url: '/user/mute',
-            method: 'POST',
-            headers: headers.json,
-        },
-        unmute: {
-            url: '/user/unmute',
-            method: 'POST',
-            headers: headers.json,
-        },
     },
     friend: {
         list: {
             url: '/friend/list/:userId',
-            method: 'GET',
-            headers: headers.json,
-        },
-        detail: {
-            url: '/friend/list/detail/:userId',
             method: 'GET',
             headers: headers.json,
         },
@@ -133,6 +108,16 @@ export default {
         },
         delete: {
             url: '/friend/delete/:instanceId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+        rejectRequest: {
+            url: '/friend/reject/:instanceId',
+            method: 'DELETE',
+            headers: headers.json,
+        },
+        cancelRequest: {
+            url: '/friend/cancel/:instanceId',
             method: 'DELETE',
             headers: headers.json,
         },

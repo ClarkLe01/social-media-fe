@@ -1,18 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Pagetitle from '@common/components/PageTitle';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
-import { Grid, Group, Text, ScrollArea, Button, Menu } from '@mantine/core';
-import { useAuth, useFriend, useProfile, useSearch } from '@services/controller';
+import { Grid, Group, Text, ScrollArea } from '@mantine/core';
+import { useAuth, useSearch } from '@services/controller';
 import CardItem from '@features/friend/components/CardItem';
-import { IconBrandMessenger, IconUserCheck, IconUserPlus } from '@tabler/icons-react';
 
 function FindPeople() {
     const { profile } = useAuth();
-    const { friendList, requestList, responseList, addFriend, acceptRequest, deleteFriend } = useFriend(profile.data.id);
-
-    const [ groupButtonType, setGroupButtonType ] = useState(null);
-
     const [ queryParameters ] = useSearchParams();
     const { searchUserTest } = useSearch(queryParameters.get('search') || '');
     const [ inputSearch, setInputSearch ] = useState('');
@@ -25,7 +20,12 @@ function FindPeople() {
         }
     }, [ searchUserTest ]);
 
-
+    const getListUser = useCallback((listUser, inputSearch) => {
+        if(inputSearch){
+            return listUser.filter(user => (user.first_name + " " + user.last_name).trim().toLowerCase().includes(inputSearch.toLowerCase())||user.email.trim().toLowerCase().includes(inputSearch.toLowerCase()));
+        }
+        return listUser;
+    }, [ searchUserTest ]);
 
     return (
         <div>
@@ -43,13 +43,12 @@ function FindPeople() {
             ) : (
                 <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
                     <Grid className="row ps-2 pe-2">
-                        {listUser.map((value) => {
+                        {getListUser(listUser, inputSearch).map((value) => {
                             return (
                                 <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
                                     <CardItem
                                         idProfile={value.id}
                                         type='no'
-                                        inputSearch={inputSearch}
                                     />
                                 </Grid.Col>
                             );
