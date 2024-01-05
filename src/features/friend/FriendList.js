@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Pagetitle from '@common/components/PageTitle';
-import { Grid, Group, Text, ScrollArea } from '@mantine/core';
+import { Grid, Group, Text, ScrollArea, em } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
 import { useFriend, useAuth } from '@services/controller';
@@ -32,13 +32,14 @@ function FriendList() {
                     </Text>
                 </Group>
             ) : (
-                <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
+                <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')} >
                     <Grid className="row ps-2 pe-2">
                         {memberList
                             .map((value) => { 
                                 return (
-                                    <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
+                                    <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3} >
                                         <CardItem
+                                            
                                             idFriendInstance={value.id}
                                             idProfile={value.id}
                                             type='friend'

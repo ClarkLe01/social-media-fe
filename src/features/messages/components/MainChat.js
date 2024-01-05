@@ -209,7 +209,7 @@ function MainChat(props) {
         <Grid columns={24} className="px-0">
             <Grid.Col span={'auto'} className="pe-0">
                 <div>
-                    <div className="main-chat-header border border-1 px-0 py-1 mx-0">
+                    <div className="main-chat-header border border-1 px-0 py-2 mx-0">
                         <div className="d-flex align-items-center px-0">
                             {RoomDetail && (
                                 <Button
@@ -217,21 +217,13 @@ function MainChat(props) {
                                     size="lg"
                                     leftIcon={
                                         <Group position="center" className="me-3">
-                                            <Indicator
-                                                inline
-                                                offset={4}
-                                                position="bottom-end"
-                                                color="green"
-                                                withBorder
-                                            >
-                                                <AvatarDisplay 
-                                                    size={36}
-                                                    members={RoomDetail.data.members}
-                                                    currentUser={currentUser}
-                                                    isGroup={RoomDetail.data.isGroup}
-                                                    avatar={RoomDetail.data.roomAvatar}
-                                                />
-                                            </Indicator>
+                                            <AvatarDisplay 
+                                                size={36}
+                                                members={RoomDetail.data.members}
+                                                currentUser={currentUser}
+                                                isGroup={RoomDetail.data.isGroup}
+                                                avatar={RoomDetail.data.roomAvatar}
+                                            />
                                         </Group>
                                     }
                                     classNames={{
@@ -249,7 +241,8 @@ function MainChat(props) {
                                         color="dark"
                                     />
                                     <Text size="xs" c="dimmed">
-                                        Active Now
+                                        {RoomDetail.data.isGroup?RoomDetail.data.members.length + " members in group chat"
+                                            :(RoomDetail.data.members[0].user.id==currentUser.id?(RoomDetail.data.members[1].user.online?"Active now":"Offline"):(RoomDetail.data.members[0].user.online?"Active":"Offline"))}
                                     </Text>
                                 </Button>
                             )}
@@ -302,7 +295,7 @@ function MainChat(props) {
                             className="main-chat-tool algin-items-center justify-content-center"
                             style={{
                                 position: 'absolute',
-                                bottom: '-6vh',
+                                bottom: '-4vh',
                                 display: 'block',
                                 width: '100%',
                                 zIndex: 2,
@@ -316,12 +309,7 @@ function MainChat(props) {
                                     </div>
                                 )}
                             </div>
-                            <div className="d-flex bd-highlight mb-3">
-                                {/* <div className="p-2 bd-highlight align-self-end">
-                                    <ActionIcon color="blue" variant="subtle">
-                                        <IconMicrophone />
-                                    </ActionIcon>
-                                </div> */}
+                            <div className="d-flex bd-highlight my-3">
                                 <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon
                                         color="blue"
@@ -336,7 +324,7 @@ function MainChat(props) {
                                         <IconGif />
                                     </ActionIcon>
                                 </div>
-                                <div className="p-2 bd-highlight align-self-end ms-auto flex-fill">
+                                <div className=" bd-highlight align-self-end ms-auto flex-fill">
                                     
                                     <Textarea
                                         classNames={{
@@ -386,7 +374,7 @@ function MainChat(props) {
                                         onKeyDown={handleEnterPress}
                                     />
                                 </div>
-                                <div className="p-2 pb-3 bd-highlight align-self-end">
+                                <div className="p-2 bd-highlight align-self-end">
                                     <ActionIcon
                                         color="blue"
                                         variant="subtle"

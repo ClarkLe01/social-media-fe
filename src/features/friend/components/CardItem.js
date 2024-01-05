@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Group, Image, Text } from '@mantine/core';
+import { Box, Button, Card, Group, Image, Text, em } from '@mantine/core';
 import { useProfile, useAuth, useFriendAction } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
@@ -59,11 +59,14 @@ function CardItem(props) {
                             {user.first_name} {user.last_name}
                         </Text>
                     </Group>
-                    <Group position="apart" mt={1} mb={6} onClick={goToProfile}>
-                        <Text size="sm" color="dimmed">
+                    <Box position="apart" mt={1} mb={6} onClick={goToProfile}>
+                        <Text size="sm" color="dimmed" style={{
+                            width: '12em',
+                            overflowWrap: 'break-word',
+                        }}>
                             {user.email}
                         </Text>
-                    </Group>
+                    </Box>
                     {type == 'request' && (
                         <div className="d-grid gap-2 mx-auto">
                             <Button color="gray" onClick={handleCancelRequest}>

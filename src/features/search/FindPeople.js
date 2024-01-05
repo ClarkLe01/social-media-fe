@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Pagetitle from '@common/components/PageTitle';
 import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
-import { Grid, Group, Text, ScrollArea } from '@mantine/core';
+import { Grid, Group, Text, ScrollArea, em } from '@mantine/core';
 import { useAuth, useSearch } from '@services/controller';
 import CardItem from '@features/friend/components/CardItem';
 
@@ -41,11 +41,11 @@ function FindPeople() {
                     </Text>
                 </Group>
             ) : (
-                <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
+                <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')}>
                     <Grid className="row ps-2 pe-2">
                         {getListUser(listUser, inputSearch).map((value) => {
                             return (
-                                <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3}>
+                                <Grid.Col key={value.id} xs={6} sm={6} md={4}>
                                     <CardItem
                                         idProfile={value.id}
                                         type='no'
