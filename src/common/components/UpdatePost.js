@@ -116,7 +116,7 @@ function CreatePost(props) {
 
     const { updatePost } = useUserPost();
     const { profile } = useAuth();
-    const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(profile.data.id);
+    const { friendList, friendListLoading, friendListError } = useFriend(profile.data.id);
     useEffect(() => {
         // 👇️ only runs once
         if(images){
@@ -213,12 +213,8 @@ function CreatePost(props) {
     }
 
     useEffect(() => {
-        if (!friendListDetailLoading && friendListDetail) {
-            friendListDetail.data.map(item => {
-                item.requestID.id === profile.data.id
-                    ? setMemberList(prev => [ ...prev, item.responseID ])
-                    : setMemberList(prev => [ ...prev, item.requestID ]);
-            });
+        if (!friendListLoading && friendList) {
+            friendList.data.map(item => {setMemberList(prev => [ ...prev, item ]);});
         }
     }, []);
 
