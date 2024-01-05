@@ -416,21 +416,6 @@ function NotificationItem(props) {
                                     >
                                         Marks as read
                                     </Menu.Item>
-                                    {muteIds.includes(item.senderID) ? (
-                                        <Menu.Item
-                                            icon={<IconAlarm color="blue" size={24} />}
-                                            onClick={handleUnMuteUserNotification}
-                                        >
-                                            UnMute
-                                        </Menu.Item>
-                                    ) : (
-                                        <Menu.Item
-                                            icon={<IconAlarmSnooze color="red   " size={24} />}
-                                            onClick={handleMuteUserNotification}
-                                        >
-                                            Mute
-                                        </Menu.Item>
-                                    )}
                                     <Menu.Item
                                         icon={<IconSquareX color="red" size={24} />}
                                         onClick={handleDeleteNotification}

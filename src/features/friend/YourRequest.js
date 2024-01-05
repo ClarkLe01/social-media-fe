@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Pagetitle from '@common/components/PageTitle';
-import { Grid, Group, ScrollArea, Text } from '@mantine/core';
+import { Grid, Group, ScrollArea, Text, em } from '@mantine/core';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { useScrollLock } from '@mantine/hooks';
 import { useFriend } from '@services/controller';
@@ -32,7 +32,7 @@ function YourRequest() {
                     </Text>
                 </Group>
             ) : (
-                <ScrollArea h={550} offsetScrollbars scrollbarSize={4}>
+                <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')}>
                     <Grid className="row ps-2 pe-2">
                         {memberList.map((value) => {
                             return (

@@ -84,18 +84,6 @@ export default function MessageLayout() {
                     zIndex={102}
                 />
             }
-            aside={
-                <Aside
-                    className="me-0 position-fixed"
-                    grow="true"
-                    mx="-xs"
-                    px="xs"
-                    p="md"
-                    hiddenBreakpoint="sm"
-                    width={{ base: 1 }}
-                >
-                </Aside>
-            }
 
             header={
                 <Header height={{ base: 60 }} p="md" style={{ zIndex: 101 }}>
