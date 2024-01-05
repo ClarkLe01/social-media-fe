@@ -64,7 +64,6 @@ function ProfileCard(props) {
     const genderOptions = [ 
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
-        { value: 'nonbinary', label: 'Non-binary' },
     ];
 
     const dateString = birthday.getFullYear() + "-" +
