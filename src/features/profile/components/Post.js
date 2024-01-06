@@ -13,13 +13,12 @@ import Photos from './Photos';
 import { API_URL, MEDIA_URL } from '@constants';
 import { throttle } from 'lodash';
 
-const handleScroll = throttle(({ fetchNextPostList, isFetchingPostList, hasNextPostList }) => {
-    console.log({ hasNextPostList });
+const handleScroll = throttle(({ UserPostListFetchNextPage, UserPostListFetching, UserPostListHasNextPage }) => {
     const bottomSpacing =
         document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
 
-    if (bottomSpacing < 200 && !isFetchingPostList && hasNextPostList) {
-        fetchNextPostList();
+    if (bottomSpacing < 200 && !UserPostListFetching && UserPostListHasNextPage) {
+        UserPostListFetchNextPage();
     }
 }, 500);
 
