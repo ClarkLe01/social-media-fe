@@ -7,7 +7,6 @@ import lodash, { throttle } from 'lodash';
 
 const handleScroll = lodash.throttle(
     ({ fetchNextPostList, isFetchingPostList, hasNextPostList }) => {
-        console.log({ hasNextPostList });
         const bottomSpacing =
             document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
 

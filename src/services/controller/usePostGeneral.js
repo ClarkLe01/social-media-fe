@@ -25,7 +25,7 @@ function usePostGeneral() {
             // console.log(allRows.length);
 
             if (lastPage.count <= allRows.length) return undefined;
-            return allPages.length;
+            return allPages.length + 1;
         },
         retryOnMount: true,
         retry: 5,
