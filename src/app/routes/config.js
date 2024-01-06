@@ -79,11 +79,6 @@ const routes = [
                 element: Home,
             },
             {
-                name: 'Find People',
-                path: navigatePath.findpeople,
-                element: FindPeople,
-            },
-            {
                 name: 'Settings',
                 path: navigatePath.settings,
                 element: Settings,
@@ -184,6 +179,11 @@ const routes = [
                 name: 'Your Request',
                 path: navigatePath.yourRequest,
                 element: YourRequest,
+            },
+            {
+                name: 'Find People',
+                path: navigatePath.findpeople,
+                element: FindPeople,
             },
         ],
     },
