@@ -1,5 +1,5 @@
 import api, { endPoints, publicApi } from '@services/api';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
 function usePostGeneral() {
     const queryClient = useQueryClient();
@@ -8,9 +8,25 @@ function usePostGeneral() {
         data: PostList,
         isLoading: PostListLoading,
         error: PostListError,
-    } = useQuery({
+        fetchNextPage: fetchNextPostList,
+        hasNextPage: hasNextPostList,
+        isFetching: isFetchingPostList,
+    } = useInfiniteQuery({
         queryKey: [ 'post/list' ],
-        queryFn: () => api(endPoints.post.list),
+        queryFn: async (ctx) => {
+            const { data } = await api(endPoints.post.list, {
+                searchParams: { page: ctx.pageParam },
+            });
+            return data;
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            // console.log({ allPages });
+            const allRows = allPages.flatMap((d) => d.results);
+            // console.log(allRows.length);
+
+            if (lastPage.count <= allRows.length) return undefined;
+            return allPages.length + 1;
+        },
         retryOnMount: true,
         retry: 5,
         retryDelay: 1000,
@@ -34,7 +50,9 @@ function usePostGeneral() {
         PostList,
         PostListLoading,
         PostListError,
-
+        fetchNextPostList,
+        isFetchingPostList,
+        hasNextPostList,
         PhotoList,
         PhotoListLoading,
         PhotoListError,

@@ -15,7 +15,7 @@ function Photos () {
 
     useEffect(() => {
         if(!UserPostListLoading && UserPostList){
-            setUserPosts(UserPostList.data);
+            setUserPosts(UserPostList.data.results);
         }
     }, [ UserPostListLoading, UserPostList ]);
     

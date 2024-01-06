@@ -184,7 +184,7 @@ export default function MainLayout() {
                 </Header>
             }
         >
-            <div style={{ margin: 'auto' }}><Outlet/></div>
+            <div style={{ maxWidth: 1100, margin: 'auto' }}><Outlet/></div>
         </AppShell>
     );
 }
