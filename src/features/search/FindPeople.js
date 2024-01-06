@@ -31,20 +31,7 @@ function FindPeople() {
     const [ listUser , setListUser ] = useState([]);
     const viewport = useRef(null);
 
-    const handleScroll = lodash.throttle(
-        ({ fetchNextPageSearchPeople, isFetchingSearchPeople, hasNextPageSearchPeople }) => {
-            const bottomSpacing =
-                document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
-    
-            if (bottomSpacing < 200 && !isFetchingSearchPeople && hasNextPageSearchPeople) {
-                fetchNextPageSearchPeople();
-            }
-        },
-        300,
-    );
-
     const onScrollPositionChange = (data) => {
-        console.log("meter", viewport.current.scrollHeight - data.y );
         if(viewport.current.scrollHeight - data.y < 850 && !isFetchingSearchPeople && hasNextPageSearchPeople){
             fetchNextPageSearchPeople();
         }
@@ -61,17 +48,6 @@ function FindPeople() {
             );
         }
     }, [ dataSearchPeopleLoading, dataSearchPeople ]);
-
-    // useEffect(() => {
-    //     const onScroll = () => {
-    //         console.log(viewport.current);
-    //         // handleScroll({ fetchNextPageSearchPeople, hasNextPageSearchPeople, isFetchingNextPageSearchPeople });
-    //     };
-
-    //     document.addEventListener('scroll', onScroll);
-
-    //     return () => removeEventListener('scroll', onScroll);
-    // }, [ hasNextPageSearchPeople, fetchNextPageSearchPeople, isFetchingNextPageSearchPeople ]);
 
     const getListUser = useCallback((listUser, inputSearch) => {
         if(inputSearch){
