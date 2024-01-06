@@ -177,7 +177,7 @@ export default function FriendLayout() {
                 </Header>
             }
         >
-            <Outlet />
+            <div style={{ maxWidth: 1100, margin: 'auto' }}><Outlet/></div>
         </AppShell>
     );
 }

@@ -33,11 +33,11 @@ function FriendList() {
                 </Group>
             ) : (
                 <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')} >
-                    <Grid className="row ps-2 pe-2">
+                    <Grid className="row">
                         {memberList
                             .map((value) => { 
                                 return (
-                                    <Grid.Col key={value.id} xs={6} sm={6} md={4} xl={3} >
+                                    <Grid.Col key={value.id} span={12} >
                                         <CardItem
                                             
                                             idFriendInstance={value.id}

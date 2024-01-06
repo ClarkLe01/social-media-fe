@@ -1,31 +1,84 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Pagetitle from '@common/components/PageTitle';
 import { useSearchParams } from 'react-router-dom';
 import { ReactComponent as DataArrangingLogo } from '@assets/svgs/Data-Arranging-Outline.svg';
 import { Grid, Group, Text, ScrollArea, em } from '@mantine/core';
 import { useAuth, useSearch } from '@services/controller';
 import CardItem from '@features/friend/components/CardItem';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import lodash, { throttle } from 'lodash';
 
 function FindPeople() {
     const { profile } = useAuth();
     const [ queryParameters ] = useSearchParams();
-    const { searchUserTest } = useSearch(queryParameters.get('search') || '');
+    const { 
+        statusSearchPeople,
+        dataSearchPeople,
+        dataSearchPeopleLoading,
+        errorSearchPeople,
+        isFetchingSearchPeople,
+        isFetchingNextPageSearchPeople,
+        isFetchingPreviousPageSearchPeople,
+        fetchNextPageSearchPeople,
+        fetchPreviousPageSearchPeople,
+        hasNextPageSearchPeople,
+        hasPreviousPageSearchPeople, 
+    } = useSearch(queryParameters.get('search') || '');
+
+
     const [ inputSearch, setInputSearch ] = useState('');
 
     const [ listUser , setListUser ] = useState([]);
+    const viewport = useRef(null);
+
+    const handleScroll = lodash.throttle(
+        ({ fetchNextPageSearchPeople, isFetchingSearchPeople, hasNextPageSearchPeople }) => {
+            const bottomSpacing =
+                document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+    
+            if (bottomSpacing < 200 && !isFetchingSearchPeople && hasNextPageSearchPeople) {
+                fetchNextPageSearchPeople();
+            }
+        },
+        300,
+    );
+
+    const onScrollPositionChange = (data) => {
+        console.log("meter", viewport.current.scrollHeight - data.y );
+        if(viewport.current.scrollHeight - data.y < 850 && !isFetchingSearchPeople && hasNextPageSearchPeople){
+            fetchNextPageSearchPeople();
+        }
+    };
+
 
     useEffect(() => {
-        if (searchUserTest) {
-            setListUser( searchUserTest.data );
+        if (!dataSearchPeopleLoading && dataSearchPeople) {
+            setListUser(
+                dataSearchPeople.pages.reduce((acc, cur) => {
+                    acc.push(...cur.data);
+                    return acc;
+                }, []),
+            );
         }
-    }, [ searchUserTest ]);
+    }, [ dataSearchPeopleLoading, dataSearchPeople ]);
+
+    // useEffect(() => {
+    //     const onScroll = () => {
+    //         console.log(viewport.current);
+    //         // handleScroll({ fetchNextPageSearchPeople, hasNextPageSearchPeople, isFetchingNextPageSearchPeople });
+    //     };
+
+    //     document.addEventListener('scroll', onScroll);
+
+    //     return () => removeEventListener('scroll', onScroll);
+    // }, [ hasNextPageSearchPeople, fetchNextPageSearchPeople, isFetchingNextPageSearchPeople ]);
 
     const getListUser = useCallback((listUser, inputSearch) => {
         if(inputSearch){
             return listUser.filter(user => (user.first_name + " " + user.last_name).trim().toLowerCase().includes(inputSearch.toLowerCase())||user.email.trim().toLowerCase().includes(inputSearch.toLowerCase()));
         }
         return listUser;
-    }, [ searchUserTest ]);
+    }, [ dataSearchPeople ]);
 
     return (
         <div>
@@ -41,11 +94,11 @@ function FindPeople() {
                     </Text>
                 </Group>
             ) : (
-                <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')}>
-                    <Grid className="row ps-2 pe-2">
+                <ScrollArea h={em('80vh')} offsetScrollbars scrollbarSize={4} w={em('100%')} viewportRef={viewport} onScrollPositionChange={onScrollPositionChange}>
+                    <Grid className="row">
                         {getListUser(listUser, inputSearch).map((value) => {
                             return (
-                                <Grid.Col key={value.id} xs={6} sm={6} md={4}>
+                                <Grid.Col key={value.id} span={12} className='px-0'>
                                     <CardItem
                                         idProfile={value.id}
                                         type='no'

@@ -4,6 +4,7 @@ import { useProfile, useAuth, useFriendAction } from '@services/controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigatePath } from '@app/routes/config';
 import { API_URL, MEDIA_URL } from '@constants';
+import { ActionIcon, Avatar } from "@mantine/core";
 
 function CardItem(props) {
     const location = useLocation();
@@ -49,43 +50,49 @@ function CardItem(props) {
     return (
         <>
             {user ? (
-                <Card shadow="sm" padding="lg" radius="md" withBorder >
-                    <Card.Section onClick={goToProfile}>
-                        <Image src={MEDIA_URL+user.avatar.replace(API_URL,'')} height={160} />
-                    </Card.Section>
-        
-                    <Group position="apart" mt="xs" onClick={goToProfile}>
-                        <Text weight={500}>
-                            {user.first_name} {user.last_name}
-                        </Text>
-                    </Group>
-                    <Box position="apart" mt={1} mb={6} onClick={goToProfile}>
-                        <Text size="sm" color="dimmed" style={{
-                            width: '12em',
-                            overflowWrap: 'break-word',
-                        }}>
-                            {user.email}
-                        </Text>
-                    </Box>
-                    {type == 'request' && (
-                        <div className="d-grid gap-2 mx-auto">
-                            <Button color="gray" onClick={handleCancelRequest}>
-                                Cancel Request
-                            </Button>
+                <div 
+                    className='card shadow-xss w-100 d-block d-flex border-0 p-2 mb-1' key={idFriendInstance}
+                >
+                    <div className='d-flex align-items-center px-3 pt-2'>
+                        <figure className="avatar float-left mb-0 me-2" onClick={goToProfile}>
+                            <Avatar src={MEDIA_URL+user.avatar.replace(API_URL,'')} radius="xl" size={50}/>
+                        </figure>
+                        <div onClick={goToProfile} className='me-auto'>
+                            <h3 className="fw-700 mb-0 mt-0">
+                                <span
+                                    className="font-xsss text-grey-600 d-block text-dark model-popup-chat pointer"
+                                >
+                                    {user.first_name + ' ' +user.last_name}
+                                </span>
+                            </h3>
+                            <span
+                                className="font-xsss text-grey-600 d-block text-dark model-popup-chat pointer"
+                            >
+                                {user.email}
+                            </span>
                         </div>
-                    )}
-                    {type == 'response' && (
-                        <div className="d-grid gap-2 mx-auto">
-                            <Button onClick={handleAccept}>Confirm</Button>
-                            <Button color="gray" onClick={handleRejectRequest}>Cancel</Button>
+                        <div>
+                            {type == 'request' && (
+                                <div>
+                                    <Button color="gray" onClick={handleCancelRequest}>
+                                        Cancel Request
+                                    </Button>
+                                </div>
+                            )}
+                            {type == 'response' && (
+                                <div className="d-flex gap-2">
+                                    <Button onClick={handleAccept}>Confirm</Button>
+                                    <Button color="gray" onClick={handleRejectRequest}>Cancel</Button>
+                                </div>
+                            )}
+                            {type == 'friend' && (
+                                <div>
+                                    <Button color="red" onClick={handleDeleteFriend}>Unfriend</Button>
+                                </div>
+                            )}
                         </div>
-                    )}
-                    {type == 'friend' && (
-                        <div className="d-grid gap-2 mx-auto">
-                            <Button color="red" onClick={handleDeleteFriend}>Unfriend</Button>
-                        </div>
-                    )}
-                </Card>
+                    </div>
+                </div>
             ):null}
         </>
     );
