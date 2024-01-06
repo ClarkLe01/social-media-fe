@@ -1,5 +1,5 @@
 import api, { endPoints, publicApi } from '@services/api';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
 function useUserPost(userId) {
     const queryClient = useQueryClient();
@@ -8,9 +8,26 @@ function useUserPost(userId) {
         data: UserPostList,
         isLoading: UserPostListLoading,
         error: UserPostListError,
-    } = useQuery({
+        isFetching: UserPostListFetching,
+        hasNextPage: UserPostListHasNextPage,
+        fetchNextPage: UserPostListFetchNextPage,
+    } = useInfiniteQuery({
         queryKey: [ `posts/user` ],
-        queryFn: () => api(endPoints.post.userPosts, { pathParams: { userId: userId } }),
+        queryFn: async (ctx) => {
+            const { data } = await api(endPoints.post.userPosts, {
+                searchParams: { page: ctx.pageParam },
+                pathParams: { userId: userId },
+            });
+            return data;
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            // console.log({ allPages });
+            const allRows = allPages.flatMap((d) => d.results);
+            // console.log(allRows.length);
+
+            if (lastPage.count <= allRows.length) return undefined;
+            return allPages.length;
+        },
         retryOnMount: true,
         retry: 5,
         retryDelay: 1000,
@@ -30,7 +47,7 @@ function useUserPost(userId) {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
         },
-        onError: (error) => {     
+        onError: (error) => {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
         },
@@ -49,7 +66,7 @@ function useUserPost(userId) {
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
             window.location.reload();
         },
-        onError: (error) => {      
+        onError: (error) => {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
         },
@@ -67,7 +84,7 @@ function useUserPost(userId) {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
         },
-        onError: (error) => {      
+        onError: (error) => {
             queryClient.invalidateQueries({ queryKey: [ `posts/user` ] });
             queryClient.invalidateQueries({ queryKey: [ `post/list` ] });
         },
@@ -77,6 +94,9 @@ function useUserPost(userId) {
         UserPostList,
         UserPostListLoading,
         UserPostListError,
+        UserPostListFetching,
+        UserPostListHasNextPage,
+        UserPostListFetchNextPage,
 
         createPostLoading,
         createPostError,
