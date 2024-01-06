@@ -121,7 +121,7 @@ function CreatePost(props) {
 
     const { createPost, createPostError, createPostLoading, updatePost } = useUserPost();
     const { profile } = useAuth();
-    const { friendListDetail, friendListDetailLoading, friendListDetailError } = useFriend(
+    const { friendList, friendListLoading, friendListError } = useFriend(
         profile.data.id,
     );
 
@@ -228,14 +228,10 @@ function CreatePost(props) {
     }
 
     useEffect(() => {
-        if (!friendListDetailLoading && friendListDetail) {
-            friendListDetail.data.map((item) => {
-                item.requestID.id === profile.data.id
-                    ? setMemberList((prev) => [ ...prev, item.responseID ])
-                    : setMemberList((prev) => [ ...prev, item.requestID ]);
-            });
+        if (!friendListLoading && friendList) {
+            friendList.data.map((item) => {setMemberList((prev) => [ ...prev, item ]);});
         }
-    }, [ friendListDetailLoading ]);
+    }, [ friendListLoading ]);
 
     useEffect(() => {
         content.length > 0 || files.length > 0 ? setcanPost(true) : setcanPost(false);

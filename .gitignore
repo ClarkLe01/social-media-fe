@@ -28,3 +28,4 @@ __snapshots__
 
 package-lock.json
 certbot
+nginx/nginx-staging.conf
